@@ -2,6 +2,7 @@
 {
     using System;
 
+    [Serializable]
     public class ExiftoolException : Exception
     {
         public ExiftoolException(int exitCode, string standardOutput, string standardError)
