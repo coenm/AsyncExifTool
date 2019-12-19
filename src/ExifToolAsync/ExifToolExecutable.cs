@@ -1,8 +1,7 @@
-﻿namespace EagleEye.ExifTool
+﻿namespace ExifToolAsync
 {
     using System.Runtime.InteropServices;
     using System.Text;
-
     using JetBrains.Annotations;
 
     public static class ExifToolExecutable

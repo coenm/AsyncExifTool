@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifTool.ExifTool
+﻿namespace ExifToolAsync.ExifTool
 {
     using System;
 

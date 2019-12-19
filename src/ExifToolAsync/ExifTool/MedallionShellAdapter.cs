@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
-    using Dawn;
+
     using JetBrains.Annotations;
     using Medallion.Shell;
 
@@ -19,8 +19,10 @@
             [NotNull] Stream outputStream,
             [CanBeNull] Stream errorStream = null)
         {
-            Guard.Argument(executable, nameof(executable)).NotNull().NotEmpty();
-            Guard.Argument(outputStream, nameof(outputStream)).NotNull();
+            if (string.IsNullOrWhiteSpace(executable))
+                throw new ArgumentNullException(nameof(executable));
+            if (outputStream == null)
+                throw new ArgumentNullException(nameof(outputStream));
 
             cmd = Command.Run(executable, defaultArgs)
                          .RedirectTo(outputStream);

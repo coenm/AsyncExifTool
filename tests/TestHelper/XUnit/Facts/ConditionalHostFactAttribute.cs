@@ -1,4 +1,4 @@
-﻿namespace EagleEye.TestHelper.XUnit.Facts
+﻿namespace TestHelper.XUnit.Facts
 {
     using Xunit;
 

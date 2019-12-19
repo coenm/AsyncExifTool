@@ -1,13 +1,16 @@
 ﻿namespace ExifToolAsync
 {
-    using Dawn;
+    using System;
+
     using JetBrains.Annotations;
 
     public class StaticExiftoolConfig : IExifToolConfig
     {
         public StaticExiftoolConfig([NotNull] string exifToolExe)
         {
-            Guard.Argument(exifToolExe, nameof(exifToolExe)).NotNull().NotWhiteSpace();
+            if (string.IsNullOrWhiteSpace(exifToolExe))
+                throw new ArgumentNullException(nameof(exifToolExe));
+            
             ExifToolExe = exifToolExe;
         }
 

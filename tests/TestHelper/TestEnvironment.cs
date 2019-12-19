@@ -1,4 +1,4 @@
-﻿namespace EagleEye.TestHelper
+﻿namespace TestHelper
 {
     using System;
     using System.IO;

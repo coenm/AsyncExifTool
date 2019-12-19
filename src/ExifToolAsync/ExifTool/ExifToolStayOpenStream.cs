@@ -1,11 +1,9 @@
-﻿namespace EagleEye.ExifTool.ExifTool
+﻿namespace ExifToolAsync.ExifTool
 {
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Text;
-
-    using Dawn;
 
     using JetBrains.Annotations;
 
@@ -23,7 +21,8 @@
 
         public ExifToolStayOpenStream([CanBeNull] Encoding encoding, int bufferSize = OneMb)
         {
-            Guard.Argument(bufferSize, nameof(bufferSize)).Min(1);
+            if (bufferSize < 1)
+                throw new ArgumentOutOfRangeException(nameof(bufferSize));
 
             this.bufferSize = bufferSize;
             this.encoding = encoding ?? new UTF8Encoding();

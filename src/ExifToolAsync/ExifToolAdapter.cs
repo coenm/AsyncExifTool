@@ -3,7 +3,7 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using Dawn;
+
     using ExifToolAsync.ExifTool;
     using JetBrains.Annotations;
     using Newtonsoft.Json;
@@ -15,7 +15,8 @@
 
         public ExifToolAdapter([NotNull] IExifToolConfig config)
         {
-            Guard.Argument(config, nameof(config)).NotNull();
+            if (config == null)
+                throw new ArgumentNullException(nameof(config));
 
             exiftoolImpl = new OpenedExifTool(config.ExifToolExe);
             exiftoolImpl.Init();
