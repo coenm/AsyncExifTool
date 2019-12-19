@@ -1,6 +1,7 @@
 ﻿namespace ExifToolAsyncTest.Json
 {
     using ExifToolAsync;
+    using ExifToolAsync.Internals;
     using FluentAssertions;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;

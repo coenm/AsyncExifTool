@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
 
     using ExifToolAsync.ExifTool;
+    using ExifToolAsync.Internals;
     using FakeItEasy;
     using FluentAssertions;
     using Xunit;
@@ -82,7 +83,7 @@
                 this.medallionShell = medallionShell;
             }
 
-            protected override IMedallionShell CreateExitToolMedallionShell(string exifToolPath, List<string> defaultArgs, Stream outputStream, Stream errorStream)
+            internal override IMedallionShell CreateExitToolMedallionShell(string exifToolPath, List<string> defaultArgs, Stream outputStream, Stream errorStream)
             {
                 return medallionShell;
             }

@@ -1,10 +1,10 @@
-﻿namespace ExifToolAsync.ExifTool
+﻿namespace ExifToolAsync.Internals
 {
     using System;
     using System.Threading.Tasks;
     using Medallion.Shell;
 
-    public interface IMedallionShell
+    internal interface IMedallionShell
     {
         event EventHandler ProcessExited;
 

@@ -8,6 +8,7 @@
 
     using ExifToolAsync;
     using ExifToolAsync.ExifTool;
+    using ExifToolAsync.Internals;
     using FluentAssertions;
     using Xunit;
 

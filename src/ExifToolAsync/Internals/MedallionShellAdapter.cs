@@ -1,14 +1,13 @@
-﻿namespace ExifToolAsync.ExifTool
+﻿namespace ExifToolAsync.Internals
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
-
     using JetBrains.Annotations;
     using Medallion.Shell;
 
-    public class MedallionShellAdapter : IMedallionShell
+    internal class MedallionShellAdapter : IMedallionShell
     {
         [NotNull]
         private readonly Command cmd;

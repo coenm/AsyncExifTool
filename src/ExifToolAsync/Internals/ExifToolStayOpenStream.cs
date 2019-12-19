@@ -1,13 +1,13 @@
-﻿namespace ExifToolAsync.ExifTool
+﻿namespace ExifToolAsync.Internals
 {
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Text;
-
+    using ExifToolAsync.ExifTool;
     using JetBrains.Annotations;
 
-    public class ExifToolStayOpenStream : Stream
+    internal class ExifToolStayOpenStream : Stream
     {
         private const int OneMb = 1024 * 1024;
         private readonly string prefix = ExifToolExecutable.NewLine + "{ready";

@@ -8,7 +8,7 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-
+    using ExifToolAsync.Internals;
     using JetBrains.Annotations;
     using Nito.AsyncEx;
 
@@ -197,7 +197,7 @@
             }
         }
 
-        protected virtual IMedallionShell CreateExitToolMedallionShell(
+        internal virtual IMedallionShell CreateExitToolMedallionShell(
             string exifToolPath,
             List<string> defaultArgs,
             Stream outputStream,
