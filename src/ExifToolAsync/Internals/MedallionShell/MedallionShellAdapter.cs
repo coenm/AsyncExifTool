@@ -13,7 +13,7 @@
         private readonly Command cmd;
 
         public MedallionShellAdapter(
-            string executable,
+            [NotNull] string executable,
             IEnumerable<string> defaultArgs,
             [NotNull] Stream outputStream,
             [CanBeNull] Stream errorStream = null)

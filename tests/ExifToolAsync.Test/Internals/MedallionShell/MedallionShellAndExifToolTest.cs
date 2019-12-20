@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsyncTest.ExifTool
+﻿namespace ExifToolAsyncTest.Internals.MedallionShell
 {
     using System;
     using System.Collections.Generic;
@@ -10,6 +10,7 @@
     using EagleEye.TestHelper.XUnit;
     using ExifToolAsync.Internals;
     using ExifToolAsync.Internals.Stream;
+    using ExifToolAsyncTest.TestInternals;
     using FluentAssertions;
     using Medallion.Shell;
     using TestHelper;

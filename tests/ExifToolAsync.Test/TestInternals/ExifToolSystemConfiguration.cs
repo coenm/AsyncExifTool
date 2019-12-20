@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsyncTest
+﻿namespace ExifToolAsyncTest.TestInternals
 {
     using System;
     using System.IO;
@@ -10,7 +10,7 @@
     {
         private const string ExiftoolVersion = "EXIFTOOL_VERSION";
         private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
-        private static readonly string EmbeddedResourceNs = typeof(ExifToolSystemConfiguration).Namespace;
+        private static readonly string EmbeddedResourceNs = "ExifToolAsyncTest"; // typeof(ExifToolSystemConfiguration).Namespace;
         private static readonly Lazy<string> GetConfigExiftoolVersionImpl = new Lazy<string>(GetConfiguredExiftoolVersion);
         private static readonly Lazy<string> GetExifToolExecutableImpl = new Lazy<string>(GetExifToolExecutable);
 

@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsync.ExifTool
+﻿namespace ExifToolAsync
 {
     using System;
 

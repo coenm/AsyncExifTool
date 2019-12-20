@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsyncTest.ExifTool
+﻿namespace ExifToolAsyncTest
 {
     using System;
     using System.Diagnostics;
@@ -8,7 +8,8 @@
     using System.Threading.Tasks;
 
     using EagleEye.TestHelper.XUnit;
-    using ExifToolAsync.ExifTool;
+    using ExifToolAsync;
+    using ExifToolAsyncTest.TestInternals;
     using FluentAssertions;
     using TestHelper;
     using TestHelper.XUnit.Facts;
@@ -51,6 +52,9 @@
             result.Should().NotBeNullOrEmpty();
 
             await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
+
+            // just for fun
+            output.WriteLine(result);
         }
 
         [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows)]

@@ -10,19 +10,13 @@
 
         private const string LinuxEol = "\n";
 
-        private static bool IsLinuxOrMacOsx => !IsWindows;
-
-        private static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        [PublicAPI]
+        public static bool IsLinuxOrMacOsx => !IsWindows;
 
         [PublicAPI]
-        public static string NewLine
-        {
-            get
-            {
-                if (IsWindows)
-                    return WindowsEol;
-                return LinuxEol;
-            }
-        }
+        public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
+        [PublicAPI]
+        public static string NewLine => IsWindows ? WindowsEol : LinuxEol;
     }
 }

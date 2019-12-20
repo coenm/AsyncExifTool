@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsyncTest.ExifTool
+﻿namespace ExifToolAsyncTest.Internals.Stream
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Text;
 
-    using ExifToolAsync.Internals;
     using ExifToolAsync.Internals.Stream;
     using FluentAssertions;
     using TestHelper;

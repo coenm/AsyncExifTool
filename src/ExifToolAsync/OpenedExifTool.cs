@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsync.ExifTool
+﻿namespace ExifToolAsync
 {
     using System;
     using System.Collections.Concurrent;
@@ -8,7 +8,6 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-
     using ExifToolAsync.Internals;
     using ExifToolAsync.Internals.MedallionShell;
     using ExifToolAsync.Internals.Stream;
@@ -28,7 +27,7 @@
         private readonly List<string> defaultArgs;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> waitingTasks;
         private readonly ExifToolStayOpenStream stream;
-        private IShell cmd;
+        private IShell shell;
         private int key;
         private bool disposed;
         private bool disposing;
@@ -46,16 +45,15 @@
             cmdExited = false;
             key = 0;
             this.exifToolPath = exifToolPath;
-            defaultArgs = new List<string>
-            {
-                ExifToolArguments.StayOpen,
-                ExifToolArguments.BoolTrue,
-                "-@",
-                "-",
-                ExifToolArguments.CommonArgs,
-                ExifToolArguments.JsonOutput,
-
-            };
+            defaultArgs = new List<string>(4)
+                {
+                    ExifToolArguments.StayOpen,
+                    ExifToolArguments.BoolTrue,
+                    "-@",
+                    "-",
+                    ExifToolArguments.CommonArgs,
+                    ExifToolArguments.JsonOutput,
+                };
 
             waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
         }
@@ -72,9 +70,11 @@
 
                 stream.Update += StreamOnUpdate;
 
-                cmd = CreateExitToolMedallionShell(exifToolPath, defaultArgs, stream, null);
+                shell = CreateShell(exifToolPath, defaultArgs, stream, null);
 
-                cmd.ProcessExited += CmdOnProcessExited;
+                // possible race condition..
+                shell.ProcessExited += ShellOnProcessExited;
+
                 cmdExitedSubscribed = true;
                 initialized = true;
             }
@@ -152,34 +152,34 @@
                     Console.WriteLine($"Exception occurred when executing stay_open false. Msg: {e.Message}");
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                    Task.Run(() => cmd?.Kill(), CancellationToken.None);
+                    Task.Run(() => shell?.Kill(), CancellationToken.None);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
                     stream.Update -= StreamOnUpdate;
 
                     Ignore(() => stream.Dispose());
-                    cmd = null;
+                    shell = null;
 
                     return;
                 }
 
                 // else try to dispose gracefully
-                if (cmdExited == false && cmd?.Task != null)
+                if (cmdExited == false && shell?.Task != null)
                 {
                     var sw = Stopwatch.StartNew();
                     try
                     {
-                        cmd.Kill();
+                        shell.Kill();
 
                         // why?
-                        await cmd.Task.ConfigureAwait(false);
+                        await shell.Task.ConfigureAwait(false);
                     }
                     catch (Exception e)
                     {
                         sw.Stop();
                         Console.WriteLine($"Exception occurred after {sw.Elapsed} when awaiting ExifTool task. Msg: {e.Message}");
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                        Task.Run(() => cmd?.Kill(), CancellationToken.None);
+                        Task.Run(() => shell?.Kill(), CancellationToken.None);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     }
                 }
@@ -187,17 +187,13 @@
                 stream.Update -= StreamOnUpdate;
                 Ignore(UnsubscribeCmdOnProcessExitedOnce);
                 Ignore(() => stream.Dispose());
-                cmd = null;
+                shell = null;
                 disposed = true;
                 disposing = false;
             }
         }
 
-        internal virtual IShell CreateExitToolMedallionShell(
-            string exifToolPath,
-            List<string> defaultArgs,
-            Stream outputStream,
-            Stream errorStream)
+        internal virtual IShell CreateShell(string exifToolPath, IEnumerable<string> defaultArgs, Stream outputStream, Stream errorStream)
         {
             return new MedallionShellAdapter(exifToolPath, defaultArgs, outputStream, errorStream);
         }
@@ -244,10 +240,10 @@
         private async Task AddToExifToolAsync(string key, [NotNull] IEnumerable<string> args)
         {
             foreach (var arg in args)
-                await cmd.WriteLineAsync(arg).ConfigureAwait(false);
+                await shell.WriteLineAsync(arg).ConfigureAwait(false);
 
             if (!string.IsNullOrWhiteSpace(key))
-                await cmd.WriteLineAsync($"-execute{key}").ConfigureAwait(false);
+                await shell.WriteLineAsync($"-execute{key}").ConfigureAwait(false);
         }
 
         private void StreamOnUpdate(object sender, DataCapturedArgs dataCapturedArgs)
@@ -258,7 +254,7 @@
             }
         }
 
-        private void CmdOnProcessExited(object sender, EventArgs eventArgs)
+        private void ShellOnProcessExited(object sender, EventArgs eventArgs)
         {
             cmdExited = true;
             UnsubscribeCmdOnProcessExitedOnce();
@@ -273,7 +269,7 @@
             {
                 if (!cmdExitedSubscribed)
                     return;
-                Ignore(() => cmd.ProcessExited -= CmdOnProcessExited);
+                Ignore(() => shell.ProcessExited -= ShellOnProcessExited);
                 cmdExitedSubscribed = false;
             }
         }
