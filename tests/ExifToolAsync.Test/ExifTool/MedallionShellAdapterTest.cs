@@ -10,6 +10,8 @@
     using EagleEye.TestHelper.XUnit;
     using ExifToolAsync;
     using ExifToolAsync.Internals;
+    using ExifToolAsync.Internals.MedallionShell;
+    using ExifToolAsync.Internals.Stream;
     using FluentAssertions;
     using TestHelper.XUnit.Facts;
     using Xunit;

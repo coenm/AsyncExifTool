@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsync.Internals
+﻿namespace ExifToolAsync.Internals.Stream
 {
     using System;
 

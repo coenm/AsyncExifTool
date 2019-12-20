@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsync.Internals
+﻿namespace ExifToolAsync.Internals.MedallionShell
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@
     using JetBrains.Annotations;
     using Medallion.Shell;
 
-    internal class MedallionShellAdapter : IMedallionShell
+    internal class MedallionShellAdapter : IShell
     {
         [NotNull]
         private readonly Command cmd;
@@ -33,7 +33,8 @@
             {
                 try
                 {
-                    return await cmd.Task.ConfigureAwait(false);
+                    var result = await cmd.Task.ConfigureAwait(false);
+                    return new CommandResultAdapter(result) as IShellResult;
                 }
                 finally
                 {
@@ -48,7 +49,7 @@
         public bool Finished => Task.IsCompleted;
 
         [NotNull]
-        public Task<CommandResult> Task { get; }
+        public Task<IShellResult> Task { get; }
 
         public void Kill()
         {

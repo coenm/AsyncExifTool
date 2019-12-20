@@ -2,13 +2,12 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Medallion.Shell;
 
-    internal interface IMedallionShell
+    internal interface IShell
     {
         event EventHandler ProcessExited;
 
-        Task<CommandResult> Task { get; }
+        Task<IShellResult> Task { get; }
 
         void Kill();
 

@@ -8,9 +8,8 @@
     using System.Threading.Tasks;
 
     using EagleEye.TestHelper.XUnit;
-    using ExifToolAsync;
-    using ExifToolAsync.ExifTool;
     using ExifToolAsync.Internals;
+    using ExifToolAsync.Internals.Stream;
     using FluentAssertions;
     using Medallion.Shell;
     using TestHelper;

@@ -1,10 +1,9 @@
-﻿namespace ExifToolAsync.Internals
+﻿namespace ExifToolAsync.Internals.Stream
 {
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Text;
-    using ExifToolAsync.ExifTool;
     using JetBrains.Annotations;
 
     internal class ExifToolStayOpenStream : Stream
@@ -135,7 +134,7 @@
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            throw new NotSupportedException($"{CanRead} is set to false");
+            throw new NotSupportedException("Write only stream.");
         }
     }
 }

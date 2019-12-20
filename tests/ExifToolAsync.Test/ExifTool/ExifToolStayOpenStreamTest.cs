@@ -6,10 +6,10 @@
     using System.Linq;
     using System.Text;
 
-    using ExifToolAsync;
-    using ExifToolAsync.ExifTool;
     using ExifToolAsync.Internals;
+    using ExifToolAsync.Internals.Stream;
     using FluentAssertions;
+    using TestHelper;
     using Xunit;
 
     public class ExifToolStayOpenStreamTest : IDisposable

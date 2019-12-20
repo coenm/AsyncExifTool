@@ -8,11 +8,14 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+
     using ExifToolAsync.Internals;
+    using ExifToolAsync.Internals.MedallionShell;
+    using ExifToolAsync.Internals.Stream;
     using JetBrains.Annotations;
     using Nito.AsyncEx;
 
-    public class OpenedExifTool : IExifTool
+    public class OpenedExifTool
     {
         private readonly string exifToolPath;
         private readonly AsyncLock executeAsyncSyncLock = new AsyncLock();
@@ -25,7 +28,7 @@
         private readonly List<string> defaultArgs;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> waitingTasks;
         private readonly ExifToolStayOpenStream stream;
-        private IMedallionShell cmd;
+        private IShell cmd;
         private int key;
         private bool disposed;
         private bool disposing;
@@ -36,7 +39,6 @@
         public OpenedExifTool(string exifToolPath)
         {
             stream = new ExifToolStayOpenStream(Encoding.UTF8);
-
             stopQueueCts = new CancellationTokenSource();
             initialized = false;
             disposed = false;
@@ -53,12 +55,6 @@
                 ExifToolArguments.CommonArgs,
                 ExifToolArguments.JsonOutput,
 
-                // format coordinates as signed decimals.
-                "-c",
-                "%+.6f",
-
-                "-struct",
-                "-g", // group
             };
 
             waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
@@ -197,7 +193,7 @@
             }
         }
 
-        internal virtual IMedallionShell CreateExitToolMedallionShell(
+        internal virtual IShell CreateExitToolMedallionShell(
             string exifToolPath,
             List<string> defaultArgs,
             Stream outputStream,

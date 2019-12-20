@@ -20,7 +20,7 @@
 
         private static string GetExifToolExecutable()
         {
-            var osFilename = ExifToolAsync.Internals.ExifToolExecutable.GetExecutableName();
+            var osFilename = OperatingSystemHelper.IsLinuxOrMacOsx ? "exiftool" : "exiftool.exe";
 
             // first try to grab local Exiftool, otherwise assume global exiftool
             var fullFilename = TestEnvironment.GetFullPath("tools", osFilename);
