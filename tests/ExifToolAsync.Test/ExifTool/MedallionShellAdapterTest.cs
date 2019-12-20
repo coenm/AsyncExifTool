@@ -9,7 +9,6 @@
 
     using EagleEye.TestHelper.XUnit;
     using ExifToolAsync;
-    using ExifToolAsync.ExifTool;
     using ExifToolAsync.Internals;
     using FluentAssertions;
     using TestHelper.XUnit.Facts;
