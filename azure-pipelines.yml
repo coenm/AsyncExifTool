@@ -22,9 +22,10 @@ variables:
   - group: AsyncExifTool
 
 steps:
-- checkout: self  # self represents the repo where the initial Pipelines YAML file was found
+- checkout: self
   clean: true
-  submodules: true 
+  submodules: recursive
+  persistCredentials: true
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet restore'
