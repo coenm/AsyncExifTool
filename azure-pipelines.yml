@@ -27,6 +27,11 @@ steps:
   submodules: recursive
   persistCredentials: true
 
+- task: PowerShell@2
+  displayName: 'install exiftool'
+  inputs:
+    filePath: 'scripts\InstallExiftool.ps1'
+
 - task: DotNetCoreCLI@2
   displayName: 'dotnet restore'
   inputs:
