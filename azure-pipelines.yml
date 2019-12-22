@@ -19,7 +19,7 @@ variables:
     value: 'x64'
   - name: buildConfiguration
     value: 'Release'
-  - group: Z85e
+  - group: CodeCovToken
 
 steps:
 - task: DotNetCoreCLI@2
