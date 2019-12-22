@@ -14,7 +14,7 @@ variables:
   - name: DOTNET_SKIP_FIRST_TIME_EXPERIENCE
     value: 1
   - name: solution
-    value: 'Z85e.sln'
+    value: 'ExifToolAsync.sln'
   - name: buildPlatform
     value: 'x64'
   - name: buildConfiguration
@@ -22,6 +22,10 @@ variables:
   - group: AsyncExifTool
 
 steps:
+- checkout: self  # self represents the repo where the initial Pipelines YAML file was found
+  clean: true
+  submodules: true 
+
 - task: DotNetCoreCLI@2
   displayName: 'dotnet restore'
   inputs:
