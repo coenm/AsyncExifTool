@@ -19,7 +19,7 @@ variables:
     value: 'x64'
   - name: buildConfiguration
     value: 'Release'
-  - group: CodeCovToken
+  - group: AsyncExifTool
 
 steps:
 - task: DotNetCoreCLI@2
