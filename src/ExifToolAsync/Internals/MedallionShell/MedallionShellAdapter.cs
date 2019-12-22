@@ -51,6 +51,12 @@
         [NotNull]
         public Task<IShellResult> Task { get; }
 
+        public async Task CancelAsync()
+        {
+            await cmd.TrySignalAsync(CommandSignal.ControlC)
+                .ConfigureAwait(false);
+        }
+
         public void Kill()
         {
             cmd.Kill();

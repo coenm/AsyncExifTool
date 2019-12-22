@@ -12,5 +12,6 @@
         void Kill();
 
         Task WriteLineAsync(string text);
+        Task CancelAsync();
     }
 }
