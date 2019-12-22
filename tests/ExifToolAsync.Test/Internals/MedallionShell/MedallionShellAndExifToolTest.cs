@@ -116,6 +116,10 @@
             cmd.Result.Success.Should().BeTrue();
             cmd.Result.StandardError.Should().BeNullOrEmpty();
             capturedExifToolResults.Should().HaveCount(3).And.ContainKeys("0000", "0005", "0008");
+
+            output.WriteLine("results:");
+            foreach (var item in capturedExifToolResults)
+                output.WriteLine($"- {item.Key} : {item.Value}");
         }
 
         private static void ProtectAgainstHangingTask(Command cmd)
