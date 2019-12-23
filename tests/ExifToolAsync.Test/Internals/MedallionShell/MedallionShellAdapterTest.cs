@@ -56,34 +56,6 @@
 
         [ExifTool]
         [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows, reason: "Sometimes this tests hangs on AppVeyor (windows).")]
-        public void Ctor_WithErrorStream()
-        {
-            // arrange
-            var defaultArgs = new List<string>
-                              {
-                                  ExifToolArguments.StayOpen,
-                                  ExifToolArguments.BoolTrue,
-                                  "-@",
-                                  "-",
-                              };
-            var outputStream = new MemoryStream();
-            var errorStream = new MemoryStream();
-
-            // act
-            Action act = () => _ = new MedallionShellAdapter(
-                                                             ExifToolSystemConfiguration.ExifToolExecutable,
-                                                             defaultArgs,
-                                                             outputStream,
-                                                             errorStream);
-
-            // assert
-            act.Should().NotThrow();
-
-            sut.Kill();
-        }
-
-        [ExifTool]
-        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows, reason: "Sometimes this tests hangs on AppVeyor (windows).")]
         public async Task KillingSutShouldInvokeProcessExitedEventTest()
         {
             // arrange
