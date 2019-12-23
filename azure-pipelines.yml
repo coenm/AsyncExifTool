@@ -51,9 +51,10 @@ steps:
   displayName: 'Test and calculate code coverage'
   inputs:
     command: test
-    projects: '$(solution)'
+    projects: 'tests\ExifToolAsync.Test\ExifToolAsync.Test.csproj'
+#    projects: '$(solution)'
     arguments: '-c $(buildConfiguration) --no-restore --no-build --logger trx'
-    #arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --no-restore --no-build --logger trx'
+#    arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --no-restore --no-build --logger trx'
 
 # Make Azure DevOps aware of the coverage results.
 # When there are no test coverage results, this task will generate a warning.
