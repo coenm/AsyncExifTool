@@ -75,7 +75,7 @@ steps:
 
 # Publish test coverage results to the codecov account
 # $(CodeCovToken) is placed in the DevOps Library 'Z85e' as a secret value.
-- script: $(Build.SourcesDirectory)/tools/codecov.exe -f "src/Z85e.Test/coverage.cobertura.xml" -t $(CodeCovToken)
+- script: $(Build.SourcesDirectory)/tools/codecov.exe -f "tests/ExifToolAsync.Test/coverage.cobertura.xml" -t $(CodeCovToken)
   displayName: 'Publish code coverage to CodeCov.io'
 
 # Create nuget packages (nupkg, and snupkg)
