@@ -1,4 +1,5 @@
-﻿namespace ExifToolAsyncTest
+﻿/*
+namespace ExifToolAsyncTest
 {
     using System;
     using System.Collections.Generic;
@@ -53,3 +54,4 @@
         }
     }
 }
+*/

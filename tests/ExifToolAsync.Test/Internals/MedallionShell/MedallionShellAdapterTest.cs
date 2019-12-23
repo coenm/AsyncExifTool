@@ -1,4 +1,5 @@
-﻿namespace ExifToolAsyncTest.Internals.MedallionShell
+﻿/*
+namespace ExifToolAsyncTest.Internals.MedallionShell
 {
     using System;
     using System.Collections.Generic;
@@ -129,3 +130,4 @@
         }
     }
 }
+*/

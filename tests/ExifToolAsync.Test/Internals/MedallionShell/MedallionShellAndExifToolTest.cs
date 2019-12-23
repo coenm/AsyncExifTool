@@ -1,4 +1,5 @@
-﻿namespace ExifToolAsyncTest.Internals.MedallionShell
+﻿/*
+namespace ExifToolAsyncTest.Internals.MedallionShell
 {
     using System;
     using System.Collections.Generic;
@@ -61,7 +62,7 @@
             WriteResultToOutput(result);
             output.WriteLine($"Received exiftool version: {cmd.Result.StandardOutput}");
             cmd.Result.StandardOutput.Should().Be($"{currentExifToolVersion}\r\n".ConvertToOsString());
-        }*/
+        }#1#
 
         [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows)]
         [ExifTool]
@@ -146,3 +147,4 @@
         }
     }
 }
+*/
