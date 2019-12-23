@@ -1,5 +1,4 @@
-﻿/*
-namespace ExifToolAsyncTest
+﻿namespace ExifToolAsyncTest
 {
     using System;
     using System.Diagnostics;
@@ -32,7 +31,7 @@ namespace ExifToolAsyncTest
                      .GetFiles(TestImages.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
                      .SingleOrDefault();
 
-            image.Should().NotBeNullOrEmpty();
+            image.Should().NotBeNullOrEmpty("Image should exist on system.");
         }
 
         [Fact]
@@ -169,4 +168,3 @@ namespace ExifToolAsyncTest
         }
     }
 }
-*/
