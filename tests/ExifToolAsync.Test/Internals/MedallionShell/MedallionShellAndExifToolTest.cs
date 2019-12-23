@@ -42,27 +42,6 @@
             image.Should().NotBeNullOrEmpty();
         }
 
-        /*[ConditionalHostFact(TestHostMode.Skip, TestHost.AzureDevopsWindows)] // don't know why but is failing on devops (windows)
-        [ExifTool]
-        public async Task RunExifToolToGetVersion()
-        {
-            // arrange
-            var args = new List<string>
-            {
-                ExifToolArguments.Version,
-            };
-
-            // act
-            var cmd = Command.Run(ExifToolSystemConfiguration.ExifToolExecutable, args);
-            ProtectAgainstHangingTask(cmd);
-            var result = await cmd.Task.ConfigureAwait(false);
-
-            // assert
-            WriteResultToOutput(result);
-            output.WriteLine($"Received exiftool version: {cmd.Result.StandardOutput}");
-            cmd.Result.StandardOutput.Should().Be($"{currentExifToolVersion}\r\n".ConvertToOsString());
-        }*/
-
         [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows)]
         [ExifTool]
         public async Task RunExifToolWithCustomStream()
