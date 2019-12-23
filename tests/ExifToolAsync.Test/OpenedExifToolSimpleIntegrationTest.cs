@@ -54,6 +54,7 @@
             await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
 
             // just for fun
+            output.WriteLine(version);
             output.WriteLine(result);
         }
 

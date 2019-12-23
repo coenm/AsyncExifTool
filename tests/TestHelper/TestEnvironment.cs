@@ -13,6 +13,7 @@
         private static readonly Lazy<bool> RunsOnContinuousIntegration = new Lazy<bool>(IsContinuousIntegrationImpl);
         private static readonly Lazy<bool> RunsOnContinuousIntegrationTravis = new Lazy<bool>(IsRunningOnTravisImpl);
         private static readonly Lazy<bool> RunsOnContinuousIntegrationAppVeyor = new Lazy<bool>(IsRunningOnAppVeyorImpl);
+        private static readonly Lazy<bool> RunsOnContinuousIntegrationDevOps = new Lazy<bool>(IsRunningOnDevOpsImpl);
 
         /// <summary>
         /// Gets a value indicating whether test execution runs on CI.
@@ -23,6 +24,8 @@
         public static bool RunsOnTravis => RunsOnContinuousIntegrationTravis.Value;
 
         public static bool RunsOnAppVeyor => RunsOnContinuousIntegrationAppVeyor.Value;
+
+        public static bool RunsOnDevOps => RunsOnContinuousIntegrationDevOps.Value;
 
         public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
@@ -51,6 +54,12 @@
         private static bool IsRunningOnAppVeyorImpl()
         {
             return bool.TryParse(Environment.GetEnvironmentVariable("APPVEYOR"), out var value) && value;
+        }
+
+        private static bool IsRunningOnDevOpsImpl()
+        {
+            // not sure what env variable to use for detection.
+            return bool.TryParse(Environment.GetEnvironmentVariable("System.TeamFoundationCollectionUri"), out var value) && value;
         }
 
         private static bool IsRunningOnTravisImpl()
