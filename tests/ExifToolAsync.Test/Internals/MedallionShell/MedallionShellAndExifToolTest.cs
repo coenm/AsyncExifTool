@@ -92,24 +92,39 @@
                 capturedExifToolResults.Add(dataCapturedArgs.Key, dataCapturedArgs.Data);
             }
 
+            async Task DelayX()
+            {
+                await Task.Delay(10);
+            }
+
             await using var stream = new ExifToolStayOpenStream(new UTF8Encoding());
             stream.Update += StreamOnUpdate;
 
             // act
             var cmd = Command.Run(ExifToolSystemConfiguration.ExifToolExecutable, args).RedirectTo(stream);
 
+            await DelayX().ConfigureAwait(false);
             await cmd.StandardInput.WriteLineAsync(ExifToolArguments.Version).ConfigureAwait(false);
+            await DelayX().ConfigureAwait(false);
             await cmd.StandardInput.WriteLineAsync("-execute0000").ConfigureAwait(false);
+            await DelayX().ConfigureAwait(false);
             await cmd.StandardInput.WriteLineAsync(image).ConfigureAwait(false);
+            await DelayX().ConfigureAwait(false);
             await cmd.StandardInput.WriteLineAsync("-execute0005").ConfigureAwait(false);
+            await DelayX().ConfigureAwait(false);
             await cmd.StandardInput.WriteLineAsync(image).ConfigureAwait(false);
+            await DelayX().ConfigureAwait(false);
             await cmd.StandardInput.WriteLineAsync("-execute0008").ConfigureAwait(false);
+            await DelayX().ConfigureAwait(false);
             await cmd.StandardInput.WriteLineAsync("-stay_open").ConfigureAwait(false);
+            await DelayX().ConfigureAwait(false);
             await cmd.StandardInput.WriteLineAsync("False").ConfigureAwait(false);
+            await DelayX().ConfigureAwait(false);
 
             ProtectAgainstHangingTask(cmd);
             var result = await cmd.Task.ConfigureAwait(false);
 
+            await DelayX().ConfigureAwait(false);
             stream.Update -= StreamOnUpdate;
 
             // assert
