@@ -113,8 +113,8 @@
             stream.Update -= StreamOnUpdate;
 
             // assert
-            cmd.Result.Success.Should().BeTrue();
-            cmd.Result.StandardError.Should().BeNullOrEmpty();
+            result.StandardError.Should().BeNullOrEmpty("No errors expected.");
+            result.Success.Should().BeTrue("success should be true.");
             capturedExifToolResults.Should().HaveCount(3).And.ContainKeys("0000", "0005", "0008");
 
             output.WriteLine("results:");
