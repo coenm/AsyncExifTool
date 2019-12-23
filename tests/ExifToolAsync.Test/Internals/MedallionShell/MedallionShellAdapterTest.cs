@@ -18,7 +18,7 @@
     using Xunit.Abstractions;
 
     [Xunit.Categories.IntegrationTest]
-    public class MedallionShellAdapterTest : IDisposable
+    public class MedallionShellAdapterTest : IAsyncLifetime
     {
         private const int FallbackTestTimeout = 5000;
         private readonly ITestOutputHelper output;
@@ -43,9 +43,14 @@
             sut.ProcessExited += SutOnProcessExited;
         }
 
-        public void Dispose()
+        public Task InitializeAsync() => Task.CompletedTask;
+
+        public async Task DisposeAsync()
         {
             sut.ProcessExited -= SutOnProcessExited;
+            await sut.CancelAsync();
+            sut.Kill();
+            sut.Dispose();
             stream.Dispose();
         }
 

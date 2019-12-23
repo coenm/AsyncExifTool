@@ -7,7 +7,7 @@
     using JetBrains.Annotations;
     using Medallion.Shell;
 
-    internal class MedallionShellAdapter : IShell
+    internal class MedallionShellAdapter : IShell, IDisposable
     {
         [NotNull]
         private readonly Command cmd;
@@ -68,6 +68,24 @@
             // ReSharper disable once HeuristicUnreachableCode
             if (text != null)
                 await cmd.StandardInput.WriteLineAsync(text).ConfigureAwait(false);
+        }
+
+        public void Dispose()
+        {
+            Ignore(() => Task.Dispose());
+            Ignore(() => ((IDisposable)cmd).Dispose());
+        }
+
+        private void Ignore(Action action)
+        {
+            try
+            {
+                action.Invoke();
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
         }
     }
 }
