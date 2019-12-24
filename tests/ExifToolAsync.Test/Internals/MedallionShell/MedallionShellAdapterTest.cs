@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
@@ -18,7 +17,7 @@
     using Xunit.Abstractions;
 
     [Xunit.Categories.IntegrationTest]
-    public class MedallionShellAdapterTest : IDisposable
+    public class MedallionShellAdapterTest : IAsyncLifetime
     {
         private const int FallbackTestTimeout = 5000;
         private readonly ITestOutputHelper output;
@@ -43,38 +42,15 @@
             sut.ProcessExited += SutOnProcessExited;
         }
 
-        public void Dispose()
+        public Task InitializeAsync() => Task.CompletedTask;
+
+        public async Task DisposeAsync()
         {
             sut.ProcessExited -= SutOnProcessExited;
-            stream.Dispose();
-        }
-
-        [ExifTool]
-        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows, reason: "Sometimes this tests hangs on AppVeyor (windows).")]
-        public void Ctor_WithErrorStream()
-        {
-            // arrange
-            var defaultArgs = new List<string>
-                              {
-                                  ExifToolArguments.StayOpen,
-                                  ExifToolArguments.BoolTrue,
-                                  "-@",
-                                  "-",
-                              };
-            var outputStream = new MemoryStream();
-            var errorStream = new MemoryStream();
-
-            // act
-            Action act = () => _ = new MedallionShellAdapter(
-                                                             ExifToolSystemConfiguration.ExifToolExecutable,
-                                                             defaultArgs,
-                                                             outputStream,
-                                                             errorStream);
-
-            // assert
-            act.Should().NotThrow();
-
+            await sut.CancelAsync();
             sut.Kill();
+            sut.Dispose();
+            stream.Dispose();
         }
 
         [ExifTool]

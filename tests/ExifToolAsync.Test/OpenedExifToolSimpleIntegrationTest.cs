@@ -31,7 +31,7 @@
                      .GetFiles(TestImages.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
                      .SingleOrDefault();
 
-            image.Should().NotBeNullOrEmpty();
+            image.Should().NotBeNullOrEmpty("Image should exist on system.");
         }
 
         [Fact]
@@ -54,6 +54,7 @@
             await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
 
             // just for fun
+            output.WriteLine(version);
             output.WriteLine(result);
         }
 

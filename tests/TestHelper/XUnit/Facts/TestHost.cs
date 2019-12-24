@@ -29,5 +29,10 @@
         /// Travis virtual machine.
         /// </summary>
         Travis = 0x01 << 3,
+
+        /// <summary>
+        /// AzureDevops
+        /// </summary>
+        AzureDevopsWindows = 0x01 << 4,
     }
 }
