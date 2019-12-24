@@ -90,14 +90,17 @@ jobs:
     inputs:
       PathtoPublish: '$(build.artifactstagingdirectory)'
 
-  # Publish test coverage results to the codecov account
-  - script: $(Build.SourcesDirectory)/tools/codecov.exe -f "tests/ExifToolAsync.Test/coverage.cobertura.xml" -b $(GITVERSION_FULLBUILDMETADATA)
-    displayName: 'Publish code coverage to CodeCov.io'
+  # # Publish test coverage results to the codecov account
+  # - script: $(Build.SourcesDirectory)/tools/codecov.exe -f "tests/ExifToolAsync.Test/coverage.cobertura.xml" -b $buildnr
+  #   displayName: 'Publish code coverage to CodeCov.io'
+  #   env:
+  #     buildnr: $(GITVERSION_FULLBUILDMETADATA)
 
   # Publish test coverage results to the codecov account
-  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml" -b $(GITVERSION_FULLBUILDMETADATA)
+  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml" -b $buildnr
     displayName: 'Publish code coverage to CodeCov.io2'
-
+    env:
+      buildnr: $(GITVERSION_FULLBUILDMETADATA)
 
   # Write all environment variables to an markdown file for debug purposes (i.e. make gitversion env variables visible)
   - powershell: scripts\WriteEnvVars.ps1
@@ -156,5 +159,7 @@ jobs:
       summaryFileLocation: '**/coverage.cobertura.xml'
 
    # Publish test coverage results to the codecov account
-  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml" -b $(GITVERSION_FULLBUILDMETADATA)
+  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml" -b $buildnr
     displayName: 'Publish code coverage to CodeCov.io'
+    env:
+      buildnr: $(GITVERSION_FULLBUILDMETADATA)
