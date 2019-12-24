@@ -16,6 +16,8 @@ variables:
     value: 'x64'
   - name: buildConfiguration
     value: 'Release'
+  - name: 'ctest'
+    value: $(BUILD_BUILDNUMBER)
   - group: AsyncExifTool
 
 jobs:
