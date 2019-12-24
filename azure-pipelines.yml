@@ -77,6 +77,14 @@ jobs:
       custom: tool
       arguments: 'install Codecov.Tool --tool-path $(Build.SourcesDirectory)/tools'
 
+  # Create nuget packages (nupkg, and snupkg)
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet pack'
+    inputs:
+      command: pack
+      configuration: '$(BuildConfiguration)'
+      nobuild: false
+
   # Publish test coverage results to the codecov account
   - script: $(Build.SourcesDirectory)/tools/codecov.exe -f "tests/ExifToolAsync.Test/coverage.cobertura.xml"
     displayName: 'Publish code coverage to CodeCov.io'
@@ -85,13 +93,6 @@ jobs:
   - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml"
     displayName: 'Publish code coverage to CodeCov.io2'
 
-  # Create nuget packages (nupkg, and snupkg)
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet pack'
-    inputs:
-      command: pack
-      configuration: '$(BuildConfiguration)'
-      nobuild: false
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact'
@@ -147,27 +148,6 @@ jobs:
       codeCoverageTool: Cobertura
       summaryFileLocation: '**/coverage.cobertura.xml'
 
-  # Install codecov as a dotnet tool
-  - task: DotNetCoreCLI@2
-    displayName: 'Install codecov as dotnet tool'
-    inputs:
-      command: custom
-      custom: tool
-      arguments: 'install Codecov.Tool --tool-path $(Build.SourcesDirectory)/tools'
-
-  # Publish test coverage results to the codecov account
+   # Publish test coverage results to the codecov account
   - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml"
     displayName: 'Publish code coverage to CodeCov.io'
-
-  # Create nuget packages (nupkg, and snupkg)
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet pack'
-    inputs:
-      command: pack
-      configuration: '$(BuildConfiguration)'
-      nobuild: false
-
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact'
-    inputs:
-      PathtoPublish: '$(build.artifactstagingdirectory)'
