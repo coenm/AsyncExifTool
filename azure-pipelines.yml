@@ -108,7 +108,7 @@ jobs:
   - script: dotnet --info
     displayName: Show dotnet SDK info
 
-  - bash: 'chmod +x .scripts/InstallGitVersion.sh && .scripts/InstallGitVersion.sh'
+  - bash: 'chmod +x scripts/InstallGitVersion.sh && scripts/InstallGitVersion.sh'
     displayName: 'install exiftool'
 
   - task: DotNetCoreCLI@2
