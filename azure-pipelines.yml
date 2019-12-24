@@ -85,6 +85,11 @@ jobs:
   - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml"
     displayName: 'Publish code coverage to CodeCov.io2'
 
+# Write all environment variables to an markdown file for debug purposes (i.e. make gitversion env variables visible)
+  - powershell: scripts\WriteEnvVars.ps1
+    errorActionPreference: silentlyContinue
+    failOnStderr: true
+    displayName: 'Make environment variables visible in Build Summary.'
 
   # # Create nuget packages (nupkg, and snupkg)
   # - task: DotNetCoreCLI@2
