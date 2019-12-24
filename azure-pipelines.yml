@@ -108,10 +108,8 @@ jobs:
   - script: dotnet --info
     displayName: Show dotnet SDK info
 
-  - task: PowerShell@2
+  - bash: 'chmod +x .scripts/InstallGitVersion.sh && .scripts/InstallGitVersion.sh'
     displayName: 'install exiftool'
-    inputs:
-      filePath: 'scripts\InstallExiftool.ps1'
 
   - task: DotNetCoreCLI@2
     displayName: 'dotnet restore'
