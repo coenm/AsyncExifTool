@@ -99,7 +99,7 @@ jobs:
       PathtoPublish: '$(build.artifactstagingdirectory)'
 
 - job: Ubuntu
-#  dependsOn: Windows
+  dependsOn: Windows
   pool:
     vmImage: Ubuntu 18.04
   steps:
