@@ -153,15 +153,8 @@ jobs:
       arguments: 'install Codecov.Tool --tool-path $(Build.SourcesDirectory)/tools'
 
   # Publish test coverage results to the codecov account
-  # - script: |
-  #   bash <(curl -s https://codecov.io/bash)
-  #   displayName: 'Upload to codecov.io'
-
-  - bash: 'curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov'
-    displayName: 'Upload to codecov.io'
-
-  # - script: $(Build.SourcesDirectory)/tools/codecov.exe -f "tests/ExifToolAsync.Test/coverage.cobertura.xml" -t $(CodeCovToken)
-  #   displayName: 'Publish code coverage to CodeCov.io'
+  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml"
+    displayName: 'Publish code coverage to CodeCov.io'
 
   # Create nuget packages (nupkg, and snupkg)
   - task: DotNetCoreCLI@2
