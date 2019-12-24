@@ -77,14 +77,6 @@ jobs:
       custom: tool
       arguments: 'install Codecov.Tool --tool-path $(Build.SourcesDirectory)/tools'
 
-  # Create nuget packages (nupkg, and snupkg)
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet pack'
-    inputs:
-      command: pack
-      configuration: '$(BuildConfiguration)'
-      nobuild: false
-
   # Publish test coverage results to the codecov account
   - script: $(Build.SourcesDirectory)/tools/codecov.exe -f "tests/ExifToolAsync.Test/coverage.cobertura.xml"
     displayName: 'Publish code coverage to CodeCov.io'
@@ -94,10 +86,19 @@ jobs:
     displayName: 'Publish code coverage to CodeCov.io2'
 
 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact'
-    inputs:
-      PathtoPublish: '$(build.artifactstagingdirectory)'
+  # # Create nuget packages (nupkg, and snupkg)
+  # - task: DotNetCoreCLI@2
+  #   displayName: 'dotnet pack'
+  #   inputs:
+  #     command: pack
+  #     configuration: '$(BuildConfiguration)'
+  #     nobuild: false
+
+
+  # - task: PublishBuildArtifacts@1
+  #   displayName: 'Publish Artifact'
+  #   inputs:
+  #     PathtoPublish: '$(build.artifactstagingdirectory)'
 
 - job: Ubuntu
   dependsOn: Windows
