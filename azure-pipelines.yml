@@ -69,7 +69,7 @@ jobs:
       summaryFileLocation: '**/coverage.cobertura.xml'
 
    # Publish test coverage results to the codecov account
-  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml" -b $GITVERSION_FULLBUILDMETADATA
+  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml"
     displayName: 'Publish code coverage to CodeCov.io'
 
 
@@ -136,7 +136,7 @@ jobs:
   #   displayName: 'Publish code coverage to CodeCov.io'
 
   # Publish test coverage results to the codecov account
-  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml" -b $GITVERSION_FULLBUILDMETADATA
+  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml"
     displayName: 'Publish code coverage to CodeCov.io'
 
  # Create nuget packages (nupkg, and snupkg)
@@ -152,8 +152,8 @@ jobs:
     inputs:
       PathtoPublish: '$(build.artifactstagingdirectory)'
 
-  # Write all environment variables to an markdown file for debug purposes (i.e. make gitversion env variables visible)
-  - powershell: scripts\WriteEnvVars.ps1
-    errorActionPreference: silentlyContinue
-    failOnStderr: true
-    displayName: 'Make environment variables visible in Build Summary.'	
+#  # Write all environment variables to an markdown file for debug purposes (i.e. make gitversion env variables visible)
+#  - powershell: scripts\WriteEnvVars.ps1
+#    errorActionPreference: silentlyContinue
+#    failOnStderr: true
+#    displayName: 'Make environment variables visible in Build Summary.'	
