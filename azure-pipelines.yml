@@ -65,7 +65,7 @@ jobs:
       projects: 'tests/ExifToolAsync.Test/ExifToolAsync.Test.csproj'
   #    projects: '$(solution)'
   #    arguments: '-c $(buildConfiguration) --no-restore --no-build --logger trx'
-      arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude=\"$(COVERLET_EXCLUDE_FILTER)\" /p:Include=\"$(COVERLET_INCLUDE_FILTER)\" /p:ExcludeByAttribute=\"$(COVERLET_EXCLUDE_ATTRIBUTE)\" /p:ExcludeByFile=\"*\*Designer.cs\" --no-restore --no-build --logger trx'
+      arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude=$(COVERLET_EXCLUDE_FILTER) /p:Include=$(COVERLET_INCLUDE_FILTER) /p:ExcludeByAttribute=$(COVERLET_EXCLUDE_ATTRIBUTE) /p:ExcludeByFile=*\*Designer.cs --no-restore --no-build --logger trx'
 
   # Make Azure DevOps aware of the coverage results.
   # When there are no test coverage results, this task will generate a warning.
@@ -120,7 +120,8 @@ jobs:
       projects: 'tests\ExifToolAsync.Test\ExifToolAsync.Test.csproj'
   #    projects: '$(solution)'
   #    arguments: '-c $(buildConfiguration) --no-restore --no-build --logger trx'
-      arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude=\"$(COVERLET_EXCLUDE_FILTER)\" /p:Include=\"$(COVERLET_INCLUDE_FILTER)\" /p:ExcludeByAttribute=\"$(COVERLET_EXCLUDE_ATTRIBUTE_ESCAPED)\" /p:ExcludeByFile=\"*\*Designer.cs\" --no-restore --no-build --logger trx'
+      # arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude=\"$(COVERLET_EXCLUDE_FILTER)\" /p:Include=\"$(COVERLET_INCLUDE_FILTER)\" /p:ExcludeByAttribute=\"$(COVERLET_EXCLUDE_ATTRIBUTE_ESCAPED)\" /p:ExcludeByFile=\"*\*Designer.cs\" --no-restore --no-build --logger trx'
+      arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude=$(COVERLET_EXCLUDE_FILTER) /p:Include=$(COVERLET_INCLUDE_FILTER) /p:ExcludeByAttribute=$(COVERLET_EXCLUDE_ATTRIBUTE) /p:ExcludeByFile=*\*Designer.cs --no-restore --no-build --logger trx'
   #    arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --no-restore --no-build --logger trx'
 
   # Make Azure DevOps aware of the coverage results.
