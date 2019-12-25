@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.Design;
     using System.IO;
     using System.Threading.Tasks;
     using JetBrains.Annotations;
@@ -23,11 +24,13 @@
             if (outputStream == null)
                 throw new ArgumentNullException(nameof(outputStream));
 
-            cmd = Command.Run(executable, defaultArgs)
+            if (errorStream == null)
+                cmd = Command.Run(executable, defaultArgs)
                          .RedirectTo(outputStream);
-
-            if (errorStream != null)
-                cmd = cmd.RedirectStandardErrorTo(errorStream);
+            else
+                cmd = Command.Run(executable, defaultArgs)
+                    .RedirectTo(outputStream)
+                    .RedirectStandardErrorTo(errorStream);
 
             Task = System.Threading.Tasks.Task.Run(async () =>
             {
