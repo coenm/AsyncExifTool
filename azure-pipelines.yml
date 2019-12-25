@@ -17,9 +17,11 @@ variables:
   - name: buildConfiguration
     value: 'Release'
   - name: COVERLET_EXCLUDE_FILTER
-    value: '[TestHelper]*,[*.Test]*,[xunit.*]*'
+    # value: '[TestHelper]*,[*.Test]*,[xunit.*]*'
+    value: '[TestHelper]*%2c[*.Test]*%2c[xunit.*]*'
   - name: COVERLET_INCLUDE_FILTER
-    value: '[*]ExifToolAsync.*,[ExifToolAsync*]*'
+    # value: '[*]ExifToolAsync.*,[ExifToolAsync*]*'
+    value: '[*]ExifToolAsync.*%2c[ExifToolAsync*]*'
   - name: COVERLET_EXCLUDE_ATTRIBUTE
     value: 'DebuggerNonUserCodeAttribute'
   - group: AsyncExifTool
