@@ -11,6 +11,7 @@
     using ExifToolAsync.Internals;
     using FakeItEasy;
     using FluentAssertions;
+    using TestHelper;
     using Xunit;
 
     public class OpenedExifToolSimpleTest
@@ -51,8 +52,8 @@
             A.CallTo(() => shell.WriteLineAsync("-execute1"))
                 .Invokes(call =>
                     {
-                        fakeExifTool.ExifToolStream.Write(Encoding.UTF8.GetBytes("fake result\r\n"));
-                        fakeExifTool.ExifToolStream.Write(Encoding.UTF8.GetBytes("{ready1}\r\n"));
+                        fakeExifTool.ExifToolStream.Write(Encoding.UTF8.GetBytes("fake result" + OperatingSystemHelper.NewLine));
+                        fakeExifTool.ExifToolStream.Write(Encoding.UTF8.GetBytes("{ready1}" + OperatingSystemHelper.NewLine));
                     });
 
             sut.Init();
