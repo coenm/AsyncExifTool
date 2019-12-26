@@ -1,9 +1,9 @@
 trigger:
-- develop
-- master
-- feature*
-- release*
-- bug*
+  batch: true
+  branches:
+    include: ["master", "develop", "feature*", "release*", "bug*"]
+  paths:
+    exclude: ["doc", "*.md"]
 
 variables:
   - name: DOTNET_CLI_TELEMETRY_OPTOUT
