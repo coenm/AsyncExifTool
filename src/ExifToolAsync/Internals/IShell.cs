@@ -8,10 +8,11 @@
         event EventHandler ProcessExited;
 
         Task<IShellResult> Task { get; }
+        
+        Task WriteLineAsync(string text);
 
         void Kill();
 
-        Task WriteLineAsync(string text);
         Task CancelAsync();
     }
 }

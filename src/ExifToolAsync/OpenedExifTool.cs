@@ -45,14 +45,13 @@
             cmdExited = false;
             key = 0;
             this.exifToolPath = exifToolPath;
-            defaultArgs = new List<string>(4)
+            defaultArgs = new List<string>
                 {
                     ExifToolArguments.StayOpen,
                     ExifToolArguments.BoolTrue,
                     "-@",
                     "-",
                     ExifToolArguments.CommonArgs,
-                    ExifToolArguments.JsonOutput,
                 };
 
             waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
@@ -72,7 +71,7 @@
 
                 shell = CreateShell(exifToolPath, defaultArgs, stream, null);
 
-                // possible race condition..
+                // possible race condition.. to fix
                 shell.ProcessExited += ShellOnProcessExited;
 
                 cmdExitedSubscribed = true;
@@ -215,15 +214,16 @@
             using (await executeImpAsyncSyncLock.LockAsync(ct).ConfigureAwait(false))
             {
                 var tcs = new TaskCompletionSource<string>();
-                using (ct.Register(() => tcs.TrySetCanceled()))
+                
+                await using (ct.Register(() => tcs.TrySetCanceled()))
                 {
-                    this.key++;
-                    var key = this.key.ToString();
+                    key++;
+                    var keyString = key.ToString();
 
-                    if (!waitingTasks.TryAdd(key, tcs))
+                    if (!waitingTasks.TryAdd(keyString, tcs))
                         throw new Exception("Could not execute");
 
-                    await AddToExifToolAsync(key, args).ConfigureAwait(false);
+                    await AddToExifToolAsync(keyString, args).ConfigureAwait(false);
                     return await tcs.Task.ConfigureAwait(false);
                 }
             }
@@ -248,10 +248,10 @@
 
         private void StreamOnUpdate(object sender, DataCapturedArgs dataCapturedArgs)
         {
-            if (waitingTasks.TryRemove(dataCapturedArgs.Key, out var tcs))
-            {
-                tcs.TrySetResult(dataCapturedArgs.Data);
-            }
+            if (!waitingTasks.TryRemove(dataCapturedArgs.Key, out var tcs)) 
+                return;
+            
+            tcs.TrySetResult(dataCapturedArgs.Data);
         }
 
         private void ShellOnProcessExited(object sender, EventArgs eventArgs)

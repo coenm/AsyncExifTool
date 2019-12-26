@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.Design;
     using System.IO;
     using System.Threading.Tasks;
     using JetBrains.Annotations;
