@@ -44,6 +44,60 @@
         }
 
         [Fact]
+        public async Task ExecuteAsync_ShouldThrow_WhenDisposing()
+        {
+            // arrange
+            var mre = new ManualResetEvent(false);
+            var mre2 = new ManualResetEvent(false);
+
+            // ExifToolArguments.StayOpen, ExifToolArguments.BoolFalse 
+            A.CallTo(() => shell.WriteLineAsync(ExifToolArguments.BoolFalse))
+                .ReturnsLazily(async call =>
+                {
+                    mre.Set();
+                    await Task.Yield();
+                    mre2.WaitOne();
+                    shell.ProcessExited += Raise.WithEmpty();
+                });
+
+            sut.Init();
+            var disposingTask = sut.DisposeAsync();
+
+            // act
+            mre.WaitOne();
+            Func<Task> act = async () => _ = await sut.ExecuteAsync(null);
+
+            // assert
+            act.Should().Throw<Exception>().WithMessage("Disposing");
+
+            mre2.Set();
+            await disposingTask;
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_ShouldThrow_WhenDisposed()
+        {
+            // arrange
+
+            // ExifToolArguments.StayOpen, ExifToolArguments.BoolFalse 
+            A.CallTo(() => shell.WriteLineAsync(ExifToolArguments.BoolFalse))
+                .ReturnsLazily(async call =>
+                {
+                    await Task.Yield();
+                    shell.ProcessExited += Raise.WithEmpty();
+                });
+
+            sut.Init();
+            await sut.DisposeAsync();
+
+            // act
+            Func<Task> act = async () => _ = await sut.ExecuteAsync(null);
+
+            // assert
+            act.Should().Throw<Exception>().WithMessage("Disposed");
+        }
+
+        [Fact]
         public async Task ExecuteAsync_ShouldPassArgsToInnerShellAndFinishWihExecute1()
         {
             // arrange
