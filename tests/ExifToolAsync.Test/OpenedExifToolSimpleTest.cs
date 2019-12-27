@@ -32,7 +32,7 @@
         }
 
         [Fact]
-        public void ExecuteAsyncWithoutInitializingShouldThrowTest()
+        public void ExecuteAsync_ShouldThrow_WhenNotInitialized()
         {
             // arrange
 
@@ -44,7 +44,7 @@
         }
 
         [Fact]
-        public async Task ExecuteAsync_ShouldPassArgsToInnerShell()
+        public async Task ExecuteAsync_ShouldPassArgsToInnerShellAndFinishWihExecute1()
         {
             // arrange
             var args = new[] { "abc", "def" };
@@ -52,8 +52,8 @@
             A.CallTo(() => shell.WriteLineAsync("-execute1"))
                 .Invokes(call =>
                     {
-                        fakeExifTool.ExifToolStream.Write(Encoding.UTF8.GetBytes("fake result" + OperatingSystemHelper.NewLine));
-                        fakeExifTool.ExifToolStream.Write(Encoding.UTF8.GetBytes("{ready1}" + OperatingSystemHelper.NewLine));
+                        fakeExifTool.WriteToStream(Encoding.UTF8.GetBytes("fake result" + OperatingSystemHelper.NewLine));
+                        fakeExifTool.WriteToStream(Encoding.UTF8.GetBytes("{ready1}" + OperatingSystemHelper.NewLine));
                     });
 
             sut.Init();
@@ -67,9 +67,33 @@
                 .Then(A.CallTo(() => shell.WriteLineAsync("-execute1")).MustHaveHappenedOnceExactly());
         }
 
+        [Fact]
+        public async Task ExecuteAsync_ShouldReturnWithStreamResult()
+        {
+            // arrange
+            var args = new[] { "abc", "def" };
+            var ct = new CancellationTokenSource().Token;
+            A.CallTo(() => shell.WriteLineAsync("-execute1"))
+                .Invokes(call =>
+                    {
+                        fakeExifTool.WriteToStream(Encoding.UTF8.GetBytes("fake result" + OperatingSystemHelper.NewLine));
+                        fakeExifTool.WriteToStream(Encoding.UTF8.GetBytes("{ready1}" + OperatingSystemHelper.NewLine));
+                    });
+
+            sut.Init();
+
+            // act
+            var result = await sut.ExecuteAsync(args, ct);
+
+            // assert
+            result.Should().Be("fake result");
+        }
+
         private interface IExifToolOutput
         {
             Stream ExifToolStream { get; }
+
+            void WriteToStream(Span<byte> data);
         }
 
         private class TestableOpenedExifTool : OpenedExifTool, IExifToolOutput
@@ -88,6 +112,11 @@
             {
                 ExifToolStream = outputStream;
                 return shell;
+            }
+
+            void IExifToolOutput.WriteToStream(Span<byte> data)
+            {
+                ExifToolStream.Write(data);
             }
         }
     }
