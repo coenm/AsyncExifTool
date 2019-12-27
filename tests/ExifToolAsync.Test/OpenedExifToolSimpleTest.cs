@@ -117,7 +117,7 @@ namespace ExifToolAsyncTest
             var result = await sut.ExecuteAsync(args, CancellationToken.None);
 
             // assert
-            result.Should().Be("fake result abc\r\nfake result def");
+            result.Should().Be($"fake result abc{OperatingSystemHelper.NewLine}fake result def");
         }
 
         [Fact]
