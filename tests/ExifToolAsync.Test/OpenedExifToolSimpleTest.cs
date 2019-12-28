@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace ExifToolAsyncTest
+﻿namespace ExifToolAsyncTest
 {
     using System;
     using System.Collections.Generic;
@@ -51,7 +47,7 @@ namespace ExifToolAsyncTest
         public async Task ExecuteAsync_ShouldThrow_WhenDisposing()
         {
             // arrange
-            var control = fakeFakeExifTool.Setup(ExifToolArguments.BoolFalse);
+            var control = fakeFakeExifTool.SetupControl(ExifToolArguments.BoolFalse);
             sut.Init();
             var disposingTask = sut.DisposeAsync();
 
@@ -124,7 +120,7 @@ namespace ExifToolAsyncTest
         public async Task ExecuteAsync_ShouldFinishAllRequestsAlthoughOneWasCancelled()
         {
             // arrange
-            var controlExecute1 = fakeFakeExifTool.Setup("-execute1");
+            var controlExecute1 = fakeFakeExifTool.SetupControl("-execute1");
             var cts = new CancellationTokenSource();
             sut.Init();
 
@@ -142,11 +138,51 @@ namespace ExifToolAsyncTest
             (await resultTask3).Should().Be("fake result c");
         }
 
+        [Fact]
+        public async Task ExecuteAsync_ShouldPassArgumentsToExiftoolUnlessCommandWasCancelled()
+        {
+            // arrange
+            var controlExecute1 = fakeFakeExifTool.SetupControl("-execute1");
+            var cts = new CancellationTokenSource();
+            sut.Init();
+
+            // act
+            var resultTask1 = sut.ExecuteAsync(new[] { "a" }, CancellationToken.None);
+            controlExecute1.Entered.WaitOne(); // make sure resultTask1 is executing and has 'entered' ExifTool
+            var resultTask2 = sut.ExecuteAsync(new[] { "b" }, cts.Token);
+            var resultTask3 = sut.ExecuteAsync(new[] { "c" }, CancellationToken.None);
+            cts.Cancel(); // cancel second task
+            controlExecute1.Release.Set(); // signal 'exiftool' to finish the request of task1.
+
+            await resultTask1;
+            await IgnoreException(resultTask2);
+            await resultTask3;
+
+            // assert
+            A.CallTo(() => shell.WriteLineAsync("a")).MustHaveHappenedOnceExactly()
+                .Then(A.CallTo(() => shell.WriteLineAsync("-execute1")).MustHaveHappenedOnceExactly())
+                .Then(A.CallTo(() => shell.WriteLineAsync("c")).MustHaveHappenedOnceExactly())
+                .Then(A.CallTo(() => shell.WriteLineAsync("-execute2")).MustHaveHappenedOnceExactly());
+
+            A.CallTo(() => shell.WriteLineAsync("b")).MustNotHaveHappened();
+            A.CallTo(() => shell.WriteLineAsync("-execute3")).MustNotHaveHappened();
+        }
+
+        private async Task IgnoreException(Task task)
+        {
+            try
+            {
+                await task;
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
+        }
+
         private interface IFakeExifTool
         {
-            void WriteToStream(Span<byte> data);
-
-            ExifToolCommandControl Setup(string key);
+            ExifToolCommandControl SetupControl(string key);
         }
 
         private class TestableOpenedFakeExifTool : OpenedExifTool, IFakeExifTool
@@ -169,7 +205,6 @@ namespace ExifToolAsyncTest
                 A.CallTo(() => shell.WriteLineAsync(A<string>._))
                     .Invokes(async call =>
                     {
-                        // await Task.Run(() =>
                         if (!(call.Arguments[0] is string text))
                             throw new ArgumentNullException("text");
 
@@ -183,22 +218,16 @@ namespace ExifToolAsyncTest
                         {
                             var result = text.Replace("-execute", "{ready") + "}";
                             await exifToolStream.WriteAsync(Encoding.UTF8.GetBytes(result + OperatingSystemHelper.NewLine));
+                            return;
                         }
-                        else
-                        {
-                            await exifToolStream.WriteAsync(Encoding.UTF8.GetBytes($"fake result {text}{OperatingSystemHelper.NewLine}"));
-                        }
+
+                        await exifToolStream.WriteAsync(Encoding.UTF8.GetBytes($"fake result {text}{OperatingSystemHelper.NewLine}"));
                     });
 
                 return shell;
             }
 
-            void IFakeExifTool.WriteToStream(Span<byte> data)
-            {
-                exifToolStream.Write(data);
-            }
-
-            ExifToolCommandControl IFakeExifTool.Setup(string key)
+            ExifToolCommandControl IFakeExifTool.SetupControl(string key)
             {
                 var control = new ExifToolCommandControl();
                 exiftoolControl.TryAdd(key, control);
@@ -218,29 +247,5 @@ namespace ExifToolAsyncTest
         public ManualResetEvent Entered { get; }
 
         public ManualResetEvent Release { get; }
-    }
-}
-
-
-public static class WaitHandleExtensions
-{
-    public static Task AsTask(this WaitHandle handle)
-    {
-        return AsTask(handle, Timeout.InfiniteTimeSpan);
-    }
-
-    public static Task AsTask(this WaitHandle handle, TimeSpan timeout)
-    {
-        var tcs = new TaskCompletionSource<object>();
-        var registration = ThreadPool.RegisterWaitForSingleObject(handle, (state, timedOut) =>
-        {
-            var localTcs = (TaskCompletionSource<object>)state;
-            if (timedOut)
-                localTcs.TrySetCanceled();
-            else
-                localTcs.TrySetResult(null);
-        }, tcs, timeout, executeOnlyOnce: true);
-        tcs.Task.ContinueWith((_, state) => ((RegisteredWaitHandle)state).Unregister(null), registration, TaskScheduler.Default);
-        return tcs.Task;
     }
 }
