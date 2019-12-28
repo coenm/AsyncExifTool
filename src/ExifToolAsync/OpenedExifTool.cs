@@ -5,15 +5,17 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    
     using ExifToolAsync.Internals;
     using ExifToolAsync.Internals.MedallionShell;
     using ExifToolAsync.Internals.Stream;
     using JetBrains.Annotations;
     using Nito.AsyncEx;
-
+    
     public class OpenedExifTool
     {
         private readonly string exifToolPath;
@@ -35,26 +37,38 @@
         private bool cmdExitedSubscribed;
         private bool initialized;
 
-        public OpenedExifTool(string exifToolPath)
+        public OpenedExifTool([NotNull] IOpenedExifToolConfiguration configuration)
         {
-            stream = new ExifToolStayOpenStream(Encoding.UTF8);
+            if (configuration == null)
+                throw new ArgumentNullException(nameof(configuration));
+
+            stream = new ExifToolStayOpenStream(configuration.ExifToolEncoding, configuration.ExifToolEndLine);
             stopQueueCts = new CancellationTokenSource();
             initialized = false;
             disposed = false;
             disposing = false;
             cmdExited = false;
             key = 0;
-            this.exifToolPath = exifToolPath;
-            defaultArgs = new List<string>
+            exifToolPath = configuration.ExifToolFullFilename;
+            defaultArgs = configuration.Arguments.ToList();
+
+            waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
+        }
+
+        public OpenedExifTool(string exifToolPath) 
+            : this (new ExifToolConfiguration(
+                exifToolPath, 
+                Encoding.UTF8,
+                new List<string>
                 {
                     ExifToolArguments.StayOpen,
                     ExifToolArguments.BoolTrue,
                     "-@",
                     "-",
                     ExifToolArguments.CommonArgs,
-                };
-
-            waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
+                },
+                ExifToolExecutable.NewLine))
+        {
         }
 
         public void Init()

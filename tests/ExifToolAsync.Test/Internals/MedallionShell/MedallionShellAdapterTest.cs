@@ -12,6 +12,7 @@
     using ExifToolAsync.Internals.Stream;
     using ExifToolAsyncTest.TestInternals;
     using FluentAssertions;
+    using TestHelper;
     using TestHelper.XUnit.Facts;
     using Xunit;
     using Xunit.Abstractions;
@@ -37,7 +38,7 @@
                                         "-",
                                     };
 
-            stream = new ExifToolStayOpenStream(Encoding.UTF8);
+            stream = new ExifToolStayOpenStream(Encoding.UTF8, OperatingSystemHelper.NewLine);
             sut = new MedallionShellAdapter(ExifToolSystemConfiguration.ExifToolExecutable, defaultArgs, stream);
             sut.ProcessExited += SutOnProcessExited;
         }

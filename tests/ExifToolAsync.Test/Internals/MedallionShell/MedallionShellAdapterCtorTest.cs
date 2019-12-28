@@ -8,6 +8,7 @@
     using ExifToolAsync.Internals.MedallionShell;
     using ExifToolAsync.Internals.Stream;
     using FluentAssertions;
+    using TestHelper;
     using Xunit;
 
     public class MedallionShellAdapterCtorTest
@@ -26,7 +27,7 @@
                                         "-",
                                     };
 
-            stream = new ExifToolStayOpenStream(Encoding.UTF8);
+            stream = new ExifToolStayOpenStream(Encoding.UTF8, OperatingSystemHelper.NewLine);
         }
 
         [Theory]
