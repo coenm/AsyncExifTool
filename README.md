@@ -9,7 +9,9 @@ ExifToolAsync
 </div>
 
 
-This library is an async wrapper around ExifTool. The ExifTool process is started using the `--stay-open` flag. 
+This library is an async wrapper around ExifTool. The ExifTool process is started using the `--stay-open` flag.
+
+This library does NOT include an instance of ExifTool. You have to install/compile/unpack ExifTool yourself and point AsyncExifTool to the right location.
 
 
 ## What is ExifTool
