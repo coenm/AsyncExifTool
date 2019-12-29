@@ -131,10 +131,14 @@
             cts.Cancel(); // cancel second task
             controlExecute1.Release.Set(); // signal 'exiftool' to finish the request of task1.
 
+            var result1 = await resultTask1;
+            await IgnoreException(resultTask2);
+            var result3 = await resultTask3;
+
             // assert
-            (await resultTask1).Should().Be("fake result a");
+            result1.Should().Be("fake result a");
             resultTask2.IsCanceled.Should().BeTrue();
-            (await resultTask3).Should().Be("fake result c");
+            result3.Should().Be("fake result c");
         }
 
         [Fact]
