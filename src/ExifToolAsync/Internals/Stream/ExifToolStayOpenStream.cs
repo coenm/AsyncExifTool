@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsync.Internals.Stream
+﻿namespace CoenM.ExifToolLib.Internals.Stream
 {
     using System;
     using System.Diagnostics;
@@ -9,8 +9,6 @@
     internal class ExifToolStayOpenStream : Stream
     {
         private const int OneMb = 1024 * 1024;
-        private readonly string prefix = ExifToolExecutable.NewLine + "{ready";
-        private readonly string suffix = "}" + ExifToolExecutable.NewLine;
         private readonly Encoding encoding;
         private readonly byte[] cache;
         private readonly byte[] endOfMessageSequenceStart;
@@ -18,10 +16,18 @@
         private readonly int bufferSize;
         private int index;
 
-        public ExifToolStayOpenStream([CanBeNull] Encoding encoding, int bufferSize = OneMb)
+        public ExifToolStayOpenStream(
+            [CanBeNull] Encoding encoding, 
+            [NotNull] string endLine,
+            int bufferSize = OneMb)
         {
             if (bufferSize < 1)
                 throw new ArgumentOutOfRangeException(nameof(bufferSize));
+            if (string.IsNullOrEmpty(endLine))
+                throw new ArgumentNullException(nameof(endLine));
+
+            var prefix = endLine + "{ready";
+            var suffix = "}" + endLine;
 
             this.bufferSize = bufferSize;
             this.encoding = encoding ?? new UTF8Encoding();

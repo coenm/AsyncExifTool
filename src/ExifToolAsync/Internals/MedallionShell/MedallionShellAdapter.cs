@@ -1,8 +1,7 @@
-﻿namespace ExifToolAsync.Internals.MedallionShell
+﻿namespace CoenM.ExifToolLib.Internals.MedallionShell
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.Design;
     using System.IO;
     using System.Threading.Tasks;
     using JetBrains.Annotations;
@@ -15,7 +14,7 @@
 
         public MedallionShellAdapter(
             [NotNull] string executable,
-            IEnumerable<string> defaultArgs,
+            IEnumerable<string> args,
             [NotNull] Stream outputStream,
             [CanBeNull] Stream errorStream = null)
         {
@@ -25,10 +24,10 @@
                 throw new ArgumentNullException(nameof(outputStream));
 
             if (errorStream == null)
-                cmd = Command.Run(executable, defaultArgs)
+                cmd = Command.Run(executable, args)
                          .RedirectTo(outputStream);
             else
-                cmd = Command.Run(executable, defaultArgs)
+                cmd = Command.Run(executable, args)
                     .RedirectTo(outputStream)
                     .RedirectStandardErrorTo(errorStream);
 

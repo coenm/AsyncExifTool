@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsync.Internals
+﻿namespace CoenM.ExifToolLib.Internals
 {
     using System;
     using System.Threading.Tasks;
@@ -8,10 +8,11 @@
         event EventHandler ProcessExited;
 
         Task<IShellResult> Task { get; }
+        
+        Task WriteLineAsync(string text);
 
         void Kill();
 
-        Task WriteLineAsync(string text);
         Task CancelAsync();
     }
 }

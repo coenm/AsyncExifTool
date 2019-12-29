@@ -1,11 +1,11 @@
-﻿namespace ExifToolAsync
+﻿namespace CoenM.ExifToolLib
 {
     using System;
 
     [Serializable]
-    public class ExiftoolException : Exception
+    public class AsyncExiftoolException : Exception
     {
-        public ExiftoolException(int exitCode, string standardOutput, string standardError)
+        public AsyncExiftoolException(int exitCode, string standardOutput, string standardError)
             : base(standardError)
         {
             ExitCode = exitCode;

@@ -1,20 +1,22 @@
-﻿namespace ExifToolAsync
+﻿namespace CoenM.ExifToolLib
 {
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using ExifToolAsync.Internals;
-    using ExifToolAsync.Internals.MedallionShell;
-    using ExifToolAsync.Internals.Stream;
+
+    using CoenM.ExifToolLib.Internals;
+    using CoenM.ExifToolLib.Internals.MedallionShell;
+    using CoenM.ExifToolLib.Internals.Stream;
     using JetBrains.Annotations;
     using Nito.AsyncEx;
 
-    public class OpenedExifTool
+    public class AsyncExifTool
     {
         private readonly string exifToolPath;
         private readonly AsyncLock executeAsyncSyncLock = new AsyncLock();
@@ -24,7 +26,7 @@
         private readonly object initializedSyncLock = new object();
         private readonly CancellationTokenSource stopQueueCts;
 
-        private readonly List<string> defaultArgs;
+        private readonly List<string> exifToolArguments;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> waitingTasks;
         private readonly ExifToolStayOpenStream stream;
         private IShell shell;
@@ -35,27 +37,42 @@
         private bool cmdExitedSubscribed;
         private bool initialized;
 
-        public OpenedExifTool(string exifToolPath)
+        public AsyncExifTool([NotNull] AsyncExifToolConfiguration configuration)
         {
-            stream = new ExifToolStayOpenStream(Encoding.UTF8);
+            if (configuration == null)
+                throw new ArgumentNullException(nameof(configuration));
+
+            stream = new ExifToolStayOpenStream(configuration.ExifToolEncoding, configuration.ExifToolEndLine);
             stopQueueCts = new CancellationTokenSource();
             initialized = false;
             disposed = false;
             disposing = false;
             cmdExited = false;
             key = 0;
-            this.exifToolPath = exifToolPath;
-            defaultArgs = new List<string>(4)
+            exifToolPath = configuration.ExifToolFullFilename;
+            exifToolArguments = new List<string>
                 {
                     ExifToolArguments.StayOpen,
                     ExifToolArguments.BoolTrue,
-                    "-@",
-                    "-",
-                    ExifToolArguments.CommonArgs,
-                    ExifToolArguments.JsonOutput,
-                };
+                    "-@", // read from argument file
+                    "-", // argument file is std in
+                }
+                .Concat(configuration.CommonArgs.ToList())
+                .ToList();
 
             waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
+        }
+
+        public AsyncExifTool(string exifToolPath) 
+            : this (new AsyncExifToolConfiguration(
+                exifToolPath, 
+                Encoding.UTF8,
+                new List<string>
+                {
+                   ExifToolArguments.CommonArgs,
+                },
+                ExifToolExecutable.NewLine))
+        {
         }
 
         public void Init()
@@ -70,9 +87,9 @@
 
                 stream.Update += StreamOnUpdate;
 
-                shell = CreateShell(exifToolPath, defaultArgs, stream, null);
+                shell = CreateShell(exifToolPath, exifToolArguments, stream, null);
 
-                // possible race condition..
+                // possible race condition.. to fix
                 shell.ProcessExited += ShellOnProcessExited;
 
                 cmdExitedSubscribed = true;
@@ -193,9 +210,9 @@
             }
         }
 
-        internal virtual IShell CreateShell(string exifToolPath, IEnumerable<string> defaultArgs, Stream outputStream, Stream errorStream)
+        internal virtual IShell CreateShell(string exifToolPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
         {
-            return new MedallionShellAdapter(exifToolPath, defaultArgs, outputStream, errorStream);
+            return new MedallionShellAdapter(exifToolPath, args, outputStream, errorStream);
         }
 
         private static void Ignore(Action action)
@@ -215,15 +232,16 @@
             using (await executeImpAsyncSyncLock.LockAsync(ct).ConfigureAwait(false))
             {
                 var tcs = new TaskCompletionSource<string>();
-                using (ct.Register(() => tcs.TrySetCanceled()))
+                
+                await using (ct.Register(() => tcs.TrySetCanceled()))
                 {
-                    this.key++;
-                    var key = this.key.ToString();
+                    key++;
+                    var keyString = key.ToString();
 
-                    if (!waitingTasks.TryAdd(key, tcs))
+                    if (!waitingTasks.TryAdd(keyString, tcs))
                         throw new Exception("Could not execute");
 
-                    await AddToExifToolAsync(key, args).ConfigureAwait(false);
+                    await AddToExifToolAsync(keyString, args).ConfigureAwait(false);
                     return await tcs.Task.ConfigureAwait(false);
                 }
             }
@@ -248,10 +266,10 @@
 
         private void StreamOnUpdate(object sender, DataCapturedArgs dataCapturedArgs)
         {
-            if (waitingTasks.TryRemove(dataCapturedArgs.Key, out var tcs))
-            {
-                tcs.TrySetResult(dataCapturedArgs.Data);
-            }
+            if (!waitingTasks.TryRemove(dataCapturedArgs.Key, out var tcs)) 
+                return;
+            
+            tcs.TrySetResult(dataCapturedArgs.Data);
         }
 
         private void ShellOnProcessExited(object sender, EventArgs eventArgs)
