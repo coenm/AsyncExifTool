@@ -16,14 +16,14 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class OpenedExifToolSimpleIntegrationTest
+    public class AsyncExifToolSimpleIntegrationTest
     {
         private const int Repeat = 100;
         private readonly string image;
 
         private readonly ITestOutputHelper output;
 
-        public OpenedExifToolSimpleIntegrationTest(ITestOutputHelper output)
+        public AsyncExifToolSimpleIntegrationTest(ITestOutputHelper output)
         {
             this.output = output;
 
@@ -40,7 +40,7 @@
         public async Task RunExiftoolForVersionAndImageTest()
         {
             // arrange
-            var sut = new OpenedExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             sut.Init();
 
             // act
@@ -65,7 +65,7 @@
         public async Task RunWithInputStreamTest()
         {
             // arrange
-            var sut = new OpenedExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             var sw = Stopwatch.StartNew();
             sut.Init();
             sw.Stop();
@@ -94,7 +94,7 @@
         {
             // arrange
             var tasks = new Task<string>[Repeat];
-            var sut = new OpenedExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             var sw = Stopwatch.StartNew();
             sut.Init();
             sw.Stop();
@@ -132,7 +132,7 @@
         public async Task InitAndDisposeTest()
         {
             // arrange
-            var sut = new OpenedExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
 
             // act
             sut.Init();
@@ -146,7 +146,7 @@
         public async Task RunExifToolWithThreeCommands()
         {
             // arrange
-            var sut = new OpenedExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             sut.Init();
 
             // act

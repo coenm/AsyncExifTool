@@ -1,4 +1,4 @@
-﻿namespace CoenM.ExifToolLibTest
+﻿namespace CoenM.ExifToolLibTest.TestInternals
 {
     using System;
     using System.Threading;

@@ -9,21 +9,22 @@
 
     using CoenM.ExifToolLib;
     using CoenM.ExifToolLib.Internals;
+    using CoenM.ExifToolLibTest.TestInternals;
     using FakeItEasy;
     using FluentAssertions;
     using TestHelper;
     using Xunit;
 
-    public class OpenedExifToolSimpleTest
+    public class AsyncExifToolSimpleTest
     {
-        private readonly OpenedExifTool sut;
+        private readonly AsyncExifTool sut;
         private readonly IFakeExifTool fakeFakeExifTool;
         private readonly IShell shell;
 
-        public OpenedExifToolSimpleTest()
+        public AsyncExifToolSimpleTest()
         {
             shell = A.Fake<IShell>();
-            sut = new TestableOpenedFakeExifTool(shell);
+            sut = new TestableAsyncFakeExifTool(shell);
             fakeFakeExifTool = sut as IFakeExifTool;
 
             A.CallTo(() => shell.WriteLineAsync(A<string>._)).Returns(Task.CompletedTask);
@@ -183,13 +184,13 @@
             ExifToolCommandControl SetupControl(string key);
         }
 
-        private class TestableOpenedFakeExifTool : OpenedExifTool, IFakeExifTool
+        private class TestableAsyncFakeExifTool : AsyncExifTool, IFakeExifTool
         {
             private readonly IShell shell;
             private readonly Dictionary<string, ExifToolCommandControl> exiftoolControl;
             private Stream exifToolStream;
 
-            public TestableOpenedFakeExifTool(IShell shell)
+            public TestableAsyncFakeExifTool(IShell shell)
                 : base("doesn't matter")
             {
                 this.shell = shell;

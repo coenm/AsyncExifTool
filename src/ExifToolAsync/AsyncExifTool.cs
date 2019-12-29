@@ -9,13 +9,14 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+
     using CoenM.ExifToolLib.Internals;
     using CoenM.ExifToolLib.Internals.MedallionShell;
     using CoenM.ExifToolLib.Internals.Stream;
     using JetBrains.Annotations;
     using Nito.AsyncEx;
 
-    public class OpenedExifTool
+    public class AsyncExifTool
     {
         private readonly string exifToolPath;
         private readonly AsyncLock executeAsyncSyncLock = new AsyncLock();
@@ -36,7 +37,7 @@
         private bool cmdExitedSubscribed;
         private bool initialized;
 
-        public OpenedExifTool([NotNull] AsyncExifToolConfiguration configuration)
+        public AsyncExifTool([NotNull] AsyncExifToolConfiguration configuration)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
@@ -54,7 +55,7 @@
             waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
         }
 
-        public OpenedExifTool(string exifToolPath) 
+        public AsyncExifTool(string exifToolPath) 
             : this (new AsyncExifToolConfiguration(
                 exifToolPath, 
                 Encoding.UTF8,
