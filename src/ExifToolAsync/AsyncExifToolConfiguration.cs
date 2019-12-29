@@ -3,9 +3,9 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class ExifToolConfiguration : IOpenedExifToolConfiguration
+    public sealed class AsyncExifToolConfiguration
     {
-        public ExifToolConfiguration(string exifToolFullFilename, Encoding exifToolEncoding, List<string> arguments, string exifToolEndLine)
+        public AsyncExifToolConfiguration(string exifToolFullFilename, Encoding exifToolEncoding, List<string> arguments, string exifToolEndLine)
         {
             ExifToolFullFilename = exifToolFullFilename;
             ExifToolEncoding = exifToolEncoding;

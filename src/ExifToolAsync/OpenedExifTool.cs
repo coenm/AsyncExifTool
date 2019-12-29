@@ -37,7 +37,7 @@
         private bool cmdExitedSubscribed;
         private bool initialized;
 
-        public OpenedExifTool([NotNull] IOpenedExifToolConfiguration configuration)
+        public OpenedExifTool([NotNull] AsyncExifToolConfiguration configuration)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
@@ -56,7 +56,7 @@
         }
 
         public OpenedExifTool(string exifToolPath) 
-            : this (new ExifToolConfiguration(
+            : this (new AsyncExifToolConfiguration(
                 exifToolPath, 
                 Encoding.UTF8,
                 new List<string>
