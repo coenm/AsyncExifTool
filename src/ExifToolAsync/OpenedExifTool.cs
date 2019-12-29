@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsync
+﻿namespace CoenM.ExifToolLib
 {
     using System;
     using System.Collections.Concurrent;
@@ -9,13 +9,12 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    
-    using ExifToolAsync.Internals;
-    using ExifToolAsync.Internals.MedallionShell;
-    using ExifToolAsync.Internals.Stream;
+    using CoenM.ExifToolLib.Internals;
+    using CoenM.ExifToolLib.Internals.MedallionShell;
+    using CoenM.ExifToolLib.Internals.Stream;
     using JetBrains.Annotations;
     using Nito.AsyncEx;
-    
+
     public class OpenedExifTool
     {
         private readonly string exifToolPath;

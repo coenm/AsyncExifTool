@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsyncTest
+﻿namespace CoenM.ExifToolLibTest
 {
     using System;
     using System.Threading;
@@ -32,7 +32,7 @@
                 (_, state) => ((RegisteredWaitHandle)state).Unregister(null),
                 registration,
                 TaskScheduler.Default);
-            
+
             return tcs.Task;
         }
     }

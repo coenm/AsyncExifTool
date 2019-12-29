@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsync.Internals
+﻿namespace CoenM.ExifToolLib.Internals
 {
     using System;
     using System.Threading.Tasks;

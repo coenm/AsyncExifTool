@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsyncTest
+﻿namespace CoenM.ExifToolLibTest
 {
     using System;
     using System.Collections.Generic;
@@ -7,8 +7,8 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using ExifToolAsync;
-    using ExifToolAsync.Internals;
+    using CoenM.ExifToolLib;
+    using CoenM.ExifToolLib.Internals;
     using FakeItEasy;
     using FluentAssertions;
     using TestHelper;
@@ -19,11 +19,9 @@
         private readonly OpenedExifTool sut;
         private readonly IFakeExifTool fakeFakeExifTool;
         private readonly IShell shell;
-        private readonly List<string> calledArguments;
 
         public OpenedExifToolSimpleTest()
         {
-            calledArguments = new List<string>();
             shell = A.Fake<IShell>();
             sut = new TestableOpenedFakeExifTool(shell);
             fakeFakeExifTool = sut as IFakeExifTool;
@@ -68,7 +66,7 @@
         {
             // arrange
 
-            // ExifToolArguments.StayOpen, ExifToolArguments.BoolFalse 
+            // ExifToolArguments.StayOpen, ExifToolArguments.BoolFalse
             A.CallTo(() => shell.WriteLineAsync(ExifToolArguments.BoolFalse))
                 .ReturnsLazily(async call =>
                 {
@@ -198,7 +196,18 @@
                 exiftoolControl = new Dictionary<string, ExifToolCommandControl>();
             }
 
-            internal override IShell CreateShell(string exifToolPath, IEnumerable<string> defaultArgs, Stream outputStream, Stream errorStream)
+            ExifToolCommandControl IFakeExifTool.SetupControl(string key)
+            {
+                var control = new ExifToolCommandControl();
+                exiftoolControl.TryAdd(key, control);
+                return control;
+            }
+
+            internal override IShell CreateShell(
+                string exifToolPath,
+                IEnumerable<string> defaultArgs,
+                Stream outputStream,
+                Stream errorStream)
             {
                 exifToolStream = Stream.Synchronized(outputStream);
 
@@ -217,35 +226,30 @@
                         if (text.StartsWith("-execute"))
                         {
                             var result = text.Replace("-execute", "{ready") + "}";
-                            await exifToolStream.WriteAsync(Encoding.UTF8.GetBytes(result + OperatingSystemHelper.NewLine));
+                            await exifToolStream.WriteAsync(
+                                Encoding.UTF8.GetBytes(result + OperatingSystemHelper.NewLine));
                             return;
                         }
 
-                        await exifToolStream.WriteAsync(Encoding.UTF8.GetBytes($"fake result {text}{OperatingSystemHelper.NewLine}"));
+                        await exifToolStream.WriteAsync(
+                            Encoding.UTF8.GetBytes($"fake result {text}{OperatingSystemHelper.NewLine}"));
                     });
 
                 return shell;
             }
-
-            ExifToolCommandControl IFakeExifTool.SetupControl(string key)
-            {
-                var control = new ExifToolCommandControl();
-                exiftoolControl.TryAdd(key, control);
-                return control;
-            }
         }
-    }
 
-    internal class ExifToolCommandControl
-    {
-        public ExifToolCommandControl()
+        private class ExifToolCommandControl
         {
-            Entered = new ManualResetEvent(false);
-            Release = new ManualResetEvent(false);
+            public ExifToolCommandControl()
+            {
+                Entered = new ManualResetEvent(false);
+                Release = new ManualResetEvent(false);
+            }
+
+            public ManualResetEvent Entered { get; }
+
+            public ManualResetEvent Release { get; }
         }
-
-        public ManualResetEvent Entered { get; }
-
-        public ManualResetEvent Release { get; }
     }
 }

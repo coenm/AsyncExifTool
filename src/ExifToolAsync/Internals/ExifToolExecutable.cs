@@ -1,7 +1,7 @@
-﻿namespace ExifToolAsync.Internals
+﻿namespace CoenM.ExifToolLib.Internals
 {
     using System.Runtime.InteropServices;
-    
+
     using JetBrains.Annotations;
 
     internal static class ExifToolExecutable

@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsyncTest
+﻿namespace CoenM.ExifToolLibTest
 {
     using System;
     using System.Diagnostics;
@@ -7,9 +7,9 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using CoenM.ExifToolLib;
+    using CoenM.ExifToolLibTest.TestInternals;
     using EagleEye.TestHelper.XUnit;
-    using ExifToolAsync;
-    using ExifToolAsyncTest.TestInternals;
     using FluentAssertions;
     using TestHelper;
     using TestHelper.XUnit.Facts;

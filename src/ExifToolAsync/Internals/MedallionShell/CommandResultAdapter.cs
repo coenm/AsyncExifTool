@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsync.Internals.MedallionShell
+﻿namespace CoenM.ExifToolLib.Internals.MedallionShell
 {
     using System;
     using JetBrains.Annotations;

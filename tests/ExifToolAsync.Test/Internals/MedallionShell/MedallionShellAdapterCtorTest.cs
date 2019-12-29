@@ -1,19 +1,18 @@
-﻿namespace ExifToolAsyncTest.Internals.MedallionShell
+﻿namespace CoenM.ExifToolLibTest.Internals.MedallionShell
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Text;
 
-    using ExifToolAsync.Internals.MedallionShell;
-    using ExifToolAsync.Internals.Stream;
+    using CoenM.ExifToolLib.Internals.MedallionShell;
+    using CoenM.ExifToolLib.Internals.Stream;
     using FluentAssertions;
     using TestHelper;
     using Xunit;
 
     public class MedallionShellAdapterCtorTest
     {
-        private const int FallbackTestTimeout = 5000;
         private readonly ExifToolStayOpenStream stream;
         private readonly string executable;
         private readonly List<string> defaultArgs;
@@ -97,7 +96,7 @@
                 {
                     "bla",
                     "RUBbi$h",
-                }, 
+                },
                 stream,
                 errorStream);
 

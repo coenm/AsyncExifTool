@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsync
+﻿namespace CoenM.ExifToolLib
 {
     using System;
     using System.Threading;

@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsyncTest.Internals.MedallionShell
+﻿namespace CoenM.ExifToolLibTest.Internals.MedallionShell
 {
     using System;
     using System.Collections.Generic;
@@ -6,11 +6,11 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using CoenM.ExifToolLib.Internals;
+    using CoenM.ExifToolLib.Internals.MedallionShell;
+    using CoenM.ExifToolLib.Internals.Stream;
+    using CoenM.ExifToolLibTest.TestInternals;
     using EagleEye.TestHelper.XUnit;
-    using ExifToolAsync.Internals;
-    using ExifToolAsync.Internals.MedallionShell;
-    using ExifToolAsync.Internals.Stream;
-    using ExifToolAsyncTest.TestInternals;
     using FluentAssertions;
     using TestHelper;
     using TestHelper.XUnit.Facts;

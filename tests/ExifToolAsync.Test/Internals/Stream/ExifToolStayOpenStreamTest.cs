@@ -1,4 +1,4 @@
-﻿namespace ExifToolAsyncTest.Internals.Stream
+﻿namespace CoenM.ExifToolLibTest.Internals.Stream
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
     using System.Linq;
     using System.Text;
 
-    using ExifToolAsync.Internals.Stream;
+    using CoenM.ExifToolLib.Internals.Stream;
     using FluentAssertions;
     using TestHelper;
     using Xunit;
