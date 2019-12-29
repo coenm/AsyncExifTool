@@ -13,6 +13,7 @@
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\ExifToolAsync.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>

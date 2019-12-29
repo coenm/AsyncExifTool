@@ -5,11 +5,11 @@
 
     public sealed class AsyncExifToolConfiguration
     {
-        public AsyncExifToolConfiguration(string exifToolFullFilename, Encoding exifToolEncoding, List<string> arguments, string exifToolEndLine)
+        public AsyncExifToolConfiguration(string exifToolFullFilename, Encoding exifToolEncoding, List<string> commonArgs, string exifToolEndLine)
         {
             ExifToolFullFilename = exifToolFullFilename;
             ExifToolEncoding = exifToolEncoding;
-            Arguments = arguments;
+            CommonArgs = commonArgs;
             ExifToolEndLine = exifToolEndLine;
         }
 
@@ -19,6 +19,6 @@
 
         public Encoding ExifToolEncoding { get; }
 
-        public List<string> Arguments { get; }
+        public List<string> CommonArgs { get; }
     }
 }

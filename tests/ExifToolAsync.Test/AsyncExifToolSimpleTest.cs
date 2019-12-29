@@ -206,7 +206,7 @@
 
             internal override IShell CreateShell(
                 string exifToolPath,
-                IEnumerable<string> defaultArgs,
+                IEnumerable<string> args,
                 Stream outputStream,
                 Stream errorStream)
             {

@@ -26,7 +26,7 @@
         private readonly object initializedSyncLock = new object();
         private readonly CancellationTokenSource stopQueueCts;
 
-        private readonly List<string> defaultArgs;
+        private readonly List<string> exifToolArguments;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> waitingTasks;
         private readonly ExifToolStayOpenStream stream;
         private IShell shell;
@@ -50,7 +50,15 @@
             cmdExited = false;
             key = 0;
             exifToolPath = configuration.ExifToolFullFilename;
-            defaultArgs = configuration.Arguments.ToList();
+            exifToolArguments = new List<string>
+                {
+                    ExifToolArguments.StayOpen,
+                    ExifToolArguments.BoolTrue,
+                    "-@", // read from argument file
+                    "-", // argument file is std in
+                }
+                .Concat(configuration.CommonArgs.ToList())
+                .ToList();
 
             waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
         }
@@ -61,11 +69,7 @@
                 Encoding.UTF8,
                 new List<string>
                 {
-                    ExifToolArguments.StayOpen,
-                    ExifToolArguments.BoolTrue,
-                    "-@",
-                    "-",
-                    ExifToolArguments.CommonArgs,
+                   ExifToolArguments.CommonArgs,
                 },
                 ExifToolExecutable.NewLine))
         {
@@ -83,7 +87,7 @@
 
                 stream.Update += StreamOnUpdate;
 
-                shell = CreateShell(exifToolPath, defaultArgs, stream, null);
+                shell = CreateShell(exifToolPath, exifToolArguments, stream, null);
 
                 // possible race condition.. to fix
                 shell.ProcessExited += ShellOnProcessExited;
@@ -206,9 +210,9 @@
             }
         }
 
-        internal virtual IShell CreateShell(string exifToolPath, IEnumerable<string> defaultArgs, Stream outputStream, Stream errorStream)
+        internal virtual IShell CreateShell(string exifToolPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
         {
-            return new MedallionShellAdapter(exifToolPath, defaultArgs, outputStream, errorStream);
+            return new MedallionShellAdapter(exifToolPath, args, outputStream, errorStream);
         }
 
         private static void Ignore(Action action)
