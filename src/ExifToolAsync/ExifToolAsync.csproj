@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-	  <RootNamespace>ExifToolAsync</RootNamespace>
+	  <RootNamespace>CoenM.ExifToolLib</RootNamespace>
 
 	  <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->

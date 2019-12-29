@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <IsPackable>false</IsPackable>
-    <RootNamespace>ExifToolAsyncTest</RootNamespace>
+    <RootNamespace>CoenM.ExifToolLibTest</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
