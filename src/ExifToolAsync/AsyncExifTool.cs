@@ -42,7 +42,7 @@
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
 
-            stream = new ExifToolStayOpenStream(configuration.ExifToolEncoding, configuration.ExifToolEndLine);
+            stream = new ExifToolStayOpenStream(configuration.ExifToolEncoding, configuration.ExifToolNewLine);
             stopQueueCts = new CancellationTokenSource();
             initialized = false;
             disposed = false;
@@ -67,15 +67,14 @@
             : this (new AsyncExifToolConfiguration(
                 exifToolPath, 
                 Encoding.UTF8,
-                new List<string>
+                ExifToolExecutable.NewLine, new List<string>
                 {
-                   ExifToolArguments.CommonArgs,
-                },
-                ExifToolExecutable.NewLine))
+                    ExifToolArguments.CommonArgs,
+                }))
         {
         }
 
-        public void Init()
+        public void Initialize()
         {
             if (initialized)
                 return;

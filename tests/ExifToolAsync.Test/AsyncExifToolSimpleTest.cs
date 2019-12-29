@@ -47,7 +47,7 @@
         {
             // arrange
             var control = fakeFakeExifTool.SetupControl(ExifToolArguments.BoolFalse);
-            sut.Init();
+            sut.Initialize();
             var disposingTask = sut.DisposeAsync();
 
             // act
@@ -75,7 +75,7 @@
                     shell.ProcessExited += Raise.WithEmpty();
                 });
 
-            sut.Init();
+            sut.Initialize();
             await sut.DisposeAsync();
 
             // act
@@ -90,7 +90,7 @@
         {
             // arrange
             var args = new[] { "abc", "def" };
-            sut.Init();
+            sut.Initialize();
 
             // act
             _ = await sut.ExecuteAsync(args, CancellationToken.None);
@@ -106,7 +106,7 @@
         {
             // arrange
             var args = new[] { "abc", "def" };
-            sut.Init();
+            sut.Initialize();
 
             // act
             var result = await sut.ExecuteAsync(args, CancellationToken.None);
@@ -121,7 +121,7 @@
             // arrange
             var controlExecute1 = fakeFakeExifTool.SetupControl("-execute1");
             var cts = new CancellationTokenSource();
-            sut.Init();
+            sut.Initialize();
 
             // act
             var resultTask1 = sut.ExecuteAsync(new[] { "a" }, CancellationToken.None);
@@ -147,7 +147,7 @@
             // arrange
             var controlExecute1 = fakeFakeExifTool.SetupControl("-execute1");
             var cts = new CancellationTokenSource();
-            sut.Init();
+            sut.Initialize();
 
             // act
             var resultTask1 = sut.ExecuteAsync(new[] { "a" }, CancellationToken.None);
