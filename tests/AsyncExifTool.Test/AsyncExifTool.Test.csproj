@@ -37,7 +37,7 @@
   </ItemGroup>
   
   <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\ExifToolAsync.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\AsyncExifTool.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,7 +45,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ExifToolAsync\ExifToolAsync.csproj" />
+    <ProjectReference Include="..\..\src\AsyncExifTool\AsyncExifTool.csproj" />
     <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
   </ItemGroup>
 
