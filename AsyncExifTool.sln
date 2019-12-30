@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExifToolAsync", "src\ExifToolAsync\ExifToolAsync.csproj", "{F762E68A-2DAC-40AD-9AEE-DAFDF6980985}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncExifTool", "src\AsyncExifTool\AsyncExifTool.csproj", "{F762E68A-2DAC-40AD-9AEE-DAFDF6980985}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExifToolAsync.Test", "tests\ExifToolAsync.Test\ExifToolAsync.Test.csproj", "{0F987C67-2CEE-4677-A017-25E0611736FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncExifTool.Test", "tests\AsyncExifTool.Test\AsyncExifTool.Test.csproj", "{0F987C67-2CEE-4677-A017-25E0611736FA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestHelper", "tests\TestHelper\TestHelper.csproj", "{012260C5-4FFA-4A29-B975-F80BF0F5D5F3}"
 EndProject

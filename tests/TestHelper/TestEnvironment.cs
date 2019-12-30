@@ -8,7 +8,7 @@
 
     public static class TestEnvironment
     {
-        private const string SolutionFileName = "ExifToolAsync.sln";
+        private const string SolutionFileName = "AsyncExifTool.sln";
         private static readonly Lazy<string> LazySolutionDirectoryFullPath = new Lazy<string>(GetSolutionDirectoryFullPathImpl);
         private static readonly Lazy<bool> RunsOnContinuousIntegration = new Lazy<bool>(IsContinuousIntegrationImpl);
         private static readonly Lazy<bool> RunsOnContinuousIntegrationTravis = new Lazy<bool>(IsRunningOnTravisImpl);
