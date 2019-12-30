@@ -4,7 +4,7 @@ AsyncExifTool
 </h1>
 <div align="center">
 
-[![Build Status](https://dev.azure.com/cmunckhof/Imaging/_apis/build/status/AsyncExifTool?branchName=develop)](https://dev.azure.com/cmunckhof/Imaging/_build/latest?definitionId=4&branchName=develop)  [![codecov](https://codecov.io/gh/coenm/AsyncExifTool/branch/develop/graph/badge.svg)](https://codecov.io/gh/coenm/AsyncExifTool) 
+[![Build Status](https://dev.azure.com/cmunckhof/Imaging/_apis/build/status/AsyncExifTool?branchName=develop)](https://dev.azure.com/cmunckhof/Imaging/_build/latest?definitionId=6&branchName=develop) [![codecov](https://codecov.io/gh/coenm/AsyncExifTool/branch/develop/graph/badge.svg)](https://codecov.io/gh/coenm/AsyncExifTool) 
 
 </div>
 
