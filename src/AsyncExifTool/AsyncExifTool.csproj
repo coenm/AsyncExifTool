@@ -11,13 +11,13 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\ExifToolAsync.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\AsyncExifTool.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
     <PackageReference Include="MedallionShell" Version="1.6.1" />

@@ -11,7 +11,7 @@ variables:
   - name: DOTNET_SKIP_FIRST_TIME_EXPERIENCE
     value: 1
   - name: solution
-    value: 'ExifToolAsync.sln'
+    value: 'AsyncExifTool.sln'
   - name: buildPlatform
     value: 'x64'
   - name: buildConfiguration
@@ -19,10 +19,9 @@ variables:
   - name: COVERLET_EXCLUDE_FILTER
     value: '[TestHelper]*%2c[*.Test]*%2c[xunit.*]*'
   - name: COVERLET_INCLUDE_FILTER
-    value: '[*]ExifToolAsync.*%2c[ExifToolAsync*]*'
+    value: '[*]AsyncExifTool.*%2c[AsyncExifTool*]*'
   - name: COVERLET_EXCLUDE_ATTRIBUTE
     value: 'DebuggerNonUserCodeAttribute'
-  - group: AsyncExifTool
 
 jobs:
 
@@ -60,7 +59,7 @@ jobs:
     displayName: 'Test and calculate code coverage'
     inputs:
       command: test
-      projects: 'tests/ExifToolAsync.Test/ExifToolAsync.Test.csproj'
+      projects: 'tests/AsyncExifTool.Test/AsyncExifTool.Test.csproj'
   #    projects: '$(solution)'
       arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude=$(COVERLET_EXCLUDE_FILTER) /p:Include=$(COVERLET_INCLUDE_FILTER) /p:ExcludeByAttribute=$(COVERLET_EXCLUDE_ATTRIBUTE) /p:ExcludeByFile=*\*Designer.cs --no-restore --no-build --collect:"XPlat Code Coverage" --logger trx'
 
@@ -74,7 +73,7 @@ jobs:
       summaryFileLocation: '**/coverage.cobertura.xml'
 
    # Publish test coverage results to the codecov account
-  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml"
+  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/AsyncExifTool.Test/coverage.cobertura.xml"
     displayName: 'Publish code coverage to CodeCov.io'
 
 
@@ -114,7 +113,7 @@ jobs:
     displayName: 'Test and calculate code coverage'
     inputs:
       command: test
-      projects: 'tests\ExifToolAsync.Test\ExifToolAsync.Test.csproj'
+      projects: 'tests\AsyncExifTool.Test\AsyncExifTool.Test.csproj'
   #    projects: '$(solution)'
       arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude=$(COVERLET_EXCLUDE_FILTER) /p:Include=$(COVERLET_INCLUDE_FILTER) /p:ExcludeByAttribute=$(COVERLET_EXCLUDE_ATTRIBUTE) /p:ExcludeByFile=*\*Designer.cs --no-restore --no-build --collect:"XPlat Code Coverage" --logger trx'
   
@@ -128,7 +127,7 @@ jobs:
       summaryFileLocation: '**/coverage.cobertura.xml'
 
   # Publish test coverage results to the codecov account
-  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/ExifToolAsync.Test/coverage.cobertura.xml"
+  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/AsyncExifTool.Test/coverage.cobertura.xml"
     displayName: 'Publish code coverage to CodeCov.io'
 
  # Create nuget packages (nupkg, and snupkg)
