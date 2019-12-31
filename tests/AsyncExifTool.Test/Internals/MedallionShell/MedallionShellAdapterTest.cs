@@ -48,7 +48,7 @@
         public async Task DisposeAsync()
         {
             sut.ProcessExited -= SutOnProcessExited;
-            await sut.CancelAsync();
+            await sut.TryCancelAsync();
             sut.Kill();
             sut.Dispose();
             stream.Dispose();

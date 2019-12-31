@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -11,12 +10,13 @@
     using System.Threading.Tasks;
 
     using CoenM.ExifToolLib.Internals;
+    using CoenM.ExifToolLib.Internals.AsyncManualResetEvent;
     using CoenM.ExifToolLib.Internals.MedallionShell;
     using CoenM.ExifToolLib.Internals.Stream;
     using JetBrains.Annotations;
     using Nito.AsyncEx;
 
-    public class AsyncExifTool
+    public class AsyncExifTool : IAsyncDisposable
     {
         private readonly string exifToolPath;
         private readonly AsyncLock executeAsyncSyncLock = new AsyncLock();
@@ -29,6 +29,7 @@
         private readonly List<string> exifToolArguments;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> waitingTasks;
         private readonly ExifToolStayOpenStream stream;
+        private readonly AsyncManualResetEvent cmdExitedMre;
         private IShell shell;
         private int key;
         private bool disposed;
@@ -48,6 +49,7 @@
             disposed = false;
             disposing = false;
             cmdExited = false;
+            cmdExitedMre = new AsyncManualResetEvent(false);
             key = 0;
             exifToolPath = configuration.ExifToolFullFilename;
             exifToolArguments = new List<string>
@@ -63,9 +65,9 @@
             waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
         }
 
-        public AsyncExifTool(string exifToolPath) 
+        public AsyncExifTool(string exifToolPath)
             : this (new AsyncExifToolConfiguration(
-                exifToolPath, 
+                exifToolPath,
                 Encoding.UTF8,
                 ExifToolExecutable.NewLine, new List<string>
                 {
@@ -105,15 +107,14 @@
             if (disposing)
                 throw new Exception("Disposing");
 
-            var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, stopQueueCts.Token);
-
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, stopQueueCts.Token);
             using (await executeAsyncSyncLock.LockAsync(linkedCts.Token).ConfigureAwait(false))
             {
                 return await ExecuteImpAsync(args, ct).ConfigureAwait(false);
             }
         }
 
-        public async Task DisposeAsync(CancellationToken ct = default)
+        public async Task DisposeAsync(CancellationToken ct)
         {
             if (!initialized)
                 return;
@@ -127,86 +128,64 @@
                     return;
 
                 disposing = true;
-                Ignore(() => stopQueueCts?.Cancel());
 
-                try
+                // cancel all requests to process.
+                stopQueueCts?.Cancel();
+
+                var timeout = TimeSpan.FromMilliseconds(100);
+
+                if (!cmdExited)
                 {
-                    if (!cmdExited)
-                    {
-                        // This is really not okay. Not sure why or when the stay-open False command doesn't seem to work.
-                        // This is just a stupid 'workaround' and is okay for now.
-                        await Task.Delay(100, CancellationToken.None).ConfigureAwait(false);
-
-                        var command = new[] { ExifToolArguments.StayOpen, ExifToolArguments.BoolFalse };
-                        await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);
-
-                        if (!cmdExited)
-                            await Task.Delay(100, CancellationToken.None).ConfigureAwait(false);
-
-                        var retry = 0;
-                        while (retry < 3 && cmdExited == false)
-                        {
-                            try
-                            {
-                                await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);
-                                if (!cmdExited)
-                                    await Task.Delay(100, CancellationToken.None).ConfigureAwait(false);
-                            }
-                            catch (Exception)
-                            {
-                                // ignore
-                            }
-                            finally
-                            {
-                                retry++;
-                            }
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Exception occurred when executing stay_open false. Msg: {e.Message}");
-
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                    Task.Run(() => shell?.Kill(), CancellationToken.None);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-
-                    stream.Update -= StreamOnUpdate;
-
-                    Ignore(() => stream.Dispose());
-                    shell = null;
-
-                    return;
+                    // This is really not okay. Not sure why or when the stay-open False command doesn't seem to work.
+                    // This is just a stupid 'workaround' and is okay for now.
+                    await cmdExitedMre.WaitOneAsync(timeout).ConfigureAwait(false);
                 }
 
-                // else try to dispose gracefully
-                if (cmdExited == false && shell?.Task != null)
+                if (!cmdExited)
                 {
-                    var sw = Stopwatch.StartNew();
+                    // Try quit ExifTool process using '-stay_open' 'false' arguments.
+                    var command = new[] { ExifToolArguments.StayOpen, ExifToolArguments.BoolFalse };
+
+                    // todo ct can be cancelled..
+                    await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);
+
+                    await cmdExitedMre.WaitOneAsync(timeout).ConfigureAwait(false);
+                }
+
+                if (!cmdExited)
+                {
+                    // Try quit ExifTool process by sending Ctrl-C to the process.
+                    // This does not always work (depending on the OS, and if the process runs in a console or not).
+                    await shell.TryCancelAsync().ConfigureAwait(false);
+                    await cmdExitedMre.WaitOneAsync(timeout).ConfigureAwait(false);
+                }
+
+                if (!cmdExited)
+                {
+                    // Try kill the process.
                     try
                     {
                         shell.Kill();
-
-                        // why?
-                        await shell.Task.ConfigureAwait(false);
+                        await cmdExitedMre.WaitOneAsync(timeout).ConfigureAwait(false);
                     }
                     catch (Exception e)
                     {
-                        sw.Stop();
-                        Console.WriteLine($"Exception occurred after {sw.Elapsed} when awaiting ExifTool task. Msg: {e.Message}");
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                        Task.Run(() => shell?.Kill(), CancellationToken.None);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                        Console.WriteLine($"Exception happened during kill {e.Message}");
                     }
                 }
 
                 stream.Update -= StreamOnUpdate;
-                Ignore(UnsubscribeCmdOnProcessExitedOnce);
+                UnsubscribeCmdOnProcessExitedOnce();
                 Ignore(() => stream.Dispose());
                 shell = null;
                 disposed = true;
                 disposing = false;
             }
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(CancellationToken.None).ConfigureAwait(false);
         }
 
         internal virtual IShell CreateShell(string exifToolPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
@@ -231,7 +210,7 @@
             using (await executeImpAsyncSyncLock.LockAsync(ct).ConfigureAwait(false))
             {
                 var tcs = new TaskCompletionSource<string>();
-                
+
                 await using (ct.Register(() => tcs.TrySetCanceled()))
                 {
                     key++;
@@ -265,15 +244,16 @@
 
         private void StreamOnUpdate(object sender, DataCapturedArgs dataCapturedArgs)
         {
-            if (!waitingTasks.TryRemove(dataCapturedArgs.Key, out var tcs)) 
+            if (!waitingTasks.TryRemove(dataCapturedArgs.Key, out var tcs))
                 return;
-            
+
             tcs.TrySetResult(dataCapturedArgs.Data);
         }
 
         private void ShellOnProcessExited(object sender, EventArgs eventArgs)
         {
             cmdExited = true;
+            cmdExitedMre.Set();
             UnsubscribeCmdOnProcessExitedOnce();
         }
 
@@ -286,8 +266,9 @@
             {
                 if (!cmdExitedSubscribed)
                     return;
-                Ignore(() => shell.ProcessExited -= ShellOnProcessExited);
+
                 cmdExitedSubscribed = false;
+                shell.ProcessExited -= ShellOnProcessExited;
             }
         }
     }

@@ -53,10 +53,17 @@
         [NotNull]
         public Task<IShellResult> Task { get; }
 
-        public async Task CancelAsync()
+        public async Task<bool> TryCancelAsync()
         {
-            await cmd.TrySignalAsync(CommandSignal.ControlC)
-                .ConfigureAwait(false);
+            try
+            {
+                return await cmd.TrySignalAsync(CommandSignal.ControlC)
+                         .ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public void Kill()
