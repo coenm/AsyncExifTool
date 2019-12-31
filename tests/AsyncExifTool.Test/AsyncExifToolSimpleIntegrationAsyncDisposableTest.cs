@@ -1,10 +1,8 @@
 ﻿namespace CoenM.ExifToolLibTest
 {
-    using System;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
 
     using CoenM.ExifToolLib;
@@ -16,14 +14,14 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class AsyncExifToolSimpleIntegrationTest
+    public class AsyncExifToolSimpleIntegrationAsyncDisposableTest
     {
         private const int Repeat = 100;
         private readonly string image;
 
         private readonly ITestOutputHelper output;
 
-        public AsyncExifToolSimpleIntegrationTest(ITestOutputHelper output)
+        public AsyncExifToolSimpleIntegrationAsyncDisposableTest(ITestOutputHelper output)
         {
             this.output = output;
 
@@ -40,7 +38,7 @@
         public async Task RunExiftoolForVersionAndImageTest()
         {
             // arrange
-            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            await using var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             sut.Init();
 
             // act
@@ -50,8 +48,6 @@
             // assert
             version.Should().NotBeNullOrEmpty();
             result.Should().NotBeNullOrEmpty();
-
-            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
 
             // just for fun
             output.WriteLine(version);
@@ -65,7 +61,7 @@
         public async Task RunWithInputStreamTest()
         {
             // arrange
-            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            await using var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             var sw = Stopwatch.StartNew();
             sut.Init();
             sw.Stop();
@@ -78,7 +74,6 @@
             for (var i = 0; i < Repeat; i++)
                 version = await sut.GetVersionAsync().ConfigureAwait(false);
             sw.Stop();
-            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
 
             // assert
             output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {Repeat} times");
@@ -94,19 +89,21 @@
         {
             // arrange
             var tasks = new Task<string>[Repeat];
-            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
-            var sw = Stopwatch.StartNew();
-            sut.Init();
-            sw.Stop();
-            output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
+            Stopwatch sw;
+            await using (var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable))
+            {
+                sw = Stopwatch.StartNew();
+                sut.Init();
+                sw.Stop();
+                output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
 
-            // act
-            sw.Reset();
-            sw.Start();
-            for (var i = 0; i < Repeat; i++)
-                tasks[i] = sut.GetVersionAsync();
-            sw.Stop();
-            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromMinutes(1)).Token).ConfigureAwait(false);
+                // act
+                sw.Reset();
+                sw.Start();
+                for (var i = 0; i < Repeat; i++)
+                    tasks[i] = sut.GetVersionAsync();
+                sw.Stop();
+            }
 
             // assert
             var countCancelled = 0;
@@ -114,7 +111,7 @@
             {
                 try
                 {
-                    await t.ConfigureAwait(false);
+                    output.WriteLine(await t.ConfigureAwait(false));
                 }
                 catch (TaskCanceledException)
                 {
@@ -136,7 +133,7 @@
 
             // act
             sut.Init();
-            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
+            await sut.DisposeAsync().ConfigureAwait(false);
 
             // assert
             // sut.IsClosed.Should().Be(true);
@@ -146,7 +143,7 @@
         public async Task RunExifToolWithThreeCommands()
         {
             // arrange
-            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            await using var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             sut.Init();
 
             // act
@@ -163,8 +160,6 @@
 
             var result1 = await task1.ConfigureAwait(false);
             result1.Should().NotBeNullOrEmpty();
-
-            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
         }
     }
 }
