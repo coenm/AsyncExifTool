@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -17,7 +16,7 @@
     using JetBrains.Annotations;
     using Nito.AsyncEx;
 
-    public class AsyncExifTool
+    public class AsyncExifTool : IAsyncDisposable
     {
         private readonly string exifToolPath;
         private readonly AsyncLock executeAsyncSyncLock = new AsyncLock();
@@ -116,7 +115,7 @@
             }
         }
 
-        public async Task DisposeAsync(CancellationToken ct = default)
+        public async Task DisposeAsync(CancellationToken ct)
         {
             if (!initialized)
                 return;
@@ -176,28 +175,6 @@
                     }
                 }
 
-//
-//                 // else try to dispose gracefully
-//                 if (cmdExited == false && shell?.Task != null)
-//                 {
-//                     var sw = Stopwatch.StartNew();
-//                     try
-//                     {
-//                         shell.Kill();
-//
-//                         // why?
-//                         await shell.Task.ConfigureAwait(false);
-//                     }
-//                     catch (Exception e)
-//                     {
-//                         sw.Stop();
-//                         Console.WriteLine($"Exception occurred after {sw.Elapsed} when awaiting ExifTool task. Msg: {e.Message}");
-// #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-//                         Task.Run(() => shell?.Kill(), CancellationToken.None);
-// #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-//                     }
-//                 }
-
                 stream.Update -= StreamOnUpdate;
                 UnsubscribeCmdOnProcessExitedOnce();
                 Ignore(() => stream.Dispose());
@@ -205,6 +182,11 @@
                 disposed = true;
                 disposing = false;
             }
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(CancellationToken.None).ConfigureAwait(false);
         }
 
         internal virtual IShell CreateShell(string exifToolPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
