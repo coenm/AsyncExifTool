@@ -63,9 +63,9 @@
             waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
         }
 
-        public AsyncExifTool(string exifToolPath) 
+        public AsyncExifTool(string exifToolPath)
             : this (new AsyncExifToolConfiguration(
-                exifToolPath, 
+                exifToolPath,
                 Encoding.UTF8,
                 new List<string>
                 {
@@ -99,15 +99,14 @@
 
         public async Task<string> ExecuteAsync(IEnumerable<string> args, CancellationToken ct = default)
         {
-            if (!initialized)
-                throw new Exception("Not initialized");
             if (disposed)
                 throw new Exception("Disposed");
             if (disposing)
                 throw new Exception("Disposing");
+            if (!initialized)
+                throw new Exception("Not initialized");
 
-            var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, stopQueueCts.Token);
-
+            using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, stopQueueCts.Token))
             using (await executeAsyncSyncLock.LockAsync(linkedCts.Token).ConfigureAwait(false))
             {
                 return await ExecuteImpAsync(args, ct).ConfigureAwait(false);
@@ -128,7 +127,9 @@
                     return;
 
                 disposing = true;
-                Ignore(() => stopQueueCts?.Cancel());
+
+                // cancel all requests to process.
+                stopQueueCts?.Cancel();
 
                 try
                 {
@@ -143,25 +144,6 @@
 
                         if (!cmdExited)
                             await Task.Delay(100, CancellationToken.None).ConfigureAwait(false);
-
-                        var retry = 0;
-                        while (retry < 3 && cmdExited == false)
-                        {
-                            try
-                            {
-                                await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);
-                                if (!cmdExited)
-                                    await Task.Delay(100, CancellationToken.None).ConfigureAwait(false);
-                            }
-                            catch (Exception)
-                            {
-                                // ignore
-                            }
-                            finally
-                            {
-                                retry++;
-                            }
-                        }
                     }
                 }
                 catch (Exception e)
@@ -232,7 +214,7 @@
             using (await executeImpAsyncSyncLock.LockAsync(ct).ConfigureAwait(false))
             {
                 var tcs = new TaskCompletionSource<string>();
-                
+
                 await using (ct.Register(() => tcs.TrySetCanceled()))
                 {
                     key++;
@@ -266,9 +248,9 @@
 
         private void StreamOnUpdate(object sender, DataCapturedArgs dataCapturedArgs)
         {
-            if (!waitingTasks.TryRemove(dataCapturedArgs.Key, out var tcs)) 
+            if (!waitingTasks.TryRemove(dataCapturedArgs.Key, out var tcs))
                 return;
-            
+
             tcs.TrySetResult(dataCapturedArgs.Data);
         }
 
