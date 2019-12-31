@@ -1,4 +1,4 @@
-﻿namespace CoenM.ExifToolLibTest
+﻿namespace CoenM.ExifToolLibTest.Integration
 {
     using System.Diagnostics;
     using System.IO;

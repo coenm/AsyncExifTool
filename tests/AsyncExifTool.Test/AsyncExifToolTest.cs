@@ -15,17 +15,15 @@
     using TestHelper;
     using Xunit;
 
-    public class AsyncExifToolSimpleTest
+    public class AsyncExifToolTest
     {
         private readonly AsyncExifTool sut;
-        private readonly IFakeExifTool fakeFakeExifTool;
         private readonly IShell shell;
 
-        public AsyncExifToolSimpleTest()
+        public AsyncExifToolTest()
         {
             shell = A.Fake<IShell>();
             sut = new TestableAsyncFakeExifTool(shell);
-            fakeFakeExifTool = sut as IFakeExifTool;
 
             A.CallTo(() => shell.WriteLineAsync(A<string>._)).Returns(Task.CompletedTask);
         }
@@ -46,7 +44,7 @@
         public async Task ExecuteAsync_ShouldThrow_WhenDisposing()
         {
             // arrange
-            var control = fakeFakeExifTool.SetupControl(ExifToolArguments.BoolFalse);
+            var control = CreateExifToolController(ExifToolArguments.BoolFalse);
             sut.Initialize();
             var disposingTask = sut.DisposeAsync();
 
@@ -119,7 +117,7 @@
         public async Task ExecuteAsync_ShouldFinishAllRequestsAlthoughOneWasCancelled()
         {
             // arrange
-            var controlExecute1 = fakeFakeExifTool.SetupControl("-execute1");
+            var controlExecute1 = CreateExifToolController("-execute1");
             var cts = new CancellationTokenSource();
             sut.Initialize();
 
@@ -145,7 +143,7 @@
         public async Task ExecuteAsync_ShouldPassArgumentsToExiftoolUnlessCommandWasCancelled()
         {
             // arrange
-            var controlExecute1 = fakeFakeExifTool.SetupControl("-execute1");
+            var controlExecute1 = CreateExifToolController("-execute1");
             var cts = new CancellationTokenSource();
             sut.Initialize();
 
@@ -171,6 +169,11 @@
             A.CallTo(() => shell.WriteLineAsync("-execute3")).MustNotHaveHappened();
         }
 
+        private ExifToolCommandControl CreateExifToolController(string key)
+        {
+            return ((TestableAsyncFakeExifTool)sut).SetupControl(key);
+        }
+
         private async Task IgnoreException(Task task)
         {
             try
@@ -183,12 +186,7 @@
             }
         }
 
-        private interface IFakeExifTool
-        {
-            ExifToolCommandControl SetupControl(string key);
-        }
-
-        private class TestableAsyncFakeExifTool : AsyncExifTool, IFakeExifTool
+        private class TestableAsyncFakeExifTool : AsyncExifTool
         {
             private readonly IShell shell;
             private readonly Dictionary<string, ExifToolCommandControl> exiftoolControl;
@@ -201,7 +199,7 @@
                 exiftoolControl = new Dictionary<string, ExifToolCommandControl>();
             }
 
-            ExifToolCommandControl IFakeExifTool.SetupControl(string key)
+            public ExifToolCommandControl SetupControl(string key)
             {
                 var control = new ExifToolCommandControl();
                 exiftoolControl.TryAdd(key, control);
