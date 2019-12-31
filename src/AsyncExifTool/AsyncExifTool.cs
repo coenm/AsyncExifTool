@@ -11,6 +11,7 @@
     using System.Threading.Tasks;
 
     using CoenM.ExifToolLib.Internals;
+    using CoenM.ExifToolLib.Internals.AsyncManualResetEvent;
     using CoenM.ExifToolLib.Internals.MedallionShell;
     using CoenM.ExifToolLib.Internals.Stream;
     using JetBrains.Annotations;
@@ -29,6 +30,7 @@
         private readonly List<string> exifToolArguments;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> waitingTasks;
         private readonly ExifToolStayOpenStream stream;
+        private readonly AsyncManualResetEvent cmdExitedMre;
         private IShell shell;
         private int key;
         private bool disposed;
@@ -48,6 +50,7 @@
             disposed = false;
             disposing = false;
             cmdExited = false;
+            cmdExitedMre = new AsyncManualResetEvent(false);
             key = 0;
             exifToolPath = configuration.ExifToolFullFilename;
             exifToolArguments = new List<string>
@@ -99,14 +102,14 @@
 
         public async Task<string> ExecuteAsync(IEnumerable<string> args, CancellationToken ct = default)
         {
+            if (!initialized)
+                throw new Exception("Not initialized");
             if (disposed)
                 throw new Exception("Disposed");
             if (disposing)
                 throw new Exception("Disposing");
-            if (!initialized)
-                throw new Exception("Not initialized");
 
-            using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, stopQueueCts.Token))
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, stopQueueCts.Token);
             using (await executeAsyncSyncLock.LockAsync(linkedCts.Token).ConfigureAwait(false))
             {
                 return await ExecuteImpAsync(args, ct).ConfigureAwait(false);
@@ -137,13 +140,13 @@
                     {
                         // This is really not okay. Not sure why or when the stay-open False command doesn't seem to work.
                         // This is just a stupid 'workaround' and is okay for now.
-                        await Task.Delay(100, CancellationToken.None).ConfigureAwait(false);
+                        if (!await cmdExitedMre.WaitOneAsync(TimeSpan.FromMilliseconds(100)).ConfigureAwait(false))
+                        {
+                            var command = new[] { ExifToolArguments.StayOpen, ExifToolArguments.BoolFalse };
+                            await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);
+                        }
 
-                        var command = new[] { ExifToolArguments.StayOpen, ExifToolArguments.BoolFalse };
-                        await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);
-
-                        if (!cmdExited)
-                            await Task.Delay(100, CancellationToken.None).ConfigureAwait(false);
+                        await cmdExitedMre.WaitOneAsync(TimeSpan.FromMilliseconds(100)).ConfigureAwait(false);
                     }
                 }
                 catch (Exception e)
@@ -257,6 +260,7 @@
         private void ShellOnProcessExited(object sender, EventArgs eventArgs)
         {
             cmdExited = true;
+            cmdExitedMre.Set();
             UnsubscribeCmdOnProcessExitedOnce();
         }
 
