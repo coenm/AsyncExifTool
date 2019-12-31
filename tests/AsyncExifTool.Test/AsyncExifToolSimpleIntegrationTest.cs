@@ -109,7 +109,7 @@
             await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromMinutes(1)).Token).ConfigureAwait(false);
 
             // assert
-            var count = 0;
+            var countCancelled = 0;
             foreach (var t in tasks)
             {
                 try
@@ -118,12 +118,12 @@
                 }
                 catch (TaskCanceledException)
                 {
-                    count++;
+                    countCancelled++;
                 }
             }
 
-            count.Should().BeGreaterOrEqualTo(Repeat / 2).And.NotBe(Repeat);
-            output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {Repeat} times");
+            countCancelled.Should().BeGreaterOrEqualTo(Repeat / 2).And.NotBe(Repeat);
+            output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {Repeat - countCancelled} times");
         }
 
         [Fact]
