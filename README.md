@@ -1,7 +1,9 @@
 <h1 align="center">
-AsyncExifTool
+<img src="https://raw.githubusercontent.com/coenm/AsyncExifTool/develop/icon/AsyncExifTool.512.png" alt="AsyncExifTool" width="256"/>
 <br/>
+AsyncExifTool
 </h1>
+
 <div align="center">
 
 [![Build Status](https://dev.azure.com/cmunckhof/Imaging/_apis/build/status/AsyncExifTool?branchName=develop)](https://dev.azure.com/cmunckhof/Imaging/_build/latest?definitionId=6&branchName=develop) [![codecov](https://codecov.io/gh/coenm/AsyncExifTool/branch/develop/graph/badge.svg)](https://codecov.io/gh/coenm/AsyncExifTool) 
@@ -68,3 +70,8 @@ var task3 = asyncExifTool.ExecuteAsync( .. );
 // ExifTool is closed and cannot be initialized anymore nor does it accept any requests.
 await asyncExifTool.DisposeAsync();
 ```
+
+
+## Icon
+
+[Photo](https://thenounproject.com/term/photo/2013925) designed by [OCHA Visual](https://thenounproject.com/ochavisual) from [The Noun Project](https://thenounproject.com).
