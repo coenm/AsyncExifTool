@@ -65,8 +65,6 @@ var task3 = asyncExifTool.ExecuteAsync( .. );
 
 
 // Disposing AsyncExifTool
-// At this moment, AsyncExifTool does NOT implement IDisposable, or IAsyncDisposable (netstandard2.1) so you will have to Dispose the instance yourself.
-// This will cancel all pending requests. The executing request is awaited unless timedout. 
 // ExifTool is closed and cannot be initialized anymore nor does it accept any requests.
-await asyncExifTool.DisposeAsync(ct);
+await asyncExifTool.DisposeAsync();
 ```
