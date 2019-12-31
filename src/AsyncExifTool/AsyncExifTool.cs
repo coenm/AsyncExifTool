@@ -188,9 +188,9 @@
             await DisposeAsync(CancellationToken.None).ConfigureAwait(false);
         }
 
-        internal virtual IShell CreateShell(string exifToolPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
+        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
         {
-            return new MedallionShellAdapter(exifToolPath, args, outputStream, errorStream);
+            return new MedallionShellAdapter(exifToolFullPath, args, outputStream, errorStream);
         }
 
         private static void Ignore(Action action)
