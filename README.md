@@ -8,7 +8,11 @@ AsyncExifTool
 
 </div>
 
+
 This library is an async wrapper around ExifTool. The ExifTool process is started using the `--stay-open` flag.
+
+This library does NOT include an instance of ExifTool. You have to install/compile/unpack ExifTool yourself and point AsyncExifTool to the right location.
+
 
 ## What is ExifTool
 
@@ -18,4 +22,49 @@ According to [exiftool.org](https://exiftool.org/)
 
 ## API
 
-todo
+AsyncExifTool requires an configuration. 
+
+```csharp
+// we need to tell AsyncExifTool where  exiftool executable is located.
+var exifToolPath = @"D:\exiftool.exe";
+
+// What encoding should AsyncExifTool use to decode the resulting bytes
+var exifToolResultEncoding = Encoding.UTF8;
+
+// The newline characters used. Windows is '\r\n', otherwise '\n'.
+var exifToolResultNewLine = "\r\n";
+
+// Construction of the ExifToolConfiguration
+var config = new AsyncExifToolConfiguration(exifToolPath, exifToolResultEncoding, exifToolResultNewLine);
+```
+
+Use the configuration to create an instance of AsyncExifTool.
+
+```csharp
+var asyncExifTool = new AsyncExifTool(config);
+
+// to make asyncExifTool operational, we need to initialize.
+asyncExifTool.Initialize();
+
+// Define cancellation token to make it possible to cancel an exiftool request if it is not already passed to exiftool.
+// Otherwise, cancelling is not possible at this moment.
+var ct = new CancellationToken.None;
+
+// from this moment on, asyncExifTool accepts exiftool commands.
+// ie.
+// get exiftool version
+var result1 = await asyncExifTool.ExecuteAsync(new [] { "-ver" }, ct);
+
+// Get ImageSize and ExposureTime tag names and values.
+var result2 = await asyncExifTool.ExecuteAsync(new [] { "-s", "-ImageSize", "-ExposureTime", "D:\image1.jpg" } /* cancellation token is optional */);
+ 
+// requests are queued and processed one at a time while keeping exiftool 'open'. 
+var task1 = asyncExifTool.ExecuteAsync( .. );
+var task2 = asyncExifTool.ExecuteAsync( .. );
+var task3 = asyncExifTool.ExecuteAsync( .. );
+
+
+// Disposing AsyncExifTool
+// ExifTool is closed and cannot be initialized anymore nor does it accept any requests.
+await asyncExifTool.DisposeAsync();
+```

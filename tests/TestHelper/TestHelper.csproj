@@ -11,7 +11,7 @@
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\ExifToolAsync.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\AsyncExifTool.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />

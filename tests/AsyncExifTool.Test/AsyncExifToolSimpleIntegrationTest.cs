@@ -41,7 +41,7 @@
         {
             // arrange
             var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
-            sut.Init();
+            sut.Initialize();
 
             // act
             var version = await sut.GetVersionAsync().ConfigureAwait(false);
@@ -58,6 +58,36 @@
             output.WriteLine(result);
         }
 
+        [Fact]
+        [Xunit.Categories.IntegrationTest]
+        [ExifTool]
+        public async Task RunExiftoolGetImageSizeAndExposureTime()
+        {
+            // arrange
+            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            sut.Initialize();
+
+            // act
+            var result = await sut.ExecuteAsync(
+                    new[]
+                    {
+                        "-s",
+                        "-ImageSize",
+                        "-ExposureTime",
+                        image,
+                    })
+                .ConfigureAwait(false);
+
+            // assert
+            result.Should().Be("ImageSize                       : 1712x2288");
+
+            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
+
+            // just for fun
+            output.WriteLine(image);
+            output.WriteLine(result);
+        }
+
         [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows)]
         [Xunit.Categories.IntegrationTest]
         [ExifTool]
@@ -67,7 +97,7 @@
             // arrange
             var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             var sw = Stopwatch.StartNew();
-            sut.Init();
+            sut.Initialize();
             sw.Stop();
             output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
 
@@ -96,7 +126,7 @@
             var tasks = new Task<string>[Repeat];
             var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             var sw = Stopwatch.StartNew();
-            sut.Init();
+            sut.Initialize();
             sw.Stop();
             output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
 
@@ -135,7 +165,7 @@
             var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
 
             // act
-            sut.Init();
+            sut.Initialize();
             await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
 
             // assert
@@ -147,7 +177,7 @@
         {
             // arrange
             var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
-            sut.Init();
+            sut.Initialize();
 
             // act
             var task1 = sut.ExecuteAsync(image);

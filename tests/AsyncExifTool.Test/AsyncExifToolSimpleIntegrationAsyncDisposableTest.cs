@@ -39,7 +39,7 @@
         {
             // arrange
             await using var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
-            sut.Init();
+            sut.Initialize();
 
             // act
             var version = await sut.GetVersionAsync().ConfigureAwait(false);
@@ -63,7 +63,7 @@
             // arrange
             await using var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             var sw = Stopwatch.StartNew();
-            sut.Init();
+            sut.Initialize();
             sw.Stop();
             output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
 
@@ -93,7 +93,7 @@
             await using (var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable))
             {
                 sw = Stopwatch.StartNew();
-                sut.Init();
+                sut.Initialize();
                 sw.Stop();
                 output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
 
@@ -132,7 +132,7 @@
             var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
 
             // act
-            sut.Init();
+            sut.Initialize();
             await sut.DisposeAsync().ConfigureAwait(false);
 
             // assert
@@ -144,7 +144,7 @@
         {
             // arrange
             await using var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
-            sut.Init();
+            sut.Initialize();
 
             // act
             var task1 = sut.ExecuteAsync(image);
