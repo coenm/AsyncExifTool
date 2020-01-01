@@ -11,6 +11,7 @@
     using EagleEye.TestHelper.XUnit;
     using FluentAssertions;
     using TestHelper;
+    using TestHelper.XUnit.Facts;
     using Xunit;
     using Xunit.Abstractions;
 
@@ -53,9 +54,9 @@
                 File.Delete(image + "_original");
         }
 
-        [Fact]
         [Xunit.Categories.IntegrationTest]
         [ExifTool]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AzureDevopsWindows, reason: "Sometimes this tests hangs on AppVeyor (windows).")]
         public async Task WriteXmpSubjectsToImageTest()
         {
             // arrange

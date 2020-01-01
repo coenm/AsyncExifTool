@@ -59,7 +59,7 @@
         private static bool IsRunningOnDevOpsImpl()
         {
             // not sure what env variable to use for detection.
-            return bool.TryParse(Environment.GetEnvironmentVariable("System.TeamFoundationCollectionUri"), out var value) && value;
+            return IsWindows && bool.TryParse(Environment.GetEnvironmentVariable("System.TeamFoundationCollectionUri"), out var value) && value;
         }
 
         private static bool IsRunningOnTravisImpl()

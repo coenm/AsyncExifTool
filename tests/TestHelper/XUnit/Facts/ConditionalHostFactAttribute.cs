@@ -16,10 +16,10 @@
             if (TestEnvironment.RunsOnTravis && (allowedHosts & TestHost.Travis) == TestHost.Travis)
                 return;
 
-            if (!TestEnvironment.RunsOnCI && (allowedHosts & TestHost.Local) == TestHost.Local)
+            if (TestEnvironment.RunsOnDevOps && (allowedHosts & TestHost.AzureDevopsWindows) == TestHost.AzureDevopsWindows)
                 return;
 
-            if (TestEnvironment.RunsOnDevOps && (allowedHosts & TestHost.AzureDevopsWindows) == TestHost.AzureDevopsWindows)
+            if (!TestEnvironment.RunsOnCI && (allowedHosts & TestHost.Local) == TestHost.Local)
                 return;
 
             Skip = $"Test skipped. Configured to run on {allowedHosts}. " + reason;
