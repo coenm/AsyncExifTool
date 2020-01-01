@@ -144,10 +144,15 @@
                 if (!cmdExited)
                 {
                     // Try quit ExifTool process using '-stay_open' 'false' arguments.
-                    var command = new[] { ExifToolArguments.StayOpen, ExifToolArguments.BoolFalse };
-
-                    // todo ct can be cancelled..
-                    await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);
+                    var command = new[] {ExifToolArguments.StayOpen, ExifToolArguments.BoolFalse};
+                    try
+                    {
+                        await ExecuteOnlyAsync(command, ct);
+                    }
+                    catch (Exception)
+                    {
+                        // ignore
+                    }
 
                     await cmdExitedMre.WaitOneAsync(timeout).ConfigureAwait(false);
                 }
@@ -185,7 +190,8 @@
 
         public async ValueTask DisposeAsync()
         {
-            await DisposeAsync(CancellationToken.None).ConfigureAwait(false);
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+            await DisposeAsync(cts.Token).ConfigureAwait(false);
         }
 
         internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
