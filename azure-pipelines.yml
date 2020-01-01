@@ -105,6 +105,13 @@ jobs:
   - script: dotnet build --configuration $(buildConfiguration) --no-restore
     displayName: 'dotnet build $(buildConfiguration)'
 
+  - task: DotNetCoreCLI@2
+    displayName: 'Test'
+    inputs:
+      command: test
+      projects: 'tests\AsyncExifTool.Test\AsyncExifTool.Test.csproj'
+      arguments: '-c $(buildConfiguration) --no-restore --no-build --logger trx'
+
   # Run tests and recored coverage.
   # Recording coverage is done using coverlet and can be enabled for each test project by adding the nuget package 'coverlet.msbuild'
   # when the package is not referenced, no coverage is recorded but the tests are run normally.
