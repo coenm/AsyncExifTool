@@ -27,21 +27,29 @@
                      .SingleOrDefault();
 
             image.Should().NotBeNullOrEmpty("Image should exist on system.");
+
+            string tmpPath = Path.GetTempPath();
+            tmpPath.Should().NotBeNullOrWhiteSpace("We need an temp path");
+            if (!Directory.Exists(tmpPath))
+                Directory.CreateDirectory(tmpPath);
+
+            Directory.Exists(tmpPath).Should().BeTrue("Temp path should exists");
+
+            var newImagePath = Path.Combine(tmpPath, new FileInfo(image).Name);
+            if (!File.Exists(newImagePath))
+                File.Copy(image, newImagePath);
+
+            File.Exists(newImagePath).Should().BeTrue("Ìmage should have been copied to temp directory.");
+
+            image = newImagePath;
         }
 
         public void Dispose()
         {
-            var originalSuffixedFiles = Directory.GetFiles(TestImages.InputImagesDirectoryFullPath, "*.jpg_original", SearchOption.AllDirectories);
-
-            foreach (var originalSuffixFile in originalSuffixedFiles)
-            {
-                var originalFilename = originalSuffixFile.Replace("_original", string.Empty);
-
-                if (File.Exists(originalFilename))
-                    File.Delete(originalFilename);
-
-                File.Move(originalSuffixFile, originalFilename);
-            }
+            if (File.Exists(image))
+                File.Delete(image);
+            if (File.Exists(image + "_original"))
+                File.Delete(image + "_original");
         }
 
         [Fact]
