@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using CoenM.ExifToolLib;
@@ -58,30 +59,28 @@
         public async Task WriteXmpSubjectsToImageTest()
         {
             // arrange
-            await using var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
-            sut.Initialize();
-
-            // act
-            var @params = new[]
+            await using (var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable))
             {
-                "-XMP-dc:Subject+=def",
-                "-XMP-dc:Subject+=abc",
-                "-XMP-dc:Subject=xyz",
-                image,
-            };
+                sut.Initialize();
 
-            var readResultBefore = await sut.ExecuteAsync(image).ConfigureAwait(false);
-            var writeResult = await sut.ExecuteAsync(@params).ConfigureAwait(false);
-            var readResultAfter = await sut.ExecuteAsync(image).ConfigureAwait(false);
+                // act
+                var @params = new[] {"-XMP-dc:Subject+=def", "-XMP-dc:Subject+=abc", "-XMP-dc:Subject=xyz", image,};
 
-            // assert
-            readResultBefore.Should().Contain("Subject                         : dog, new york, puppy");
-            readResultBefore.Should().NotContain("Subject                         : dog, new york, puppy, def, abc, xyz");
-            writeResult.Should().Be("    1 image files updated");
-            readResultAfter.Should().Contain("Subject                         : dog, new york, puppy, def, abc, xyz");
+                var readResultBefore = await sut.ExecuteAsync(image).ConfigureAwait(false);
+                var writeResult = await sut.ExecuteAsync(@params).ConfigureAwait(false);
+                var readResultAfter = await sut.ExecuteAsync(image).ConfigureAwait(false);
 
-            // just for fun
-            output.WriteLine(readResultAfter);
+                // assert
+                readResultBefore.Should().Contain("Subject                         : dog, new york, puppy");
+                readResultBefore.Should().NotContain("Subject                         : dog, new york, puppy, def, abc, xyz");
+                writeResult.Should().Be("    1 image files updated");
+                readResultAfter.Should().Contain("Subject                         : dog, new york, puppy, def, abc, xyz");
+
+                // just for fun
+                output.WriteLine(readResultAfter);
+
+                await sut.DisposeAsync(new CancellationTokenSource(2000).Token);
+            }
         }
     }
 }
