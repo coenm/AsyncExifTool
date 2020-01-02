@@ -48,7 +48,10 @@
 
         private static bool IsContinuousIntegrationImpl()
         {
-            return bool.TryParse(Environment.GetEnvironmentVariable("CI"), out var isCi) && isCi;
+            var ci = bool.TryParse(Environment.GetEnvironmentVariable("CI"), out var isCi) && isCi;
+
+            // Not sure if DevOps uses "CI" environment variable.
+            return ci || RunsOnDevOps;
         }
 
         private static bool IsRunningOnAppVeyorImpl()
@@ -58,8 +61,7 @@
 
         private static bool IsRunningOnDevOpsImpl()
         {
-            // not sure what env variable to use for detection.
-            return IsWindows && bool.TryParse(Environment.GetEnvironmentVariable("System.TeamFoundationCollectionUri"), out var value) && value;
+            return bool.TryParse(Environment.GetEnvironmentVariable("TF_BUILD"), out var value) && value;
         }
 
         private static bool IsRunningOnTravisImpl()

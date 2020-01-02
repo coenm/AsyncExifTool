@@ -16,7 +16,7 @@
             if (TestEnvironment.RunsOnTravis && (allowedHosts & TestHost.Travis) == TestHost.Travis)
                 return;
 
-            if (TestEnvironment.RunsOnDevOps && (allowedHosts & TestHost.AzureDevopsWindows) == TestHost.AzureDevopsWindows)
+            if (TestEnvironment.RunsOnDevOps && TestEnvironment.IsWindows && (allowedHosts & TestHost.AzureDevopsWindows) == TestHost.AzureDevopsWindows)
                 return;
 
             if (!TestEnvironment.RunsOnCI && (allowedHosts & TestHost.Local) == TestHost.Local)
@@ -40,7 +40,7 @@
                 return;
             }
 
-            if (TestEnvironment.RunsOnDevOps && (hosts & TestHost.AzureDevopsWindows) == TestHost.AzureDevopsWindows)
+            if (TestEnvironment.RunsOnDevOps && TestEnvironment.IsWindows && (hosts & TestHost.AzureDevopsWindows) == TestHost.AzureDevopsWindows)
             {
                 ActOnHostMatched(mode, TestHost.AzureDevopsWindows, reason);
                 return;
@@ -56,10 +56,10 @@
                 Skip = $"Test skipped. Configured to run on {hosts}. " + reason;
         }
 
-        private void ActOnHostMatched(TestHostMode mode, TestHost matchedTesthost, string reason)
+        private void ActOnHostMatched(TestHostMode mode, TestHost matchedTestHost, string reason)
         {
             if (mode == TestHostMode.Skip)
-                Skip = $"Test skipped for {matchedTesthost}. " + reason;
+                Skip = $"Test skipped for {matchedTestHost}. " + reason;
         }
     }
 }

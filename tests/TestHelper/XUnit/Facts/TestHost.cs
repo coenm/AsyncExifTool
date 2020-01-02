@@ -31,7 +31,7 @@
         Travis = 0x01 << 3,
 
         /// <summary>
-        /// AzureDevops
+        /// AzureDevops running on Windows.
         /// </summary>
         AzureDevopsWindows = 0x01 << 4,
     }

@@ -56,7 +56,7 @@
 
         [Xunit.Categories.IntegrationTest]
         [ExifTool]
-        [ConditionalHostFact(TestHostMode.Skip, TestHost.AzureDevopsWindows, reason: "Sometimes this tests hangs on AppVeyor (windows).")]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AzureDevopsWindows, reason: "This test is probably the reason that DevOps agent running on windows hangs.")]
         public async Task WriteXmpSubjectsToImageTest()
         {
             // arrange
