@@ -17,8 +17,9 @@
 
     public class AsyncExifToolShouldWriteToImagesTest : IDisposable
     {
-        private readonly string image;
         private readonly ITestOutputHelper output;
+        private string image;
+        private string image1;
 
         public AsyncExifToolShouldWriteToImagesTest(ITestOutputHelper output)
         {
@@ -29,8 +30,25 @@
                      .SingleOrDefault();
 
             image.Should().NotBeNullOrEmpty("Image should exist on system.");
+         }
 
-            string tmpPath = Path.GetTempPath();
+        public void Dispose()
+        {
+            if (string.IsNullOrWhiteSpace(image1))
+                return;
+            if (File.Exists(image1))
+                File.Delete(image1);
+            if (File.Exists(image1 + "_original"))
+                File.Delete(image1 + "_original");
+        }
+
+        [Xunit.Categories.IntegrationTest]
+        [ExifTool]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AzureDevopsWindows, reason: "This test is probably the reason that DevOps agent running on windows hangs.")]
+        public async Task WriteXmpSubjectsToImageTest()
+        {
+            // arrange
+            var tmpPath = Path.GetTempPath();
             tmpPath.Should().NotBeNullOrWhiteSpace("We need an temp path");
             if (!Directory.Exists(tmpPath))
                 Directory.CreateDirectory(tmpPath);
@@ -43,23 +61,9 @@
 
             File.Exists(newImagePath).Should().BeTrue("Ìmage should have been copied to temp directory.");
 
-            image = newImagePath;
-        }
+            image1 = newImagePath;
+            image = image1;
 
-        public void Dispose()
-        {
-            if (File.Exists(image))
-                File.Delete(image);
-            if (File.Exists(image + "_original"))
-                File.Delete(image + "_original");
-        }
-
-        [Xunit.Categories.IntegrationTest]
-        [ExifTool]
-        [ConditionalHostFact(TestHostMode.Skip, TestHost.AzureDevopsWindows, reason: "This test is probably the reason that DevOps agent running on windows hangs.")]
-        public async Task WriteXmpSubjectsToImageTest()
-        {
-            // arrange
             await using (var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable))
             {
                 sut.Initialize();
