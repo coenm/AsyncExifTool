@@ -12,9 +12,9 @@
     using EagleEye.TestHelper.XUnit;
     using FluentAssertions;
     using TestHelper;
-    using TestHelper.XUnit.Facts;
     using Xunit;
     using Xunit.Abstractions;
+    using Xunit.Categories;
 
     public class AsyncExifToolSimpleIntegrationTest
     {
@@ -35,7 +35,7 @@
         }
 
         [Fact]
-        [Xunit.Categories.IntegrationTest]
+        [IntegrationTest]
         [ExifTool]
         public async Task RunExiftoolForVersionAndImageTest()
         {
@@ -59,7 +59,7 @@
         }
 
         [Fact]
-        [Xunit.Categories.IntegrationTest]
+        [IntegrationTest]
         [ExifTool]
         public async Task RunExiftoolGetImageSizeAndExposureTime()
         {
@@ -88,8 +88,8 @@
             output.WriteLine(result);
         }
 
-        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows)]
-        [Xunit.Categories.IntegrationTest]
+        [Fact]
+        [IntegrationTest]
         [ExifTool]
         [Performance]
         public async Task RunWithInputStreamTest()
@@ -117,7 +117,7 @@
         }
 
         [Fact]
-        [Xunit.Categories.IntegrationTest]
+        [IntegrationTest]
         [ExifTool]
         [Performance]
         public async Task DisposeAsyncShouldCancelAllPendingRequestsTest()
@@ -157,7 +157,7 @@
         }
 
         [Fact]
-        [Xunit.Categories.IntegrationTest]
+        [IntegrationTest]
         [ExifTool]
         public async Task InitAndDisposeTest()
         {

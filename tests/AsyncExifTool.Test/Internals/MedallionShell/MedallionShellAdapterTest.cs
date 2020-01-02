@@ -13,7 +13,6 @@
     using EagleEye.TestHelper.XUnit;
     using FluentAssertions;
     using TestHelper;
-    using TestHelper.XUnit.Facts;
     using Xunit;
     using Xunit.Abstractions;
 
@@ -54,8 +53,8 @@
             stream.Dispose();
         }
 
+        [Fact]
         [ExifTool]
-        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows, reason: "Sometimes this tests hangs on AppVeyor (windows).")]
         public async Task KillingSutShouldInvokeProcessExitedEventTest()
         {
             // arrange
