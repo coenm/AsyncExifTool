@@ -147,7 +147,7 @@
                     var command = new[] {ExifToolArguments.StayOpen, ExifToolArguments.BoolFalse};
                     try
                     {
-                        await ExecuteOnlyAsync(command, ct);
+                        await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);;
                     }
                     catch (Exception)
                     {
