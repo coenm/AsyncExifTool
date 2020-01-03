@@ -145,14 +145,14 @@
                 {
                     // Try quit ExifTool process using '-stay_open' 'false' arguments.
                     var command = new[] {ExifToolArguments.StayOpen, ExifToolArguments.BoolFalse};
-                    try
-                    {
+//                    try
+//                    {
                         await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);;
-                    }
-                    catch (Exception)
-                    {
-                        // ignore
-                    }
+//                    }
+//                    catch (Exception)
+//                    {
+//                        // ignore
+//                    }
 
                     await cmdExitedMre.WaitOneAsync(timeout).ConfigureAwait(false);
                 }
