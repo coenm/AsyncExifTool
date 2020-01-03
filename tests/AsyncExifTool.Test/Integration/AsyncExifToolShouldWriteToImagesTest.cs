@@ -1,6 +1,5 @@
-﻿namespace CoenM.ExifToolLibTest.Integration
+namespace CoenM.ExifToolLibTest.Integration
 {
-    using System;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -15,11 +14,10 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class AsyncExifToolShouldWriteToImagesTest : IDisposable
+    public class AsyncExifToolShouldWriteToImagesTest : IAsyncLifetime
     {
         private readonly ITestOutputHelper output;
         private string image;
-        private string image1;
 
         public AsyncExifToolShouldWriteToImagesTest(ITestOutputHelper output)
         {
@@ -30,24 +28,15 @@
                      .SingleOrDefault();
 
             image.Should().NotBeNullOrEmpty("Image should exist on system.");
-         }
-
-        public void Dispose()
-        {
-            if (string.IsNullOrWhiteSpace(image1))
-                return;
-            if (File.Exists(image1))
-                File.Delete(image1);
-            if (File.Exists(image1 + "_original"))
-                File.Delete(image1 + "_original");
         }
 
-        [Xunit.Categories.IntegrationTest]
-        [ExifTool]
-        [ConditionalHostFact(TestHostMode.Skip, TestHost.AzureDevopsWindows, reason: "This test is probably the reason that DevOps agent running on windows hangs.")]
-        public async Task WriteXmpSubjectsToImageTest()
+        public Task InitializeAsync()
         {
-            // arrange
+            if (TestEnvironment.RunsOnDevOps && TestEnvironment.IsWindows)
+            {
+                return Task.CompletedTask;
+            }
+
             var tmpPath = Path.GetTempPath();
             tmpPath.Should().NotBeNullOrWhiteSpace("We need an temp path");
             if (!Directory.Exists(tmpPath))
@@ -59,11 +48,31 @@
             if (!File.Exists(newImagePath))
                 File.Copy(image, newImagePath);
 
-            File.Exists(newImagePath).Should().BeTrue("Ìmage should have been copied to temp directory.");
+            File.Exists(newImagePath).Should().BeTrue("Image should have been copied to temp directory.");
 
-            image1 = newImagePath;
-            image = image1;
+            image = newImagePath;
+            return Task.CompletedTask;
+        }
 
+        public Task DisposeAsync()
+        {
+            if (TestEnvironment.RunsOnDevOps && TestEnvironment.IsWindows)
+                return Task.CompletedTask;
+
+            if (File.Exists(image))
+                File.Delete(image);
+            if (File.Exists(image + "_original"))
+                File.Delete(image + "_original");
+
+            return Task.CompletedTask;
+        }
+
+        [Xunit.Categories.IntegrationTest]
+        [ExifTool]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AzureDevopsWindows, reason: "This test is probably the reason that DevOps agent running on windows hangs.")]
+        public async Task WriteXmpSubjectsToImageTest()
+        {
+            // arrange
             await using (var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable))
             {
                 sut.Initialize();
