@@ -190,8 +190,9 @@
 
         public async ValueTask DisposeAsync()
         {
-            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
-            await DisposeAsync(cts.Token).ConfigureAwait(false);
+            await DisposeAsync(CancellationToken.None).ConfigureAwait(false);
+//             using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+//             await DisposeAsync(cts.Token).ConfigureAwait(false);
         }
 
         internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
