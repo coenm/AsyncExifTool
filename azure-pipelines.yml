@@ -76,60 +76,6 @@ jobs:
   - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/AsyncExifTool.Test/coverage.cobertura.xml"
     displayName: 'Publish code coverage to CodeCov.io'
 
-
-- job: Windows
-  dependsOn: Ubuntu
-  pool: Hosted Windows 2019 with VS2019
-  steps:
-
-  - checkout: self
-    clean: true
-    submodules: recursive
-
-  - script: dotnet --info
-    displayName: Show dotnet SDK info
-
-  - task: PowerShell@2
-    displayName: 'install exiftool'
-    inputs:
-      filePath: 'scripts\InstallExiftool.ps1'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet restore'
-    inputs:
-      command: 'restore'
-      projects: $(solution)
-      feedsToUse: 'select'
-      nugetConfigPath: nuget.config
-
-  - script: dotnet build --configuration $(buildConfiguration) --no-restore
-    displayName: 'dotnet build $(buildConfiguration)'
-
-  # Run tests and recored coverage.
-  # Recording coverage is done using coverlet and can be enabled for each test project by adding the nuget package 'coverlet.msbuild'
-  # when the package is not referenced, no coverage is recorded but the tests are run normally.
-  # It looks like this task will suffix the arguments with '--results-directory $(Agent.TempDirectory)'
-  - task: DotNetCoreCLI@2
-    displayName: 'Test and calculate code coverage'
-    inputs:
-      command: test
-      projects: 'tests\AsyncExifTool.Test\AsyncExifTool.Test.csproj'
-  #    projects: '$(solution)'
-      arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude=$(COVERLET_EXCLUDE_FILTER) /p:Include=$(COVERLET_INCLUDE_FILTER) /p:ExcludeByAttribute=$(COVERLET_EXCLUDE_ATTRIBUTE) /p:ExcludeByFile=*\*Designer.cs --no-restore --no-build --collect:"XPlat Code Coverage" --logger trx'
-  
-  # Make Azure DevOps aware of the coverage results.
-  # When there are no test coverage results, this task will generate a warning.
-  # Because there is only one test project, we do not need to merge the results.
-  - task: PublishCodeCoverageResults@1
-    displayName: 'Publish code coverage to devops'
-    inputs:
-      codeCoverageTool: Cobertura
-      summaryFileLocation: '**/coverage.cobertura.xml'
-
-  # Publish test coverage results to the codecov account
-  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/AsyncExifTool.Test/coverage.cobertura.xml"
-    displayName: 'Publish code coverage to CodeCov.io'
-
  # Create nuget packages (nupkg, and snupkg)
   - task: DotNetCoreCLI@2
     displayName: 'dotnet pack'
@@ -141,10 +87,76 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact'
     inputs:
-      PathtoPublish: '$(build.artifactstagingdirectory)'
+      PathtoPublish: '$(build.artifactstagingdirectory)'	
 
-#  # Write all environment variables to an markdown file for debug purposes (i.e. make gitversion env variables visible)
-#  - powershell: scripts\WriteEnvVars.ps1
-#    errorActionPreference: silentlyContinue
-#    failOnStderr: true
-#    displayName: 'Make environment variables visible in Build Summary.'	
+# - job: Windows
+#   dependsOn: Ubuntu
+#   pool: Hosted Windows 2019 with VS2019
+#   steps:
+# 
+#   - checkout: self
+#     clean: true
+#     submodules: recursive
+# 
+#   - script: dotnet --info
+#     displayName: Show dotnet SDK info
+# 
+#   - task: PowerShell@2
+#     displayName: 'install exiftool'
+#     inputs:
+#       filePath: 'scripts\InstallExiftool.ps1'
+# 
+#   - task: DotNetCoreCLI@2
+#     displayName: 'dotnet restore'
+#     inputs:
+#       command: 'restore'
+#       projects: $(solution)
+#       feedsToUse: 'select'
+#       nugetConfigPath: nuget.config
+# 
+#   - script: dotnet build --configuration $(buildConfiguration) --no-restore
+#     displayName: 'dotnet build $(buildConfiguration)'
+# 
+#   # Run tests and recored coverage.
+#   # Recording coverage is done using coverlet and can be enabled for each test project by adding the nuget package 'coverlet.msbuild'
+#   # when the package is not referenced, no coverage is recorded but the tests are run normally.
+#   # It looks like this task will suffix the arguments with '--results-directory $(Agent.TempDirectory)'
+#   - task: DotNetCoreCLI@2
+#     displayName: 'Test and calculate code coverage'
+#     inputs:
+#       command: test
+#       projects: 'tests\AsyncExifTool.Test\AsyncExifTool.Test.csproj'
+#   #    projects: '$(solution)'
+#       arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude=$(COVERLET_EXCLUDE_FILTER) /p:Include=$(COVERLET_INCLUDE_FILTER) /p:ExcludeByAttribute=$(COVERLET_EXCLUDE_ATTRIBUTE) /p:ExcludeByFile=*\*Designer.cs --no-restore --no-build --collect:"XPlat Code Coverage" --logger trx'
+#   
+#   # Make Azure DevOps aware of the coverage results.
+#   # When there are no test coverage results, this task will generate a warning.
+#   # Because there is only one test project, we do not need to merge the results.
+#   - task: PublishCodeCoverageResults@1
+#     displayName: 'Publish code coverage to devops'
+#     inputs:
+#       codeCoverageTool: Cobertura
+#       summaryFileLocation: '**/coverage.cobertura.xml'
+# 
+#   # Publish test coverage results to the codecov account
+#   - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/AsyncExifTool.Test/coverage.cobertura.xml"
+#     displayName: 'Publish code coverage to CodeCov.io'
+# 
+#  # Create nuget packages (nupkg, and snupkg)
+#   - task: DotNetCoreCLI@2
+#     displayName: 'dotnet pack'
+#     inputs:
+#       command: pack
+#       configuration: '$(BuildConfiguration)'
+#       nobuild: false
+# 
+#   - task: PublishBuildArtifacts@1
+#     displayName: 'Publish Artifact'
+#     inputs:
+#       PathtoPublish: '$(build.artifactstagingdirectory)'
+# 
+# #  # Write all environment variables to an markdown file for debug purposes (i.e. make gitversion env variables visible)
+# #  - powershell: scripts\WriteEnvVars.ps1
+# #    errorActionPreference: silentlyContinue
+# #    failOnStderr: true
+# #    displayName: 'Make environment variables visible in Build Summary.'	

@@ -13,6 +13,8 @@
     using CoenM.ExifToolLib.Internals.AsyncManualResetEvent;
     using CoenM.ExifToolLib.Internals.MedallionShell;
     using CoenM.ExifToolLib.Internals.Stream;
+    using CoenM.ExifToolLib.Logging;
+
     using JetBrains.Annotations;
     using Nito.AsyncEx;
 
@@ -30,6 +32,7 @@
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> waitingTasks;
         private readonly ExifToolStayOpenStream stream;
         private readonly AsyncManualResetEvent cmdExitedMre;
+        private readonly ILogger logger;
         private IShell shell;
         private int key;
         private bool disposed;
@@ -38,10 +41,27 @@
         private bool cmdExitedSubscribed;
         private bool initialized;
 
+
+        /// <summary>
+        /// Construct AsyncExifTool with configuration and without a logger.
+        /// </summary>
+        /// <param name="configuration">Configuration for Exiftool</param>
         public AsyncExifTool([NotNull] AsyncExifToolConfiguration configuration)
+            : this (configuration, NullLogger.Instance)
+        {
+        }
+
+        /// <summary>
+        /// Construct AsyncExifTool with configuration and a logger instance.
+        /// </summary>
+        /// <param name="configuration">Configuration for Exiftool</param>
+        /// <param name="logger">The logger.</param>
+        public AsyncExifTool([NotNull] AsyncExifToolConfiguration configuration, [NotNull] ILogger logger)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
+
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             stream = new ExifToolStayOpenStream(configuration.ExifToolEncoding, configuration.ExifToolNewLine);
             stopQueueCts = new CancellationTokenSource();
@@ -86,6 +106,8 @@
                 if (initialized)
                     return;
 
+                logger.Info("Initializing");
+
                 stream.Update += StreamOnUpdate;
 
                 shell = CreateShell(exifToolPath, exifToolArguments, stream, null);
@@ -95,6 +117,8 @@
 
                 cmdExitedSubscribed = true;
                 initialized = true;
+
+                logger.Info("Initialized");
             }
         }
 
@@ -107,10 +131,14 @@
             if (disposing)
                 throw new Exception("Disposing");
 
+            logger.Debug($"{nameof(ExecuteAsync)} - Wait before entering {nameof(executeAsyncSyncLock)}.");
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, stopQueueCts.Token);
             using (await executeAsyncSyncLock.LockAsync(linkedCts.Token).ConfigureAwait(false))
             {
-                return await ExecuteImpAsync(args, ct).ConfigureAwait(false);
+                logger.Debug($"{nameof(ExecuteAsync)} - Entered {nameof(executeAsyncSyncLock)}.");
+                var result = await ExecuteImpAsync(args, ct).ConfigureAwait(false);
+                logger.Debug($"{nameof(ExecuteAsync)} - Released {nameof(executeAsyncSyncLock)}.");
+                return result;
             }
         }
 
