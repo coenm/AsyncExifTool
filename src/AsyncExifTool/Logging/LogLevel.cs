@@ -3,11 +3,6 @@
     public enum LogLevel
     {
         /// <summary>
-        /// For trace debugging; begin method X, end method X
-        /// </summary>
-        Trace,
-
-        /// <summary>
         /// For debugging.
         /// </summary>
         Debug,
@@ -18,17 +13,17 @@
         Info,
 
         /// <summary>
-        /// Something unexpected; AsyncExifTool library will continue.
+        /// Something unexpected; application will continue.
         /// </summary>
         Warn,
 
         /// <summary>
-        /// Something failed; AsyncExifTool library may or may not continue
+        /// Something failed; application may or may not continue
         /// </summary>
         Error,
 
         /// <summary>
-        /// Something bad happened; AsyncExifTool library is going down
+        /// Something bad happened; application is going down
         /// </summary>
         Fatal
     }
