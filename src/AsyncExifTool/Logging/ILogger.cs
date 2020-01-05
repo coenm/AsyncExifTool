@@ -7,7 +7,7 @@
         /// <summary>
         /// Writes the given LogEntry to log.
         /// </summary>
-        /// <param name="entry"></param>
+        /// <param name="entry">log entry to write to log.</param>
         void Log([NotNull] LogEntry entry);
 
         /// <summary>
