@@ -82,7 +82,9 @@
                     }
                     catch (Exception ex)
                     {
-                        throw new Exception($"Unable to find solution directory from '{directory?.Name}' because of {ex.GetType().Name}!", ex);
+                        throw new Exception(
+                            $"Unable to find solution directory from '{directory?.Name}' because of {ex.GetType().Name}!",
+                            ex);
                     }
 
                     if (directory == null)
@@ -104,9 +106,26 @@
                 // try get DevOps repo directory
                 var devOpsRepoDir = Environment.GetEnvironmentVariable("Build.SourcesDirectory");
                 if (string.IsNullOrWhiteSpace(devOpsRepoDir))
-                    throw;
+                    throw new Exception("Build.SourcesDirectory was null or empty");
 
-                return GetRecursive(new DirectoryInfo(devOpsRepoDir));
+                DirectoryInfo directoryInfo;
+                try
+                {
+                    directoryInfo = new DirectoryInfo(devOpsRepoDir);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"Could not create DirectoryInfo from '{devOpsRepoDir}'. {e.Message}.");
+                }
+
+                try
+                {
+                    return GetRecursive(directoryInfo);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"Could not find directory with directory {directoryInfo.FullName} created from '{devOpsRepoDir}'. {e.Message}");
+                }
             }
         }
     }
