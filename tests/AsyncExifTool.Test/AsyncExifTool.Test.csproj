@@ -61,6 +61,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(OS)' != 'Windows_NT' AND '$(TargetFramework)' == 'net461' ">
+    <PackageReference Include="Microsoft.VisualStudio.TestPlatform.ObjectModel" Version="14.0.0" />
     <PackageReference Include="Microsoft.TargetingPack.NETFramework.v4.6.1" Version="1.0.1" ExcludeAssets="All" PrivateAssets="All" />
   </ItemGroup>
 
