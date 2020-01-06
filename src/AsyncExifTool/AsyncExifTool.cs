@@ -20,6 +20,8 @@
     public class AsyncExifTool
 #if FEATURE_ASYNC_DISPOSABLE
         : IAsyncDisposable
+#else
+        : IDisposable
 #endif
     {
         private readonly string exifToolPath;
@@ -133,7 +135,7 @@
             }
         }
 
-        public async Task DisposeAsync(CancellationToken ct)
+        public async Task DisposeAsync(CancellationToken ct = default)
         {
             if (!initialized)
                 return;
@@ -206,6 +208,11 @@
         public async ValueTask DisposeAsync()
         {
             await DisposeAsync(CancellationToken.None).ConfigureAwait(false);
+        }
+#else
+        public void Dispose()
+        {
+            DisposeAsync(CancellationToken.None).GetAwaiter().GetResult();
         }
 #endif
 
