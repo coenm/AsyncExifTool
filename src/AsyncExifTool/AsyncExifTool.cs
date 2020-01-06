@@ -241,18 +241,9 @@
 
 #if FEATURE_ASYNC_DISPOSABLE
                 await using (ct.Register(() => tcs.TrySetCanceled()))
-                {
-                    key++;
-                    var keyString = key.ToString();
-
-                    if (!waitingTasks.TryAdd(keyString, tcs))
-                        throw new Exception("Could not execute");
-
-                    await AddToExifToolAsync(keyString, args).ConfigureAwait(false);
-                    return await tcs.Task.ConfigureAwait(false);
-                }
 #else
                 using (ct.Register(() => tcs.TrySetCanceled()))
+#endif
                 {
                     key++;
                     var keyString = key.ToString();
@@ -263,7 +254,6 @@
                     await AddToExifToolAsync(keyString, args).ConfigureAwait(false);
                     return await tcs.Task.ConfigureAwait(false);
                 }
-#endif
             }
         }
 
