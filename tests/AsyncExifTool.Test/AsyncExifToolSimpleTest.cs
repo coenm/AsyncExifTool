@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Text;
     using System.Threading;
@@ -10,6 +11,7 @@
 
     using CoenM.ExifToolLib;
     using CoenM.ExifToolLib.Internals;
+    using CoenM.ExifToolLib.Logging;
     using CoenM.ExifToolLibTest.TestInternals;
     using FakeItEasy;
     using FluentAssertions;
@@ -19,14 +21,80 @@
     public class AsyncExifToolSimpleTest
     {
         private readonly AsyncExifTool sut;
+        private readonly TestableAsyncFakeExifTool testSut;
         private readonly IShell shell;
 
         public AsyncExifToolSimpleTest()
         {
             shell = A.Fake<IShell>();
-            sut = new TestableAsyncFakeExifTool(shell);
+            sut = testSut = new TestableAsyncFakeExifTool(shell);
 
             A.CallTo(() => shell.WriteLineAsync(A<string>._)).Returns(Task.CompletedTask);
+        }
+
+        [Fact]
+        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute", Justification = "Improve readability test")]
+        public void Ctor_ShouldThrow_WhenConfigurationIsNull()
+        {
+            // arrange
+            AsyncExifToolConfiguration configuration = null;
+
+            // act
+            Action act = () => new AsyncExifTool(configuration);
+
+            // assert
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute", Justification = "Improve readability test")]
+        public void Ctor_ShouldThrow_WhenLoggerIsNull()
+        {
+            // arrange
+            ILogger logger = null;
+
+            // act
+            Action act = () => new AsyncExifTool(AsyncExifToolConfigurationFactory.Create(), logger);
+
+            // assert
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Initialize_ShouldDoNothing_WhenAlreadyInitialized()
+        {
+            // arrange
+            sut.Initialize();
+
+            // assume
+            testSut.CreateShellCalled.Should().Be(1);
+
+            // act
+            sut.Initialize();
+
+            // assert
+            testSut.CreateShellCalled.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task Initialize_ShouldDoNothing_WhenAlreadyInitializing()
+        {
+            // arrange
+            var controlToken = testSut.SetupCreateShellControl();
+            var firstInitializingTask = Task.Run(() => sut.Initialize());
+
+            // act
+            controlToken.Entered.WaitOne();
+            var secondInitializingTask = Task.Run(() => sut.Initialize());
+
+            await Task.Delay(100);
+            controlToken.Release.Set();
+
+            await firstInitializingTask;
+            await secondInitializingTask;
+
+            // assert
+            testSut.CreateShellCalled.Should().Be(1);
         }
 
         [Fact]
@@ -45,7 +113,7 @@
         public async Task ExecuteAsync_ShouldThrow_WhenDisposing()
         {
             // arrange
-            var control = SetupExifToolControlToken(ExifToolArguments.BoolFalse);
+            var control = testSut.SetupControl(ExifToolArguments.BoolFalse);
             sut.Initialize();
             var disposingTask = sut.DisposeAsync();
 
@@ -118,7 +186,7 @@
         public async Task ExecuteAsync_ShouldFinishAllRequestsAlthoughOneWasCancelled()
         {
             // arrange
-            var controlExecute1 = SetupExifToolControlToken("-execute1");
+            var controlExecute1 = testSut.SetupControl("-execute1");
             var cts = new CancellationTokenSource();
             sut.Initialize();
 
@@ -144,7 +212,7 @@
         public async Task ExecuteAsync_ShouldPassArgumentsToExiftoolUnlessCommandWasCancelled()
         {
             // arrange
-            var controlExecute1 = SetupExifToolControlToken("-execute1");
+            var controlExecute1 = testSut.SetupControl("-execute1");
             var cts = new CancellationTokenSource();
             sut.Initialize();
 
@@ -170,11 +238,6 @@
             A.CallTo(() => shell.WriteLineAsync("-execute3")).MustNotHaveHappened();
         }
 
-        private ExifToolCommandControlToken SetupExifToolControlToken(string key)
-        {
-            return ((TestableAsyncFakeExifTool)sut).SetupControl(key);
-        }
-
         private async Task IgnoreException(Task task)
         {
             try
@@ -198,12 +261,22 @@
             {
                 this.shell = shell;
                 exiftoolControl = new ConcurrentDictionary<string, ExifToolCommandControlToken>();
+                CreateShellCalled = 0;
             }
+
+            public int CreateShellCalled { get; private set; }
 
             public ExifToolCommandControlToken SetupControl(string key)
             {
                 var control = new ExifToolCommandControlToken();
                 exiftoolControl.TryAdd(key, control);
+                return control;
+            }
+
+            public ExifToolCommandControlToken SetupCreateShellControl()
+            {
+                var control = new ExifToolCommandControlToken();
+                exiftoolControl.TryAdd(nameof(CreateShell), control);
                 return control;
             }
 
@@ -214,6 +287,13 @@
                 Stream errorStream)
             {
                 exifToolStream = Stream.Synchronized(outputStream);
+
+                CreateShellCalled++;
+                if (exiftoolControl.TryGetValue(nameof(CreateShell), out var control))
+                {
+                    control.Entered.Set();
+                    control.Release.WaitOne(TimeSpan.FromMinutes(1));
+                }
 
                 A.CallTo(() => shell.WriteLineAsync(A<string>._))
                     .Invokes(async call =>
