@@ -1,6 +1,7 @@
 ﻿namespace TestHelper
 {
     using System;
+    using System.Collections;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -109,16 +110,18 @@
                 if (string.IsNullOrWhiteSpace(devOpsRepoDir))
                 {
                     var sb = new StringBuilder();
-                    var environmentVariables = Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Machine);
-                    foreach (var envVar in environmentVariables)
+                    IDictionary environmentVariables = Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Machine);
+                    sb.AppendLine("::::Machine::::");
+                    foreach (DictionaryEntry envVar in environmentVariables)
                     {
-                        sb.AppendLine($"'{envVar}'");
+                        sb.AppendLine($"'{envVar.Key}'");
                     }
 
+                    sb.AppendLine("::::Process::::");
                     environmentVariables = Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Process);
-                    foreach (var envVar in environmentVariables)
+                    foreach (DictionaryEntry envVar in environmentVariables)
                     {
-                        sb.AppendLine($"'{envVar}'");
+                        sb.AppendLine($"'{envVar.Key}'");
                     }
 
                     throw new Exception($"System.DefaultWorkingDirectory was null or empty. {sb}");
