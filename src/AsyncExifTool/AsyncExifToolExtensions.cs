@@ -1,11 +1,11 @@
 ﻿namespace CoenM.ExifToolLib
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
 
     using CoenM.ExifToolLib.Internals;
+    using JetBrains.Annotations;
 
     public static class AsyncExifToolExtensions
     {

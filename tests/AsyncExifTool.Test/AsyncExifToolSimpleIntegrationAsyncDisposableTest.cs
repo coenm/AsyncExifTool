@@ -38,7 +38,7 @@
         public async Task RunExiftoolForVersionAndImageTest()
         {
             // arrange
-            await using var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
             sut.Initialize();
 
             // act
@@ -61,7 +61,7 @@
         public async Task RunWithInputStreamTest()
         {
             // arrange
-            await using var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
             var sw = Stopwatch.StartNew();
             sut.Initialize();
             sw.Stop();
@@ -90,7 +90,7 @@
             // arrange
             var tasks = new Task<string>[Repeat];
             Stopwatch sw;
-            await using (var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable))
+            await using (var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create()))
             {
                 sw = Stopwatch.StartNew();
                 sut.Initialize();
@@ -129,7 +129,7 @@
         public async Task InitAndDisposeTest()
         {
             // arrange
-            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
 
             // act
             sut.Initialize();
@@ -143,7 +143,7 @@
         public async Task RunExifToolWithThreeCommands()
         {
             // arrange
-            await using var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
             sut.Initialize();
 
             // act

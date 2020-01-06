@@ -195,7 +195,7 @@
             private Stream exifToolStream;
 
             public TestableAsyncFakeExifTool(IShell shell)
-                : base("doesn't matter")
+                : base(AsyncExifToolConfigurationFactory.Create())
             {
                 this.shell = shell;
                 exiftoolControl = new Dictionary<string, ExifToolCommandControl>();
@@ -209,7 +209,7 @@
             }
 
             internal override IShell CreateShell(
-                string exifToolPath,
+                string exifToolFullPath,
                 IEnumerable<string> args,
                 Stream outputStream,
                 Stream errorStream)

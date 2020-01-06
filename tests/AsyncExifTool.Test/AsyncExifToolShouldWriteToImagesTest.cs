@@ -72,7 +72,7 @@
         public async Task WriteXmpSubjectsToImageTest()
         {
             // arrange
-            await using var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
             sut.Initialize();
 
             // act

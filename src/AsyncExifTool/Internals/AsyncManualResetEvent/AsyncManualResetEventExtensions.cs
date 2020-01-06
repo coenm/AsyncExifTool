@@ -1,10 +1,10 @@
 ﻿namespace CoenM.ExifToolLib.Internals.AsyncManualResetEvent
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
 
+    using JetBrains.Annotations;
     using Nito.AsyncEx;
 
     internal static class AsyncManualResetEventExtensions
@@ -29,13 +29,11 @@
         /// <param name="this">The AsyncManualResetEvent</param>
         /// <param name="timeout">A TimeSpan that represents the time to wait before returning.</param>
         /// <returns><c>true</c> if the current instance receives a signal within the <paramref name="timeout"/> Timespan, <c>false</c> otherwise.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when timeout is invalid for creating a <see cref="CancellationTokenSource"/>.</exception>
         public static async Task<bool> WaitOneAsync([NotNull] this AsyncManualResetEvent @this, TimeSpan timeout)
         {
             if (@this == null)
                 throw new ArgumentNullException(nameof(@this));
-
-            if (timeout <= TimeSpan.Zero)
-                throw new ArgumentOutOfRangeException(nameof(timeout));
 
             using var cts = new CancellationTokenSource(timeout);
             return await WaitOneAsyncImpl(@this, cts.Token).ConfigureAwait(false);

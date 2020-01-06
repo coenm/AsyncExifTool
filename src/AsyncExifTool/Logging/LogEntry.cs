@@ -1,7 +1,8 @@
 ﻿namespace CoenM.ExifToolLib.Logging
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
+
+    using JetBrains.Annotations;
 
     // https://stackoverflow.com/questions/5646820/logger-wrapper-best-practice/5646876#5646876
     // Immutable DTO that contains the log information.

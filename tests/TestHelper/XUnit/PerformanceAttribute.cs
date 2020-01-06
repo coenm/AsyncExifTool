@@ -4,7 +4,7 @@ namespace EagleEye.TestHelper.XUnit
     using System;
     using System.Diagnostics.CodeAnalysis;
 
-    using global::Xunit.Sdk;
+    using Xunit.Sdk;
 
     [TraitDiscoverer(PerformanceDiscoverer.DiscovererTypeName, TestHelperSettings.AssemblyName)]
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
