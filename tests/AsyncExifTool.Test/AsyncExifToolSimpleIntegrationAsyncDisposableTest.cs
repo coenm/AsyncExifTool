@@ -3,6 +3,7 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using CoenM.ExifToolLib;
@@ -38,7 +39,11 @@
         public async Task RunExiftoolForVersionAndImageTest()
         {
             // arrange
+#if NETCOREAPP3_0
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
+#else
+            using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
+#endif
             sut.Initialize();
 
             // act
@@ -61,7 +66,11 @@
         public async Task RunWithInputStreamTest()
         {
             // arrange
+#if NETCOREAPP3_0
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
+#else
+            using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
+#endif
             var sw = Stopwatch.StartNew();
             sut.Initialize();
             sw.Stop();
@@ -90,7 +99,11 @@
             // arrange
             var tasks = new Task<string>[Repeat];
             Stopwatch sw;
+#if NETCOREAPP3_0
             await using (var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create()))
+#else
+            using (var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create()))
+#endif
             {
                 sw = Stopwatch.StartNew();
                 sut.Initialize();
@@ -133,7 +146,12 @@
 
             // act
             sut.Initialize();
+#if NETCOREAPP3_0
             await sut.DisposeAsync().ConfigureAwait(false);
+#else
+            await Task.Yield();
+            sut.Dispose();
+#endif
 
             // assert
             // sut.IsClosed.Should().Be(true);
@@ -143,7 +161,11 @@
         public async Task RunExifToolWithThreeCommands()
         {
             // arrange
+#if NETCOREAPP3_0
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
+#else
+            using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
+#endif
             sut.Initialize();
 
             // act

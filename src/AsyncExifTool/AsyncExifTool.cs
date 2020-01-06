@@ -5,7 +5,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -18,7 +17,12 @@
     using JetBrains.Annotations;
     using Nito.AsyncEx;
 
-    public class AsyncExifTool : IAsyncDisposable
+    public class AsyncExifTool
+#if FEATURE_ASYNC_DISPOSABLE
+        : IAsyncDisposable
+#else
+        : IDisposable
+#endif
     {
         private readonly string exifToolPath;
         private readonly AsyncLock executeAsyncSyncLock = new AsyncLock();
@@ -131,7 +135,7 @@
             }
         }
 
-        public async Task DisposeAsync(CancellationToken ct)
+        public async Task DisposeAsync(CancellationToken ct = default)
         {
             if (!initialized)
                 return;
@@ -200,10 +204,17 @@
             }
         }
 
+# if FEATURE_ASYNC_DISPOSABLE
         public async ValueTask DisposeAsync()
         {
             await DisposeAsync(CancellationToken.None).ConfigureAwait(false);
         }
+#else
+        public void Dispose()
+        {
+            DisposeAsync(CancellationToken.None).GetAwaiter().GetResult();
+        }
+#endif
 
         internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
         {
@@ -228,7 +239,11 @@
             {
                 var tcs = new TaskCompletionSource<string>();
 
+#if FEATURE_ASYNC_DISPOSABLE
                 await using (ct.Register(() => tcs.TrySetCanceled()))
+#else
+                using (ct.Register(() => tcs.TrySetCanceled()))
+#endif
                 {
                     key++;
                     var keyString = key.ToString();

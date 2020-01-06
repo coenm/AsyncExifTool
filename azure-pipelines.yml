@@ -61,7 +61,7 @@ jobs:
       command: test
       projects: 'tests/AsyncExifTool.Test/AsyncExifTool.Test.csproj'
   #    projects: '$(solution)'
-      arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude=$(COVERLET_EXCLUDE_FILTER) /p:Include=$(COVERLET_INCLUDE_FILTER) /p:ExcludeByAttribute=$(COVERLET_EXCLUDE_ATTRIBUTE) /p:ExcludeByFile=*\*Designer.cs --no-restore --no-build --collect:"XPlat Code Coverage" --logger trx'
+      arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude=$(COVERLET_EXCLUDE_FILTER) /p:Include=$(COVERLET_INCLUDE_FILTER) /p:ExcludeByAttribute=$(COVERLET_EXCLUDE_ATTRIBUTE) /p:ExcludeByFile=*\*Designer.cs /p:CoverletOutput=../_CoverageResults/ /p:MergeWith="../_CoverageResults/coverage.json" /p:CoverletOutputFormat=cobertura%2cjson --no-restore --no-build --collect:"XPlat Code Coverage" --logger trx'
 
   # Make Azure DevOps aware of the coverage results.
   # When there are no test coverage results, this task will generate a warning.
@@ -73,7 +73,7 @@ jobs:
       summaryFileLocation: '**/coverage.cobertura.xml'
 
    # Publish test coverage results to the codecov account
-  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/AsyncExifTool.Test/coverage.cobertura.xml"
+  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/_CoverageResults/coverage.cobertura.xml"
     displayName: 'Publish code coverage to CodeCov.io'
 
  # Create nuget packages (nupkg, and snupkg)

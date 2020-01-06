@@ -1,10 +1,12 @@
 ﻿namespace TestHelper
 {
     using System;
+    using System.Collections;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.InteropServices;
+    using System.Text;
 
     public static class TestEnvironment
     {
@@ -69,31 +71,66 @@
 
         private static string GetSolutionDirectoryFullPathImpl()
         {
-            var assemblyLocation = typeof(TestEnvironment).GetTypeInfo().Assembly.Location;
-
-            var assemblyFile = new FileInfo(assemblyLocation);
-
-            var directory = assemblyFile.Directory;
-
-            if (directory == null)
-                throw new Exception($"Unable to find solution directory from '{assemblyLocation}'!");
-
-            while (!directory.EnumerateFiles(SolutionFileName).Any())
+            string GetRecursive(DirectoryInfo directory)
             {
-                try
+                if (directory == null)
+                    throw new Exception($"directory cannot be null!");
+
+                while (!directory.EnumerateFiles(SolutionFileName).Any())
                 {
-                    directory = directory.Parent;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Unable to find solution directory from '{assemblyLocation}' because of {ex.GetType().Name}!", ex);
+                    try
+                    {
+                        directory = directory.Parent;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(
+                            $"Unable to find solution directory from '{directory?.Name}' because of {ex.GetType().Name}!",
+                            ex);
+                    }
+
+                    if (directory == null)
+                        throw new Exception($"Unable to find solution directory from '{directory?.Name}'!");
                 }
 
-                if (directory == null)
-                    throw new Exception($"Unable to find solution directory from '{assemblyLocation}'!");
+                return directory.FullName;
             }
 
-            return directory.FullName;
+            try
+            {
+                var assemblyLocation = typeof(TestEnvironment).GetTypeInfo().Assembly.Location;
+                var assemblyFile = new FileInfo(assemblyLocation);
+                var directory = assemblyFile.Directory;
+                return GetRecursive(directory);
+            }
+            catch
+            {
+                // try get DevOps repo directory
+                var devOpsRepoDir = Environment.GetEnvironmentVariable("SYSTEM_DEFAULTWORKINGDIRECTORY");
+                if (string.IsNullOrWhiteSpace(devOpsRepoDir))
+                {
+                    throw new Exception("System.DefaultWorkingDirectory was null or empty.");
+                }
+
+                DirectoryInfo directoryInfo;
+                try
+                {
+                    directoryInfo = new DirectoryInfo(devOpsRepoDir);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"Could not create DirectoryInfo from '{devOpsRepoDir}'. {e.Message}.");
+                }
+
+                try
+                {
+                    return GetRecursive(directoryInfo);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"Could not find directory with directory {directoryInfo.FullName} created from '{devOpsRepoDir}'. {e.Message}");
+                }
+            }
         }
     }
 }

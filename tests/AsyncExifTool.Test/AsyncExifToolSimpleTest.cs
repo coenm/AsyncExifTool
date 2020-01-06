@@ -1,6 +1,7 @@
 ﻿namespace CoenM.ExifToolLibTest
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
     using System.Text;
@@ -191,14 +192,14 @@
         private class TestableAsyncFakeExifTool : AsyncExifTool, IFakeExifTool
         {
             private readonly IShell shell;
-            private readonly Dictionary<string, ExifToolCommandControl> exiftoolControl;
+            private readonly ConcurrentDictionary<string, ExifToolCommandControl> exiftoolControl;
             private Stream exifToolStream;
 
             public TestableAsyncFakeExifTool(IShell shell)
                 : base(AsyncExifToolConfigurationFactory.Create())
             {
                 this.shell = shell;
-                exiftoolControl = new Dictionary<string, ExifToolCommandControl>();
+                exiftoolControl = new ConcurrentDictionary<string, ExifToolCommandControl>();
             }
 
             ExifToolCommandControl IFakeExifTool.SetupControl(string key)
@@ -231,13 +232,23 @@
                         if (text.StartsWith("-execute"))
                         {
                             var result = text.Replace("-execute", "{ready") + "}";
-                            await exifToolStream.WriteAsync(
-                                Encoding.UTF8.GetBytes(result + OperatingSystemHelper.NewLine));
+
+                            var data = Encoding.UTF8.GetBytes(result + OperatingSystemHelper.NewLine);
+#if NETCOREAPP3_0
+                            await exifToolStream.WriteAsync(data);
+#else
+                            await exifToolStream.WriteAsync(data, 0, data.Length);
+#endif
                             return;
                         }
 
-                        await exifToolStream.WriteAsync(
-                            Encoding.UTF8.GetBytes($"fake result {text}{OperatingSystemHelper.NewLine}"));
+                        var dataFakeResult = Encoding.UTF8.GetBytes($"fake result {text}{OperatingSystemHelper.NewLine}");
+#if NETCOREAPP3_0
+                        await exifToolStream.WriteAsync(dataFakeResult);
+#else
+                        await exifToolStream.WriteAsync(dataFakeResult, 0, dataFakeResult.Length);
+#endif
+
                     });
 
                 return shell;

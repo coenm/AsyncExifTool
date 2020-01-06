@@ -72,7 +72,11 @@
         public async Task WriteXmpSubjectsToImageTest()
         {
             // arrange
+#if NETCOREAPP3_0
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
+#else
+            using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
+#endif
             sut.Initialize();
 
             // act
@@ -84,8 +88,7 @@
 
             // assert
             readResultBefore.Should().Contain("Subject                         : dog, new york, puppy");
-            readResultBefore.Should()
-                .NotContain("Subject                         : dog, new york, puppy, def, abc, xyz");
+            readResultBefore.Should().NotContain("Subject                         : dog, new york, puppy, def, abc, xyz");
             writeResult.Should().Be("    1 image files updated");
             readResultAfter.Should().Contain("Subject                         : dog, new york, puppy, def, abc, xyz");
 
