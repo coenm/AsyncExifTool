@@ -29,6 +29,20 @@
             sut?.Dispose();
         }
 
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void Ctor_ThrowsException_WhenEndLineIsNullOrEmpty(string endLine)
+        {
+            // arrange
+
+            // act
+            Action act = () => new ExifToolStayOpenStream(Encoding.UTF8, endLine, 200);
+
+            // assert
+            act.Should().ThrowExactly<ArgumentNullException>();
+        }
+
         [Fact]
         public void ExifToolStayOpenStreamCtorThrowsArgumentOutOfRangeWhenBufferSizeIsNegativeTest()
         {

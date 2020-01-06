@@ -18,15 +18,7 @@
         public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
         [PublicAPI]
-        public static string NewLine
-        {
-            get
-            {
-                if (IsWindows)
-                    return WindowsEol;
-                return LinuxEol;
-            }
-        }
+        public static string NewLine => IsWindows ? WindowsEol : LinuxEol;
 
         [PublicAPI]
         public static byte[] NewLineBytes => Encoding.ASCII.GetBytes(NewLine);
