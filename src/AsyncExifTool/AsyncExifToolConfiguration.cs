@@ -2,9 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
+
+    using JetBrains.Annotations;
 
     public sealed class AsyncExifToolConfiguration
     {
@@ -12,16 +13,16 @@
             [NotNull] string exifToolFullFilename,
             [NotNull] Encoding exifToolResultEncoding,
             [NotNull] string exifToolNewLine,
-            [JetBrains.Annotations.CanBeNull] IReadOnlyCollection<string> commonArgs)
+            [CanBeNull] IReadOnlyCollection<string> commonArgs)
         {
             if (string.IsNullOrWhiteSpace(exifToolFullFilename))
                 throw new ArgumentNullException(nameof(exifToolFullFilename));
             ExifToolFullFilename = exifToolFullFilename;
-            
+
             ExifToolEncoding = exifToolResultEncoding ?? throw new ArgumentNullException(nameof(exifToolResultEncoding));
 
-            CommonArgs = commonArgs == null 
-                ? new List<string>(0) 
+            CommonArgs = commonArgs == null
+                ? new List<string>(0)
                 : commonArgs.Where(item => item != null).ToList();
 
             if (string.IsNullOrEmpty(exifToolNewLine))
@@ -40,7 +41,7 @@
         public string ExifToolNewLine { get; }
 
         /// <summary>
-        /// Expected ExifTool encoding. 
+        /// Expected ExifTool encoding.
         /// </summary>
         public Encoding ExifToolEncoding { get; }
 

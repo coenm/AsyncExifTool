@@ -1,10 +1,10 @@
 ﻿namespace CoenM.ExifToolLib.Internals.AsyncManualResetEvent
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
 
+    using JetBrains.Annotations;
     using Nito.AsyncEx;
 
     internal static class AsyncManualResetEventExtensions

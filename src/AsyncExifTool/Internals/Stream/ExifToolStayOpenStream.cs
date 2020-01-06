@@ -17,7 +17,7 @@
         private int index;
 
         public ExifToolStayOpenStream(
-            [CanBeNull] Encoding encoding, 
+            [CanBeNull] Encoding encoding,
             [NotNull] string endLine,
             int bufferSize = OneMb)
         {

@@ -1,6 +1,6 @@
 ﻿namespace CoenM.ExifToolLib.Logging
 {
-    using System.Diagnostics.CodeAnalysis;
+    using JetBrains.Annotations;
 
     public interface ILogger
     {
