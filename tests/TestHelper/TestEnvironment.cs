@@ -69,17 +69,10 @@
 
         private static string GetSolutionDirectoryFullPathImpl()
         {
-
-            string GetRecursive(string baseLocation)
+            string GetRecursive(DirectoryInfo directory)
             {
-                var assemblyLocation = baseLocation;
-
-                var assemblyFile = new FileInfo(assemblyLocation);
-
-                var directory = assemblyFile.Directory;
-
                 if (directory == null)
-                    throw new Exception($"Unable to find solution directory from '{assemblyLocation}'!");
+                    throw new Exception($"directory cannot be null!");
 
                 while (!directory.EnumerateFiles(SolutionFileName).Any())
                 {
@@ -89,11 +82,11 @@
                     }
                     catch (Exception ex)
                     {
-                        throw new Exception($"Unable to find solution directory from '{assemblyLocation}' because of {ex.GetType().Name}!", ex);
+                        throw new Exception($"Unable to find solution directory from '{directory?.Name}' because of {ex.GetType().Name}!", ex);
                     }
 
                     if (directory == null)
-                        throw new Exception($"Unable to find solution directory from '{assemblyLocation}'!");
+                        throw new Exception($"Unable to find solution directory from '{directory?.Name}'!");
                 }
 
                 return directory.FullName;
@@ -102,16 +95,18 @@
             try
             {
                 var assemblyLocation = typeof(TestEnvironment).GetTypeInfo().Assembly.Location;
-                return GetRecursive(assemblyLocation);
+                var assemblyFile = new FileInfo(assemblyLocation);
+                var directory = assemblyFile.Directory;
+                return GetRecursive(directory);
             }
-            catch (Exception e)
+            catch
             {
                 // try get DevOps repo directory
-                var devOpsRepoDir = Environment.GetEnvironmentVariable("Build.Repository.LocalPath");
+                var devOpsRepoDir = Environment.GetEnvironmentVariable("Build.SourcesDirectory");
                 if (string.IsNullOrWhiteSpace(devOpsRepoDir))
                     throw;
 
-                return GetRecursive(devOpsRepoDir);
+                return GetRecursive(new DirectoryInfo(devOpsRepoDir));
             }
         }
     }
