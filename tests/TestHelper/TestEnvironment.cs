@@ -104,9 +104,9 @@
             catch
             {
                 // try get DevOps repo directory
-                var devOpsRepoDir = Environment.GetEnvironmentVariable("Build.SourcesDirectory");
+                var devOpsRepoDir = Environment.GetEnvironmentVariable("System.DefaultWorkingDirectory");
                 if (string.IsNullOrWhiteSpace(devOpsRepoDir))
-                    throw new Exception("Build.SourcesDirectory was null or empty");
+                    throw new Exception("System.DefaultWorkingDirectory was null or empty");
 
                 DirectoryInfo directoryInfo;
                 try
