@@ -115,7 +115,7 @@
                         sb.AppendLine($"'{envVar}'");
                     }
 
-                    throw new Exception("System.DefaultWorkingDirectory was null or empty. {sb}");
+                    throw new Exception($"System.DefaultWorkingDirectory was null or empty. {sb}");
                 }
 
                 DirectoryInfo directoryInfo;
