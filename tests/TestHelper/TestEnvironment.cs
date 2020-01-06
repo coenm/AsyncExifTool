@@ -69,31 +69,50 @@
 
         private static string GetSolutionDirectoryFullPathImpl()
         {
-            var assemblyLocation = typeof(TestEnvironment).GetTypeInfo().Assembly.Location;
 
-            var assemblyFile = new FileInfo(assemblyLocation);
-
-            var directory = assemblyFile.Directory;
-
-            if (directory == null)
-                throw new Exception($"Unable to find solution directory from '{assemblyLocation}'!");
-
-            while (!directory.EnumerateFiles(SolutionFileName).Any())
+            string GetRecursive(string baseLocation)
             {
-                try
-                {
-                    directory = directory.Parent;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Unable to find solution directory from '{assemblyLocation}' because of {ex.GetType().Name}!", ex);
-                }
+                var assemblyLocation = baseLocation;
+
+                var assemblyFile = new FileInfo(assemblyLocation);
+
+                var directory = assemblyFile.Directory;
 
                 if (directory == null)
                     throw new Exception($"Unable to find solution directory from '{assemblyLocation}'!");
+
+                while (!directory.EnumerateFiles(SolutionFileName).Any())
+                {
+                    try
+                    {
+                        directory = directory.Parent;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Unable to find solution directory from '{assemblyLocation}' because of {ex.GetType().Name}!", ex);
+                    }
+
+                    if (directory == null)
+                        throw new Exception($"Unable to find solution directory from '{assemblyLocation}'!");
+                }
+
+                return directory.FullName;
             }
 
-            return directory.FullName;
+            try
+            {
+                var assemblyLocation = typeof(TestEnvironment).GetTypeInfo().Assembly.Location;
+                return GetRecursive(assemblyLocation);
+            }
+            catch (Exception e)
+            {
+                // try get DevOps repo directory
+                var devOpsRepoDir = Environment.GetEnvironmentVariable("Build.Repository.LocalPath");
+                if (string.IsNullOrWhiteSpace(devOpsRepoDir))
+                    throw;
+
+                return GetRecursive(devOpsRepoDir);
+            }
         }
     }
 }

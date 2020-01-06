@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp3.0;net461</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <RootNamespace>CoenM.ExifToolLibTest</RootNamespace>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,7 +36,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  
+
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\AsyncExifTool.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -43,7 +44,7 @@
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\AsyncExifTool\AsyncExifTool.csproj" />
     <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
