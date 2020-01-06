@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Runtime.InteropServices;
+    using System.Text;
 
     public static class TestEnvironment
     {
@@ -106,7 +107,16 @@
                 // try get DevOps repo directory
                 var devOpsRepoDir = Environment.GetEnvironmentVariable("System.DefaultWorkingDirectory");
                 if (string.IsNullOrWhiteSpace(devOpsRepoDir))
-                    throw new Exception("System.DefaultWorkingDirectory was null or empty");
+                {
+                    var sb = new StringBuilder();
+                    var environmentVariables = Environment.GetEnvironmentVariables(EnvironmentVariableTarget.User);
+                    foreach (var envVar in environmentVariables)
+                    {
+                        sb.AppendLine($"'{envVar}'");
+                    }
+
+                    throw new Exception("System.DefaultWorkingDirectory was null or empty. {sb}");
+                }
 
                 DirectoryInfo directoryInfo;
                 try
