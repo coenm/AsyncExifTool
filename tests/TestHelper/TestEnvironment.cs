@@ -109,7 +109,13 @@
                 if (string.IsNullOrWhiteSpace(devOpsRepoDir))
                 {
                     var sb = new StringBuilder();
-                    var environmentVariables = Environment.GetEnvironmentVariables(EnvironmentVariableTarget.User);
+                    var environmentVariables = Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Machine);
+                    foreach (var envVar in environmentVariables)
+                    {
+                        sb.AppendLine($"'{envVar}'");
+                    }
+
+                    environmentVariables = Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Process);
                     foreach (var envVar in environmentVariables)
                     {
                         sb.AppendLine($"'{envVar}'");
