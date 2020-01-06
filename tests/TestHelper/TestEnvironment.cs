@@ -109,18 +109,7 @@
                 var devOpsRepoDir = Environment.GetEnvironmentVariable("SYSTEM_DEFAULTWORKINGDIRECTORY");
                 if (string.IsNullOrWhiteSpace(devOpsRepoDir))
                 {
-                    var sb = new StringBuilder();
-                    // IDictionary environmentVariables = Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Machine);
-                    //
-                    //
-                    // sb.AppendLine("::::Process::::");
-                    // environmentVariables = Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Process);
-                    // foreach (DictionaryEntry envVar in environmentVariables)
-                    // {
-                    //     sb.AppendLine($"'{envVar.Key}'");
-                    // }
-
-                    throw new Exception($"System.DefaultWorkingDirectory was null or empty. {sb}");
+                    throw new Exception("System.DefaultWorkingDirectory was null or empty.");
                 }
 
                 DirectoryInfo directoryInfo;
