@@ -5,7 +5,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -18,7 +17,10 @@
     using JetBrains.Annotations;
     using Nito.AsyncEx;
 
-    public class AsyncExifTool : IAsyncDisposable
+    public class AsyncExifTool
+#if FEATURE_ASYNC_DISPOSABLE
+        : IAsyncDisposable
+#endif
     {
         private readonly string exifToolPath;
         private readonly AsyncLock executeAsyncSyncLock = new AsyncLock();
@@ -200,10 +202,12 @@
             }
         }
 
+# if FEATURE_ASYNC_DISPOSABLE
         public async ValueTask DisposeAsync()
         {
             await DisposeAsync(CancellationToken.None).ConfigureAwait(false);
         }
+#endif
 
         internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
         {
@@ -228,6 +232,7 @@
             {
                 var tcs = new TaskCompletionSource<string>();
 
+#if FEATURE_ASYNC_DISPOSABLE
                 await using (ct.Register(() => tcs.TrySetCanceled()))
                 {
                     key++;
@@ -239,6 +244,19 @@
                     await AddToExifToolAsync(keyString, args).ConfigureAwait(false);
                     return await tcs.Task.ConfigureAwait(false);
                 }
+#else
+                using (ct.Register(() => tcs.TrySetCanceled()))
+                {
+                    key++;
+                    var keyString = key.ToString();
+
+                    if (!waitingTasks.TryAdd(keyString, tcs))
+                        throw new Exception("Could not execute");
+
+                    await AddToExifToolAsync(keyString, args).ConfigureAwait(false);
+                    return await tcs.Task.ConfigureAwait(false);
+                }
+#endif
             }
         }
 
