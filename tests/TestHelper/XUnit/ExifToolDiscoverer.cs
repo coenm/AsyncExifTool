@@ -4,8 +4,8 @@ namespace EagleEye.TestHelper.XUnit
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
-    using global::Xunit.Abstractions;
-    using global::Xunit.Sdk;
+    using Xunit.Abstractions;
+    using Xunit.Sdk;
 
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "XUnit")]
     public class ExifToolDiscoverer : ITraitDiscoverer

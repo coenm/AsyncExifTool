@@ -40,7 +40,7 @@
         public async Task RunExiftoolForVersionAndImageTest()
         {
             // arrange
-            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
             sut.Initialize();
 
             // act
@@ -64,7 +64,7 @@
         public async Task RunExiftoolGetImageSizeAndExposureTime()
         {
             // arrange
-            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
             sut.Initialize();
 
             // act
@@ -95,7 +95,7 @@
         public async Task RunWithInputStreamTest()
         {
             // arrange
-            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
             var sw = Stopwatch.StartNew();
             sut.Initialize();
             sw.Stop();
@@ -124,7 +124,7 @@
         {
             // arrange
             var tasks = new Task<string>[Repeat];
-            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
             var sw = Stopwatch.StartNew();
             sut.Initialize();
             sw.Stop();
@@ -162,7 +162,7 @@
         public async Task InitAndDisposeTest()
         {
             // arrange
-            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
 
             // act
             sut.Initialize();
@@ -176,7 +176,7 @@
         public async Task RunExifToolWithThreeCommands()
         {
             // arrange
-            var sut = new AsyncExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
+            var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
             sut.Initialize();
 
             // act

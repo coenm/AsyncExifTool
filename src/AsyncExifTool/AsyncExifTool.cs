@@ -85,17 +85,6 @@
             waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
         }
 
-        public AsyncExifTool(string exifToolPath)
-            : this (new AsyncExifToolConfiguration(
-                exifToolPath,
-                Encoding.UTF8,
-                ExifToolExecutable.NewLine, new List<string>
-                {
-                    ExifToolArguments.CommonArgs,
-                }))
-        {
-        }
-
         public void Initialize()
         {
             if (initialized)
@@ -216,9 +205,9 @@
             await DisposeAsync(CancellationToken.None).ConfigureAwait(false);
         }
 
-        internal virtual IShell CreateShell(string exifToolPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
+        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
         {
-            return new MedallionShellAdapter(exifToolPath, args, outputStream, errorStream);
+            return new MedallionShellAdapter(exifToolFullPath, args, outputStream, errorStream);
         }
 
         private static void Ignore(Action action)
@@ -261,13 +250,13 @@
             }
         }
 
-        private async Task AddToExifToolAsync(string key, [NotNull] IEnumerable<string> args)
+        private async Task AddToExifToolAsync(string executeKey, [NotNull] IEnumerable<string> args)
         {
             foreach (var arg in args)
                 await shell.WriteLineAsync(arg).ConfigureAwait(false);
 
-            if (!string.IsNullOrWhiteSpace(key))
-                await shell.WriteLineAsync($"-execute{key}").ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(executeKey))
+                await shell.WriteLineAsync($"-execute{executeKey}").ConfigureAwait(false);
         }
 
         private void StreamOnUpdate(object sender, DataCapturedArgs dataCapturedArgs)

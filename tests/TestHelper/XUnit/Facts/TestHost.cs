@@ -8,7 +8,7 @@
         /// <summary>
         /// Everything but a continuous integration system.
         /// </summary>
-        Local = 0x01 << 0,
+        Local = 0x01,
 
         /// <summary>
         /// Appveyor windows virtual machine.
