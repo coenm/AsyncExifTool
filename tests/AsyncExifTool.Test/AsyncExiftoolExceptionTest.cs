@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
-    using System.Linq;
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters.Binary;
 
@@ -110,17 +109,17 @@
                 new object[]
                 {
                     new AsyncExifToolException(41, "aaa", "bbb"),
-                    "009610rr90@@A910000001n]e002zMB9RUkmr&JUrbVX>efE#8A=U@kzAPWaf!LdjfF1tlB.(exA+dyKwP-9nvqEFqp<3k-x>6!EC#OY$wO%UGB.><$0rr91c{}]:zCq-LCXH+?z/oC=x<@XXB9RUkmr&JUBz(8lmr&rNAcb/jzv=^F00dlCwQ4{h26j(%z/{daB97@7A=IENy*?yapgn0J2tF=JB75Y)1vMWuvgC>DzE)&SCW>r7BzkVh2s@AxA8/!f5l0WVv@24:vpJ>EBAh8kxbjxRzeTJcq/(CTyGbs.v}wOXA+PA75k)7Rz//L?BywV{nP56ICN)k/v}xR3x(v(-wPRQ7wcUU6wPJ0gBoUVZB-H#64oD$WB8L}.BZ]h#BAmAZ0rAi40%nM80rrc20s5(o9-Eu9By/qwlVl^SwN/*@z/fRGnKNo5BzkVhvrcS8q*ACawO<4*CW>r7BzkVh2NyFk000010000F000060@@r317tRD1{s]a00uXtvG(#o001Amz!i/Xe>720w(JX!y!OLLe<TM7zEVaWx>zE9z!}<!v}xR3x(v>}1onA43jmaE3ig5a015Yv6mZz%0b",
+                    "009610rr90@@A910000001n]e002zMB9RUkmr&JUrbVX>efE#8A=U@kzAPWaf!LdjfF1tlB.(exA+dyKwP-9nvqEFqp<3k-x>6!EC#OY$wO%UGB.><$0rr91c{}]:zCq-LCXH+?z/oC=x<@XXB9RUkmr&JUrbVX>mr&rNAcb/jzv=^F00dlCwQ4{h26j(%z/{daB97@7A=IENy*?yapgn0J2tF=JB75Y)1vMWuvgC>DzE)&SCW>r7BzkVh2s@AxA8/!f5l0WVv@24:vpJ>EBAh8kxbjxRzeTJcq/(CTyGbs.v}wOXA+PA75k)7Rz//L?BywV{nP56ICN)k/v}xR3x(v(-wPRQ7wcUU6wPJ0gBoUVZB-H#64oD$WB8L}.BZ]h#BAmAZ0rAi40%nM80rrc20s5(o9-Eu9By/qwlVl^SwN/*@z/fRGnKNo5BzkVhvrcS8q*ACawO<4*CW>r7BzkVh2NyFk000010000F000060@@r317tRD1{s]a00uXtvG(#o001Amz!i/Xe>720w(JX!y!OLLe<TM7zEVaWx>ys.z!}<!v}xR3x(v>}1onA43jmaE3ig5a015Yv6mZz%0b",
                 },
                 new object[]
                 {
                     new AsyncExifToolException(30, "xxx", null), /* standard error is null */
-                    "009610rr90@@A910000001n]e002zMB9RUkmr&JUrbVX>efE#8A=U@kzAPWaf!LdjfF1tlB.(exA+dyKwP-9nvqEFqp<3k-x>6!EC#OY$wO%UGB.><$0rr91c{}]:zCq-LCXH+?z/oC=x<@XXB9RUkmr&JUBz(8lmr&rNAcb/jzv=^F00dlCwQ4{h26j(%z/{daB97@7A=IENy*?yapgn0J2tF=JB75Y)1vMWuvgC>DzE)&SCW>r7BzkVh2s@AxA8/!f5l0WVv@24:vpJ>EBAh8kxbjxRzeTJcq/(CTyGbs.v}wOXA+PA75k)7Rz//L?BywV{nP56ICN)k/v}xR3x(v(-wPRQ7wcUU6wPJ0gBoUVZB-H#64oD$WB8L}.BZ]h#BAmAZ0rJo50%nM80rrc20s5(o9-Eu9By/qwlVl^SwN/*@z/fRGnKNo5BzkVhvrcS8q*ACawO<4*CW>r7BzkVh2NyFk000010000u000060@@r319/6n3i*Rk001Amz!i/Xe>720w(JX!y!OLLe<TM7zEVaWx>zE9z!}<!v}xR3x(v>@3jmaE3ig5a015Yv6mZz%0b",
+                    "009610rr90@@A910000001n]e002zMB9RUkmr&JUrbVX>efE#8A=U@kzAPWaf!LdjfF1tlB.(exA+dyKwP-9nvqEFqp<3k-x>6!EC#OY$wO%UGB.><$0rr91c{}]:zCq-LCXH+?z/oC=x<@XXB9RUkmr&JUrbVX>mr&rNAcb/jzv=^F00dlCwQ4{h26j(%z/{daB97@7A=IENy*?yapgn0J2tF=JB75Y)1vMWuvgC>DzE)&SCW>r7BzkVh2s@AxA8/!f5l0WVv@24:vpJ>EBAh8kxbjxRzeTJcq/(CTyGbs.v}wOXA+PA75k)7Rz//L?BywV{nP56ICN)k/v}xR3x(v(-wPRQ7wcUU6wPJ0gBoUVZB-H#64oD$WB8L}.BZ]h#BAmAZ0rJo50%nM80rrc20s5(o9-Eu9By/qwlVl^SwN/*@z/fRGnKNo5BzkVhvrcS8q*ACawO<4*CW>r7BzkVh2NyFk000010000u000060@@r319/6n3i*Rk001Amz!i/Xe>720w(JX!y!OLLe<TM7zEVaWx>ys.z!}<!v}xR3x(v>@3jmaE3ig5a015Yv6mZz%0b",
                 },
                 new object[]
                 {
                     new AsyncExifToolException(30, null, null), /* standard output and standard error are null */
-                    "009610rr90@@A910000001n]e002zMB9RUkmr&JUrbVX>efE#8A=U@kzAPWaf!LdjfF1tlB.(exA+dyKwP-9nvqEFqp<3k-x>6!EC#OY$wO%UGB.><$0rr91c{}]:zCq-LCXH+?z/oC=x<@XXB9RUkmr&JUBz(8lmr&rNAcb/jzv=^F00dlCwQ4{h26j(%z/{daB97@7A=IENy*?yapgn0J2tF=JB75Y)1vMWuvgC>DzE)&SCW>r7BzkVh2s@AxA8/!f5l0WVv@24:vpJ>EBAh8kxbjxRzeTJcq/(CTyGbs.v}wOXA+PA75k)7Rz//L?BywV{nP56ICN)k/v}xR3x(v(-wPRQ7wcUU6wPJ0gBoUVZB-H#64oD$WB8L}.BZ]h#BAmAZ0S&x60%nM80rrc20s5(o9-Eu9By/qwlVl^SwN/*@z/fRGnKNo5BzkVhvrcS8q*ACawO<4*CW>r7BzkVh2NyFk000010000u0000a3i*Oj001Amz!i/Xe>720w(JX!y!OLLe<TM7zEVaWx>zE9z!}<!v}xR3x(v>@3jmaE3ig5a015Yv6mZz%0b",
+                    "009610rr90@@A910000001n]e002zMB9RUkmr&JUrbVX>efE#8A=U@kzAPWaf!LdjfF1tlB.(exA+dyKwP-9nvqEFqp<3k-x>6!EC#OY$wO%UGB.><$0rr91c{}]:zCq-LCXH+?z/oC=x<@XXB9RUkmr&JUrbVX>mr&rNAcb/jzv=^F00dlCwQ4{h26j(%z/{daB97@7A=IENy*?yapgn0J2tF=JB75Y)1vMWuvgC>DzE)&SCW>r7BzkVh2s@AxA8/!f5l0WVv@24:vpJ>EBAh8kxbjxRzeTJcq/(CTyGbs.v}wOXA+PA75k)7Rz//L?BywV{nP56ICN)k/v}xR3x(v(-wPRQ7wcUU6wPJ0gBoUVZB-H#64oD$WB8L}.BZ]h#BAmAZ0S&x60%nM80rrc20s5(o9-Eu9By/qwlVl^SwN/*@z/fRGnKNo5BzkVhvrcS8q*ACawO<4*CW>r7BzkVh2NyFk000010000u0000a3i*Oj001Amz!i/Xe>720w(JX!y!OLLe<TM7zEVaWx>ys.z!}<!v}xR3x(v>@3jmaE3ig5a015Yv6mZz%0b",
                 },
             };
     }
