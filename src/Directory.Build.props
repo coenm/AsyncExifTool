@@ -6,6 +6,24 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <Authors>Coen van den Munckhof</Authors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Title>AsyncExifTool</Title>
+    <PackageId>CoenM.AsyncExifTool</PackageId>
+    <PackageTags>ExifTool;AsyncExifTool;Image;Metadata</PackageTags>
+    <PackageProjectUrl>https://github.com/coenm/AsyncExifTool/</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/coenm/AsyncExifTool/master/icon/AsyncExifTool.128.png</PackageIconUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/coenm/AsyncExifTool.git</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)..\AsyncExifTool.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 

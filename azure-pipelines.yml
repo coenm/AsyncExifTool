@@ -87,7 +87,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact'
     inputs:
-      PathtoPublish: '$(build.artifactstagingdirectory)'	
+      PathtoPublish: '$(build.artifactstagingdirectory)'
 
 # - job: Windows
 #   dependsOn: Ubuntu
