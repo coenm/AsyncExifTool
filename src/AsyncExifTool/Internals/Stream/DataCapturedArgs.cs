@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class DataCapturedArgs : EventArgs
+    internal class DataCapturedArgs : EventArgs
     {
         public DataCapturedArgs(string key, string data)
         {

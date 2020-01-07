@@ -1,6 +1,6 @@
 ﻿namespace CoenM.ExifToolLib.Logging
 {
-    public sealed class NullLogger : ILogger
+    internal sealed class NullLogger : ILogger
     {
         private NullLogger()
         {

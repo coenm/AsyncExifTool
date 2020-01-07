@@ -17,6 +17,9 @@
     using JetBrains.Annotations;
     using Nito.AsyncEx;
 
+    /// <summary>
+    /// AsyncExifTool is a wrapper around an ExifTool process for executing commands using the `stay-open` flag.
+    /// </summary>
     public class AsyncExifTool
 #if FEATURE_ASYNC_DISPOSABLE
         : IAsyncDisposable
@@ -89,6 +92,9 @@
             waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
         }
 
+        /// <summary>
+        /// Initialize <see cref="AsyncExifTool"/>. This will start the ExifTool process on the host.
+        /// </summary>
         public void Initialize()
         {
             if (initialized)
@@ -115,6 +121,13 @@
             }
         }
 
+        /// <summary>
+        /// Execute args on the ExifTool process. 
+        /// </summary>
+        /// <param name="args">The arguments to pass to ExifTool.</param>
+        /// <param name="ct">CancellationToken to cancel the pending request. If the request is processing, it is not possible to cancel. Defaults to <see cref="CancellationToken.None"/>.</param>
+        /// <returns>ExifTool response.</returns>
+        /// <exception cref="Exception">Thrown when not in the correct state (ie, should be initialized, and not disposing or disposed).</exception>
         public async Task<string> ExecuteAsync(IEnumerable<string> args, CancellationToken ct = default)
         {
             if (!initialized)
@@ -135,6 +148,11 @@
             }
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources asynchronously.
+        /// </summary>
+        /// <param name="ct">CancellationToken. Defaults to <see cref="CancellationToken.None"/>.</param>
+        /// <returns>A task that represents the asynchronous dispose operation.</returns>
         public async Task DisposeAsync(CancellationToken ct = default)
         {
             if (!initialized)
@@ -205,11 +223,13 @@
         }
 
 # if FEATURE_ASYNC_DISPOSABLE
+        /// <inheritdoc/>
         public async ValueTask DisposeAsync()
         {
             await DisposeAsync(CancellationToken.None).ConfigureAwait(false);
         }
 #else
+        /// <inheritdoc/>
         public void Dispose()
         {
             DisposeAsync(CancellationToken.None).GetAwaiter().GetResult();

@@ -1,5 +1,8 @@
 ﻿namespace CoenM.ExifToolLib.Logging
 {
+    /// <summary>
+    /// LogLevel for the <see cref="LogEntry"/>.
+    /// </summary>
     public enum LogLevel
     {
         /// <summary>
