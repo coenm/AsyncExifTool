@@ -1,6 +1,7 @@
 ﻿namespace CoenM.ExifToolLib.Internals.MedallionShell
 {
     using System;
+
     using JetBrains.Annotations;
     using Medallion.Shell;
 

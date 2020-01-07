@@ -4,6 +4,7 @@
     using System.Diagnostics;
     using System.IO;
     using System.Text;
+
     using JetBrains.Annotations;
 
     internal class ExifToolStayOpenStream : Stream
