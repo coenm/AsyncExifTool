@@ -21,18 +21,25 @@
             StandardError = standardError;
         }
 
+        /// <remarks>Required because AsyncExiftoolException implements ISerializable interface.</remarks>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         private AsyncExiftoolException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             var version = info.GetInt32(VersionKey);
 
-            if (version != CurrentSerializationVersion)
-                throw new SerializationException("Could not deserialize data");
+            switch (version)
+            {
+                // make sure we are backward compatible.
+                case 1:
+                    ExitCode = info.GetInt32(ExitCodeKey);
+                    StandardOutput = info.GetString(StandardOutputKey);
+                    StandardError = info.GetString(StandardErrorKey);
+                    break;
 
-            ExitCode = info.GetInt32(ExitCodeKey);
-            StandardOutput = info.GetString(StandardOutputKey);
-            StandardError = info.GetString(StandardErrorKey);
+                default:
+                    throw new SerializationException($"Not capable of deserializing version {version}. Please update your version of {nameof(AsyncExiftoolException)} or your data was corrupt.");
+            }
         }
 
         public int ExitCode { get; private set; }
@@ -48,7 +55,10 @@
             if (info == null)
                 throw new ArgumentNullException(nameof(info));
 
+            // if you need to change this implementation, you probably need to upgrade to the next version.
+            // to be backwards compatible. Also you need to update the constructor.
             info.AddValue(VersionKey, CurrentSerializationVersion);
+
             info.AddValue(ExitCodeKey, ExitCode);
             info.AddValue(StandardOutputKey, StandardOutput);
             info.AddValue(StandardErrorKey, StandardError);
