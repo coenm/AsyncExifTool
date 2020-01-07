@@ -5,7 +5,7 @@
     using System.Security.Permissions;
 
     [Serializable]
-    public sealed class AsyncExiftoolException : Exception
+    public sealed class AsyncExifToolException : Exception
     {
         private const int CurrentSerializationVersion = 1;
         private const string VersionKey = "v";
@@ -13,7 +13,7 @@
         private const string StandardOutputKey = "stdout";
         private const string StandardErrorKey = "stderr";
 
-        public AsyncExiftoolException(int exitCode, string standardOutput, string standardError)
+        public AsyncExifToolException(int exitCode, string standardOutput, string standardError)
             : base(standardError)
         {
             ExitCode = exitCode;
@@ -23,7 +23,7 @@
 
         /// <remarks>Required because AsyncExiftoolException implements ISerializable interface.</remarks>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        private AsyncExiftoolException(SerializationInfo info, StreamingContext context)
+        private AsyncExifToolException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             var version = info.GetInt32(VersionKey);
@@ -38,7 +38,7 @@
                     break;
 
                 default:
-                    throw new SerializationException($"Not capable of deserializing version {version}. Please update your version of {nameof(AsyncExiftoolException)} or your data was corrupt.");
+                    throw new SerializationException($"Not capable of deserializing version {version}. Please update your version of {nameof(AsyncExifToolException)} or your data was corrupt.");
             }
         }
 
