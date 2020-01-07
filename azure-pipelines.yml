@@ -70,10 +70,10 @@ jobs:
     displayName: 'Publish code coverage to devops'
     inputs:
       codeCoverageTool: Cobertura
-      summaryFileLocation: '**/coverage.cobertura.xml'
+      summaryFileLocation: '**/coverage*.cobertura.xml'
 
    # Publish test coverage results to the codecov account
-  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/_CoverageResults/coverage.cobertura.xml"
+  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/_CoverageResults/coverage*.cobertura.xml"
     displayName: 'Publish code coverage to CodeCov.io'
 
  # Create nuget packages (nupkg, and snupkg)
