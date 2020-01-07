@@ -30,6 +30,6 @@
         /// <summary>
         /// Something bad happened; AsyncExifTool library is going down
         /// </summary>
-        Fatal
+        Fatal,
     }
 }

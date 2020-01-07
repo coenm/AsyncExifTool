@@ -36,6 +36,5 @@
             // assert
             act.Should().Throw<ArgumentNullException>();
         }
-
     }
 }
