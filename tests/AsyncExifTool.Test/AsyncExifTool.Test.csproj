@@ -2,9 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
-    <IsPackable>false</IsPackable>
     <RootNamespace>CoenM.ExifToolLibTest</RootNamespace>
-    <LangVersion>8</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
