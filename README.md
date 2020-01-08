@@ -6,15 +6,13 @@ AsyncExifTool
 
 <div align="center">
 
-[![Build Status](https://dev.azure.com/cmunckhof/Imaging/_apis/build/status/AsyncExifTool?branchName=develop)](https://dev.azure.com/cmunckhof/Imaging/_build/latest?definitionId=6&branchName=develop) [![codecov](https://codecov.io/gh/coenm/AsyncExifTool/branch/develop/graph/badge.svg)](https://codecov.io/gh/coenm/AsyncExifTool) 
+[![Build Status](https://dev.azure.com/cmunckhof/Imaging/_apis/build/status/AsyncExifTool?branchName=develop)](https://dev.azure.com/cmunckhof/Imaging/_build/latest?definitionId=6&branchName=develop) [![codecov](https://codecov.io/gh/coenm/AsyncExifTool/branch/develop/graph/badge.svg)](https://codecov.io/gh/coenm/AsyncExifTool)
 
 </div>
-
 
 This library is an async wrapper around ExifTool. The ExifTool process is started using the `--stay-open` flag.
 
 This library does NOT include an instance of ExifTool. You have to install/compile/unpack ExifTool yourself and point AsyncExifTool to the right location.
-
 
 ## What is ExifTool
 
@@ -24,7 +22,7 @@ According to [exiftool.org](https://exiftool.org/)
 
 ## API
 
-AsyncExifTool requires an configuration. 
+AsyncExifTool requires an configuration.
 
 ```csharp
 // we need to tell AsyncExifTool where  exiftool executable is located.
@@ -50,7 +48,7 @@ asyncExifTool.Initialize();
 
 // Define cancellation token to make it possible to cancel an exiftool request if it is not already passed to exiftool.
 // Otherwise, cancelling is not possible at this moment.
-var ct = new CancellationToken.None;
+var ct = CancellationToken.None;
 
 // from this moment on, asyncExifTool accepts exiftool commands.
 // ie.
@@ -59,8 +57,8 @@ var result1 = await asyncExifTool.ExecuteAsync(new [] { "-ver" }, ct);
 
 // Get ImageSize and ExposureTime tag names and values.
 var result2 = await asyncExifTool.ExecuteAsync(new [] { "-s", "-ImageSize", "-ExposureTime", "D:\image1.jpg" } /* cancellation token is optional */);
- 
-// requests are queued and processed one at a time while keeping exiftool 'open'. 
+
+// requests are queued and processed one at a time while keeping exiftool 'open'.
 var task1 = asyncExifTool.ExecuteAsync( .. );
 var task2 = asyncExifTool.ExecuteAsync( .. );
 var task3 = asyncExifTool.ExecuteAsync( .. );
@@ -70,7 +68,6 @@ var task3 = asyncExifTool.ExecuteAsync( .. );
 // ExifTool is closed and cannot be initialized anymore nor does it accept any requests.
 await asyncExifTool.DisposeAsync();
 ```
-
 
 ## Icon
 

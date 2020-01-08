@@ -17,13 +17,13 @@
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+    <PackageReference Include="StyleCop.Analyzers">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.analyzers" Version="0.10.0" />
-    <PackageReference Include="xunit.categories" Version="2.0.4" />
+    <PackageReference Include="xunit"/>
+    <PackageReference Include="xunit.analyzers"/>
+    <PackageReference Include="xunit.categories"/>
   </ItemGroup>
 
 </Project>

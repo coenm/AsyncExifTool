@@ -12,7 +12,7 @@
         /// <summary>
         /// Asynchronously waits for this event to be set or for the wait to be canceled.
         /// </summary>
-        /// <param name="this">The AsyncManualResetEvent</param>
+        /// <param name="this">The AsyncManualResetEvent.</param>
         /// <param name="cancellationToken">The cancellation token used to cancel the wait. If this token is already canceled, this method will first check whether the event is set.</param>
         /// <returns><c>true</c> if the current instance receives a signal before the <paramref name="cancellationToken"/> is set, <c>false</c> otherwise.</returns>
         public static async Task<bool> WaitOneAsync([NotNull] this AsyncManualResetEvent @this, CancellationToken cancellationToken)
@@ -26,7 +26,7 @@
         /// <summary>
         /// Asynchronously waits for this event to be set or for the wait to be canceled.
         /// </summary>
-        /// <param name="this">The AsyncManualResetEvent</param>
+        /// <param name="this">The AsyncManualResetEvent.</param>
         /// <param name="timeout">A TimeSpan that represents the time to wait before returning.</param>
         /// <returns><c>true</c> if the current instance receives a signal within the <paramref name="timeout"/> Timespan, <c>false</c> otherwise.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when timeout is invalid for creating a <see cref="CancellationTokenSource"/>.</exception>

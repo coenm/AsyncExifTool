@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
+    using System.Linq;
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters.Binary;
 
@@ -95,7 +96,7 @@
 
         private static AsyncExifToolException Deserialize(string z85EncodedData)
         {
-            byte[] byes = Encoding.Z85Extended.Decode(z85EncodedData);
+            byte[] byes = Encoding.Z85Extended.Decode(z85EncodedData).ToArray();
             var bf = new BinaryFormatter();
             using var ms = new MemoryStream(byes);
             return (AsyncExifToolException)bf.Deserialize(ms);

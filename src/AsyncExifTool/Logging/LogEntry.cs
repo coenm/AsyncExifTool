@@ -7,7 +7,7 @@
     /// <summary>
     /// Immutable LogEntry that contains the log information.
     /// </summary>
-    /// <remarks><see href="https://stackoverflow.com/questions/5646820/logger-wrapper-best-practice/5646876#5646876"/></remarks>
+    /// <remarks><see href="https://stackoverflow.com/questions/5646820/logger-wrapper-best-practice/5646876#5646876"/>.</remarks>
     public readonly struct LogEntry
     {
         internal LogEntry(LogLevel severity, [NotNull] string message, Exception exception = null)

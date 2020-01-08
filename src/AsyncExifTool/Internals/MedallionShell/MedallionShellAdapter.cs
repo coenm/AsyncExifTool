@@ -25,12 +25,16 @@
                 throw new ArgumentNullException(nameof(outputStream));
 
             if (errorStream == null)
+            {
                 cmd = Command.Run(executable, args)
-                         .RedirectTo(outputStream);
+                             .RedirectTo(outputStream);
+            }
             else
+            {
                 cmd = Command.Run(executable, args)
-                    .RedirectTo(outputStream)
-                    .RedirectStandardErrorTo(errorStream);
+                             .RedirectTo(outputStream)
+                             .RedirectStandardErrorTo(errorStream);
+            }
 
             Task = System.Threading.Tasks.Task.Run(async () =>
             {
@@ -86,7 +90,7 @@
             Ignore(() => ((IDisposable)cmd).Dispose());
         }
 
-        private void Ignore(Action action)
+        private static void Ignore(Action action)
         {
             try
             {

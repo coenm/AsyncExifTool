@@ -13,7 +13,6 @@
     using CoenM.ExifToolLib.Internals.MedallionShell;
     using CoenM.ExifToolLib.Internals.Stream;
     using CoenM.ExifToolLib.Logging;
-
     using JetBrains.Annotations;
     using Nito.AsyncEx;
 
@@ -48,20 +47,19 @@
         private bool cmdExitedSubscribed;
         private bool initialized;
 
-
         /// <summary>
         /// Construct AsyncExifTool with configuration and without a logger.
         /// </summary>
-        /// <param name="configuration">Configuration for Exiftool</param>
+        /// <param name="configuration">Configuration for Exiftool.</param>
         public AsyncExifTool([NotNull] AsyncExifToolConfiguration configuration)
-            : this (configuration, NullLogger.Instance)
+            : this(configuration, NullLogger.Instance)
         {
         }
 
         /// <summary>
         /// Construct AsyncExifTool with configuration and a logger instance.
         /// </summary>
-        /// <param name="configuration">Configuration for Exiftool</param>
+        /// <param name="configuration">Configuration for Exiftool.</param>
         /// <param name="logger">The logger.</param>
         public AsyncExifTool([NotNull] AsyncExifToolConfiguration configuration, [NotNull] ILogger logger)
         {
@@ -122,7 +120,7 @@
         }
 
         /// <summary>
-        /// Execute args on the ExifTool process. 
+        /// Execute args on the ExifTool process.
         /// </summary>
         /// <param name="args">The arguments to pass to ExifTool.</param>
         /// <param name="ct">CancellationToken to cancel the pending request. If the request is processing, it is not possible to cancel. Defaults to <see cref="CancellationToken.None"/>.</param>
@@ -222,7 +220,7 @@
             }
         }
 
-# if FEATURE_ASYNC_DISPOSABLE
+#if FEATURE_ASYNC_DISPOSABLE
         /// <inheritdoc/>
         public async ValueTask DisposeAsync()
         {

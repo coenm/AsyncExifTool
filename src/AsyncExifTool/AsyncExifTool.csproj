@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MedallionShell" Version="1.6.1" />
-    <PackageReference Include="Nito.AsyncEx" Version="5.0.0" />
+    <PackageReference Include="MedallionShell" />
+    <PackageReference Include="Nito.AsyncEx" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">

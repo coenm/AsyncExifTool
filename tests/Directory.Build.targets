@@ -5,4 +5,5 @@
 		<None Remove="*.DotSettings" />
 	</ItemGroup>
 
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
 </Project>

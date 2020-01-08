@@ -5,9 +5,4 @@
     <LangVersion>8</LangVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <!-- All projects should use JetBrains.Annotations. -->
-    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" PrivateAssets="all" />
-  </ItemGroup>
-
 </Project>
