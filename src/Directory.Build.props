@@ -13,15 +13,23 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <IsPackable>true</IsPackable>
     <Title>AsyncExifTool</Title>
     <PackageId>CoenM.AsyncExifTool</PackageId>
+    <PackageDescription>AsynExifTool is a wrapper around the ExifTool lirbary making use of the '-stay-open' argument.</PackageDescription>
+    <Description>AsynExifTool is a wrapper around the ExifTool lirbary. This library makes use of the ExifTool '-stay-open' argument to only start the ExifTool proccess once.</Description>
     <PackageTags>ExifTool;AsyncExifTool;Image;Metadata</PackageTags>
     <PackageProjectUrl>https://github.com/coenm/AsyncExifTool/</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/coenm/AsyncExifTool/master/icon/AsyncExifTool.128.png</PackageIconUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/coenm/AsyncExifTool.git</RepositoryUrl>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
+
+  <ItemGroup>  
+    <None Include="$(MSBuildThisFileDirectory)..\icon\AsyncExifTool.512.png" Pack="true" PackagePath="$(PackageIcon)" Visible="false" />
+  </ItemGroup>
 
   <PropertyGroup>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)..\AsyncExifTool.ruleset</CodeAnalysisRuleSet>
