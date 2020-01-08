@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IsPackable>true</IsPackable>
     <Title>AsyncExifTool</Title>
     <PackageId>CoenM.AsyncExifTool</PackageId>
