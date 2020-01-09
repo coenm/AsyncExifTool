@@ -8,9 +8,11 @@
   <PropertyGroup>
     <Authors>Coen van den Munckhof</Authors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <!--Symbols are in the same package as the dlls for now.-->
+    <!--<SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
+    <!--<IncludeSymbols>true</IncludeSymbols>-->
   </PropertyGroup>
+
 
   <PropertyGroup>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -20,13 +22,28 @@
     <PackageDescription>AsynExifTool is a wrapper around the ExifTool lirbary making use of the '-stay-open' argument.</PackageDescription>
     <Description>AsynExifTool is a wrapper around the ExifTool lirbary. This library makes use of the ExifTool '-stay-open' argument to only start the ExifTool proccess once.</Description>
     <PackageTags>ExifTool;AsyncExifTool;Image;Metadata</PackageTags>
-    <PackageProjectUrl>https://github.com/coenm/AsyncExifTool/</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/coenm/AsyncExifTool/master/icon/AsyncExifTool.128.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/coenm/AsyncExifTool</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/coenm/AsyncExifTool.git</RepositoryUrl>
+    <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
     <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <!--true by default but nevertheless.. -->
+    <EnableSourceLink>true</EnableSourceLink>
+    <EnableSourceControlManagerQueries>$(EnableSourceLink)</EnableSourceControlManagerQueries>
+    <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!-- Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- Include PDB in the built .nupkg -->
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(EnableSourceLink)' == 'true'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
 
   <ItemGroup>  
     <None Include="$(MSBuildThisFileDirectory)..\icon\AsyncExifTool.512.png" Pack="true" PackagePath="$(PackageIcon)" Visible="false" />
