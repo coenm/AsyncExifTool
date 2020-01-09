@@ -8,9 +8,9 @@
   <PropertyGroup>
     <Authors>Coen van den Munckhof</Authors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <!--Symbols are in the same package as the dlls for now.-->
-    <!--<SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
-    <!--<IncludeSymbols>true</IncludeSymbols>-->
+    <!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
 
@@ -38,10 +38,11 @@
     <!-- Embed source files that are not tracked by the source control manager in the PDB -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!-- Include PDB in the built .nupkg -->
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <!-- <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder> -->
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(EnableSourceLink)' == 'true'">
+  <!-- <ItemGroup Condition="'$(EnableSourceLink)' == 'true'"> -->
+  <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
 
