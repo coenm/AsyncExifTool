@@ -4,11 +4,6 @@
     <!-- Also target net461. This is because .NET 4.6.1 does not support NetStandard 2.0, even though it claims to. See  https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/cross-platform-targeting#multi-targeting -->
     <TargetFrameworks>netstandard2.0;netstandard2.1;net461</TargetFrameworks>
 	  <RootNamespace>CoenM.ExifToolLib</RootNamespace>
-
-	  <!-- required for coverage-->
-    <!-- see https://github.com/OpenCover/opencover/issues/636 -->
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>

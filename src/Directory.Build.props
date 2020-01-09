@@ -11,6 +11,8 @@
     <!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
     <IncludeSymbols>true</IncludeSymbols>
     <DebugType>embedded</DebugType>
+    <NeutralLanguage>en</NeutralLanguage>
+    <!-- <DebugSymbols>True</DebugSymbols> -->
   </PropertyGroup>
 
 
@@ -38,7 +40,7 @@
     <!-- Embed source files that are not tracked by the source control manager in the PDB -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!-- Include PDB in the built .nupkg -->
-    <!-- <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder> -->
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <!-- <ItemGroup Condition="'$(EnableSourceLink)' == 'true'"> -->
