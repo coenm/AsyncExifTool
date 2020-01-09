@@ -8,11 +8,10 @@
   <PropertyGroup>
     <Authors>Coen van den Munckhof</Authors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <IncludeSymbols>true</IncludeSymbols>
     <DebugType>embedded</DebugType>
     <NeutralLanguage>en</NeutralLanguage>
-    <!-- <DebugSymbols>True</DebugSymbols> -->
   </PropertyGroup>
 
 
