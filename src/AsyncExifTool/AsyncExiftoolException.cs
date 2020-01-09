@@ -4,6 +4,9 @@
     using System.Runtime.Serialization;
     using System.Security.Permissions;
 
+    /// <summary>
+    /// AsyncExifTool Exception.
+    /// </summary>
     [Serializable]
     public sealed class AsyncExifToolException : Exception
     {
@@ -13,7 +16,7 @@
         private const string StandardOutputKey = "stdout";
         private const string StandardErrorKey = "stderr";
 
-        public AsyncExifToolException(int exitCode, string standardOutput, string standardError)
+        internal AsyncExifToolException(int exitCode, string standardOutput, string standardError)
             : base(standardError)
         {
             ExitCode = exitCode;
@@ -42,13 +45,22 @@
             }
         }
 
+        /// <summary>
+        /// ExitCode of the ExifTool process.
+        /// </summary>
         public int ExitCode { get; private set; }
 
+        /// <summary>
+        /// Standard output of the ExifTool process.
+        /// </summary>
         public string StandardOutput { get; private set; }
 
+        /// <summary>
+        /// Standard error of the ExifTool process.
+        /// </summary>
         public string StandardError { get; private set; }
 
-
+        /// <inheritdoc/>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {

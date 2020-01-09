@@ -63,6 +63,22 @@ jobs:
   #    projects: '$(solution)'
       arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude=$(COVERLET_EXCLUDE_FILTER) /p:Include=$(COVERLET_INCLUDE_FILTER) /p:ExcludeByAttribute=$(COVERLET_EXCLUDE_ATTRIBUTE) /p:ExcludeByFile=*\*Designer.cs /p:CoverletOutput=../_CoverageResults/ /p:MergeWith="../_CoverageResults/coverage.json" /p:CoverletOutputFormat=cobertura%2cjson --no-restore --no-build --collect:"XPlat Code Coverage" --logger trx'
 
+  # Install reportgenerator as a dotnet tool
+  - task: DotNetCoreCLI@2
+    displayName: 'Install reportgenerator as dotnet tool'
+    inputs:
+      command: custom
+      custom: tool
+      arguments: 'install dotnet-reportgenerator-globaltool --tool-path $(Build.SourcesDirectory)/tools'
+  
+  # Merge the coverage output files as the PublishCodeCoverageResults task can only publish one CodeCoverage file to DevOps.
+  # The output is a single file named: $(System.DefaultWorkingDirectory)/Cobertura.xml
+  - task: CmdLine@1
+    displayName: 'Run reportgenerator to merge coverage files'
+    inputs:
+      filename: '$(Build.SourcesDirectory)/tools/reportgenerator'
+      arguments: '"-reports:**/coverag*.cobertura.xml" "-targetdir:$(System.DefaultWorkingDirectory)" "-reporttypes:Cobertura"'
+  
   # Make Azure DevOps aware of the coverage results.
   # When there are no test coverage results, this task will generate a warning.
   # Because there is only one test project, we do not need to merge the results.
@@ -70,10 +86,11 @@ jobs:
     displayName: 'Publish code coverage to devops'
     inputs:
       codeCoverageTool: Cobertura
-      summaryFileLocation: '**/coverage.cobertura.xml'
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/Cobertura.xml'
+      #summaryFileLocation: '**/coverage*.cobertura.xml'
 
    # Publish test coverage results to the codecov account
-  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/_CoverageResults/coverage.cobertura.xml"
+  - bash: curl -s https://codecov.io/bash > scripts/.codecov && chmod +x scripts/.codecov && scripts/.codecov -f "tests/_CoverageResults/coverage*.cobertura.xml"
     displayName: 'Publish code coverage to CodeCov.io'
 
  # Create nuget packages (nupkg, and snupkg)
@@ -87,7 +104,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact'
     inputs:
-      PathtoPublish: '$(build.artifactstagingdirectory)'	
+      PathtoPublish: '$(build.artifactstagingdirectory)'
 
 # - job: Windows
 #   dependsOn: Ubuntu

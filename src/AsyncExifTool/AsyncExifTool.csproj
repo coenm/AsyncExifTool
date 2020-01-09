@@ -1,42 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework></TargetFramework>
     <!-- Also target net461. This is because .NET 4.6.1 does not support NetStandard 2.0, even though it claims to. See  https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/cross-platform-targeting#multi-targeting -->
     <TargetFrameworks>netstandard2.0;netstandard2.1;net461</TargetFrameworks>
 	  <RootNamespace>CoenM.ExifToolLib</RootNamespace>
-
-	  <!-- required for coverage-->
-    <!-- see https://github.com/OpenCover/opencover/issues/636 -->
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\AsyncExifTool.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
-    <PackageReference Include="MedallionShell" Version="1.6.1" />
-    <PackageReference Include="Nito.AsyncEx" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- https://blog.sanderaernouts.com/make-internals-visible-with-new-csproj-format -->
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>$(AssemblyName).Test</_Parameter1>
-    </AssemblyAttribute>
+    <PackageReference Include="MedallionShell" />
+    <PackageReference Include="Nito.AsyncEx" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <DefineConstants>$(DefineConstants);FEATURE_ASYNC_DISPOSABLE</DefineConstants>
   </PropertyGroup>
-
 
   <!--  https://github.com/dotnet/sdk/issues/335#issuecomment-271186591 -->
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' AND '$(TargetFramework)' == 'net461' ">

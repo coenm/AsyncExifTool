@@ -7,8 +7,19 @@
 
     using JetBrains.Annotations;
 
+    /// <summary>
+    /// Configuration for <see cref="AsyncExifTool"/>.
+    /// </summary>
     public sealed class AsyncExifToolConfiguration
     {
+        /// <summary>
+        /// Create configuration for <see cref="AsyncExifTool"/>.
+        /// </summary>
+        /// <param name="exifToolFullFilename">Full path to exiftool on the executing host. No checks are made in the configuration if the path is valid.</param>
+        /// <param name="exifToolResultEncoding">Encoding how to decode the ExifTool output.</param>
+        /// <param name="exifToolNewLine">Newline character used by ExifTool. Running on Windows should set to '\r\n', otherwise '\n'.</param>
+        /// <param name="commonArgs">Define common arguments. See '-common_args' in the online ExifTool documentation.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="exifToolFullFilename"/>, <paramref name="exifToolResultEncoding"/>, or <paramref name="exifToolNewLine"/> is <c>null</c>.</exception>
         public AsyncExifToolConfiguration(
             [NotNull] string exifToolFullFilename,
             [NotNull] Encoding exifToolResultEncoding,
