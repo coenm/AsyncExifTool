@@ -51,7 +51,7 @@
             version.Should().NotBeNullOrEmpty();
             result.Should().NotBeNullOrEmpty();
 
-            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
+            await sut.DisposeAsync().ConfigureAwait(false);
 
             // just for fun
             output.WriteLine(version);
@@ -81,7 +81,7 @@
             // assert
             result.Should().Be("ImageSize                       : 1712x2288");
 
-            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
+            await sut.DisposeAsync().ConfigureAwait(false);
 
             // just for fun
             output.WriteLine(image);
@@ -108,7 +108,7 @@
             for (var i = 0; i < Repeat; i++)
                 version = await sut.GetVersionAsync().ConfigureAwait(false);
             sw.Stop();
-            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
+            await sut.DisposeAsync().ConfigureAwait(false);
 
             // assert
             output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {Repeat} times");
@@ -136,7 +136,7 @@
             for (var i = 0; i < Repeat; i++)
                 tasks[i] = sut.GetVersionAsync();
             sw.Stop();
-            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromMinutes(1)).Token).ConfigureAwait(false);
+            await sut.DisposeAsync().ConfigureAwait(false);
 
             // assert
             var countCancelled = 0;
@@ -166,7 +166,7 @@
 
             // act
             sut.Initialize();
-            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
+            await sut.DisposeAsync().ConfigureAwait(false);
 
             // assert
             // sut.IsClosed.Should().Be(true);
@@ -194,7 +194,7 @@
             var result1 = await task1.ConfigureAwait(false);
             result1.Should().NotBeNullOrEmpty();
 
-            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
+            await sut.DisposeAsync().ConfigureAwait(false);
         }
     }
 }
