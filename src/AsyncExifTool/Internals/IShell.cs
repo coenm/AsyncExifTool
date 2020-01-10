@@ -9,6 +9,8 @@
 
         Task<IShellResult> Task { get; }
 
+        void Initialize();
+
         Task WriteLineAsync(string text);
 
         void Kill();

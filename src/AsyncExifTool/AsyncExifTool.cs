@@ -109,11 +109,10 @@
                 stream.Update += StreamOnUpdate;
 
                 shell = CreateShell(exifToolPath, exifToolArguments, stream, null);
-
-                // possible race condition.. to fix
                 shell.ProcessExited += ShellOnProcessExited;
-
                 cmdExitedSubscribed = true;
+
+                shell.Initialize();
                 initialized = true;
 
                 logger.Info("Initialized");

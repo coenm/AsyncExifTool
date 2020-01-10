@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using CoenM.ExifToolLib.Internals.Guards;
@@ -11,8 +12,12 @@
 
     internal class MedallionShellAdapter : IShell, IDisposable
     {
-        [NotNull]
-        private readonly Command cmd;
+        [NotNull] private readonly string executable;
+        [CanBeNull] private readonly List<string> args;
+        [NotNull] private readonly Stream outputStream;
+        [CanBeNull] private readonly Stream errorStream;
+        [NotNull] private Command cmd;
+        private bool initialized;
 
         public MedallionShellAdapter(
             [NotNull] string executable,
@@ -23,16 +28,36 @@
             Guard.NotNullOrWhiteSpace(executable, nameof(executable));
             Guard.NotNull(outputStream, nameof(outputStream));
 
+            this.executable = executable;
+            this.args = args?.ToList();
+            this.outputStream = outputStream;
+            this.errorStream = errorStream;
+            Task = System.Threading.Tasks.Task.FromResult(new DummyShellResult() as IShellResult);
+        }
+
+        [CanBeNull]
+        public event EventHandler ProcessExited;
+
+        public bool Finished => Task.IsCompleted;
+
+        [NotNull]
+        public Task<IShellResult> Task { get; private set; }
+
+        public void Initialize()
+        {
+            if (initialized)
+                return;
+
             if (errorStream == null)
             {
                 cmd = Command.Run(executable, args)
-                             .RedirectTo(outputStream);
+                    .RedirectTo(outputStream);
             }
             else
             {
                 cmd = Command.Run(executable, args)
-                             .RedirectTo(outputStream)
-                             .RedirectStandardErrorTo(errorStream);
+                    .RedirectTo(outputStream)
+                    .RedirectStandardErrorTo(errorStream);
             }
 
             Task = System.Threading.Tasks.Task.Run(async () =>
@@ -47,15 +72,9 @@
                     ProcessExited?.Invoke(this, EventArgs.Empty);
                 }
             });
+
+            initialized = true;
         }
-
-        [CanBeNull]
-        public event EventHandler ProcessExited;
-
-        public bool Finished => Task.IsCompleted;
-
-        [NotNull]
-        public Task<IShellResult> Task { get; }
 
         public async Task<bool> TryCancelAsync()
         {
@@ -98,6 +117,17 @@
             {
                 // ignore
             }
+        }
+
+        private class DummyShellResult : IShellResult
+        {
+            public int ExitCode { get; }
+
+            public bool Success { get; }
+
+            public string StandardOutput { get; }
+
+            public string StandardError { get; }
         }
     }
 }
