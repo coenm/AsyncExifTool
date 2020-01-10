@@ -53,7 +53,7 @@
         /// </summary>
         /// <param name="configuration">Configuration for Exiftool.</param>
         public AsyncExifTool([NotNull] AsyncExifToolConfiguration configuration)
-            : this(configuration, NullLogger.Instance)
+            : this(configuration, new NullLogger())
         {
         }
 
@@ -147,13 +147,51 @@
             }
         }
 
+#if FEATURE_ASYNC_DISPOSABLE
+        /// <inheritdoc/>
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsyncImplementation().ConfigureAwait(false);
+        }
+#else
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources asynchronously.
         /// </summary>
-        /// <param name="ct">CancellationToken. Defaults to <see cref="CancellationToken.None"/>.</param>
         /// <returns>A task that represents the asynchronous dispose operation.</returns>
-        public async Task DisposeAsync(CancellationToken ct = default)
+        ///
+        public Task DisposeAsync()
         {
+            return DisposeAsyncImplementation();
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            DisposeAsyncImplementation().GetAwaiter().GetResult();
+        }
+#endif
+
+        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
+        {
+            return new MedallionShellAdapter(exifToolFullPath, args, outputStream, errorStream);
+        }
+
+        private static void Ignore(Action action)
+        {
+            try
+            {
+                action?.Invoke();
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
+        }
+
+        private async Task DisposeAsyncImplementation()
+        {
+            var ct = CancellationToken.None;
+
             if (!initialized)
                 return;
 
@@ -218,37 +256,6 @@
                 shell = null;
                 disposed = true;
                 disposing = false;
-            }
-        }
-
-#if FEATURE_ASYNC_DISPOSABLE
-        /// <inheritdoc/>
-        public async ValueTask DisposeAsync()
-        {
-            await DisposeAsync(CancellationToken.None).ConfigureAwait(false);
-        }
-#else
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            DisposeAsync(CancellationToken.None).GetAwaiter().GetResult();
-        }
-#endif
-
-        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
-        {
-            return new MedallionShellAdapter(exifToolFullPath, args, outputStream, errorStream);
-        }
-
-        private static void Ignore(Action action)
-        {
-            try
-            {
-                action?.Invoke();
-            }
-            catch (Exception)
-            {
-                // ignore
             }
         }
 

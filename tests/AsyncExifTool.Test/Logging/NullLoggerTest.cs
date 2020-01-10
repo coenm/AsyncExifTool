@@ -13,7 +13,7 @@
         public void IsEnabled_ShouldReturnFalse_ForEachLogLevel(LogLevel logLevel)
         {
             // arrange
-            var sut = NullLogger.Instance;
+            var sut = new NullLogger();
 
             // act
             var result = sut.IsEnabled(logLevel);
@@ -27,7 +27,7 @@
         public void Log_ShouldNotThrow_WhenExceptionIsNull_ForEachLogLevel(LogLevel logLevel)
         {
             // arrange
-            var sut = NullLogger.Instance;
+            var sut = new NullLogger();
 
             // act
             Action act = () => sut.Log(new LogEntry(logLevel, "dummy"));
@@ -42,7 +42,7 @@
         {
             // arrange
             var ex = new Exception("Dummy");
-            var sut = NullLogger.Instance;
+            var sut = new NullLogger();
 
             // act
             Action act = () => sut.Log(new LogEntry(logLevel, "dummy", ex));
