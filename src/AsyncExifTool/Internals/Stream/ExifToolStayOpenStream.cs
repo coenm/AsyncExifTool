@@ -5,6 +5,7 @@
     using System.IO;
     using System.Text;
 
+    using CoenM.ExifToolLib.Internals.Guards;
     using JetBrains.Annotations;
 
     internal class ExifToolStayOpenStream : Stream
@@ -22,10 +23,8 @@
             [NotNull] string endLine,
             int bufferSize = OneMb)
         {
-            if (bufferSize < 1)
-                throw new ArgumentOutOfRangeException(nameof(bufferSize));
-            if (string.IsNullOrEmpty(endLine))
-                throw new ArgumentNullException(nameof(endLine));
+            Guard.MustBeGreaterThan(bufferSize, 0, nameof(bufferSize));
+            Guard.NotNullOrEmpty(endLine, nameof(endLine));
 
             var prefix = endLine + "{ready";
             var suffix = "}" + endLine;

@@ -10,6 +10,7 @@
 
     using CoenM.ExifToolLib.Internals;
     using CoenM.ExifToolLib.Internals.AsyncManualResetEvent;
+    using CoenM.ExifToolLib.Internals.Guards;
     using CoenM.ExifToolLib.Internals.MedallionShell;
     using CoenM.ExifToolLib.Internals.Stream;
     using CoenM.ExifToolLib.Logging;
@@ -63,10 +64,10 @@
         /// <param name="logger">The logger.</param>
         public AsyncExifTool([NotNull] AsyncExifToolConfiguration configuration, [NotNull] ILogger logger)
         {
-            if (configuration == null)
-                throw new ArgumentNullException(nameof(configuration));
+            Guard.NotNull(configuration, nameof(configuration));
+            Guard.NotNull(logger, nameof(logger));
 
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.logger = logger;
 
             stream = new ExifToolStayOpenStream(configuration.ExifToolEncoding, configuration.ExifToolNewLine);
             stopQueueCts = new CancellationTokenSource();

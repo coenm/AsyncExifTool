@@ -4,6 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using CoenM.ExifToolLib.Internals.Guards;
     using JetBrains.Annotations;
     using Nito.AsyncEx;
 
@@ -20,9 +21,7 @@
 #endif
         public static async Task<bool> WaitOneAsync([NotNull] this AsyncManualResetEvent @this, CancellationToken cancellationToken)
         {
-            if (@this == null)
-                throw new ArgumentNullException(nameof(@this));
-
+            Guard.NotNull(@this, nameof(@this));
             return await WaitOneAsyncImpl(@this, cancellationToken).ConfigureAwait(false);
         }
 
@@ -37,15 +36,15 @@
 #endif
         public static async Task<bool> WaitOneAsync([NotNull] this AsyncManualResetEvent @this, TimeSpan timeout)
         {
-            if (@this == null)
-                throw new ArgumentNullException(nameof(@this));
-
+            Guard.NotNull(@this, nameof(@this));
             using var cts = new CancellationTokenSource(timeout);
             return await WaitOneAsyncImpl(@this, cts.Token).ConfigureAwait(false);
         }
 
         private static async Task<bool> WaitOneAsyncImpl([NotNull] AsyncManualResetEvent asyncManualResetEvent, CancellationToken cancellationToken)
         {
+            DebugGuard.NotNull(asyncManualResetEvent, nameof(asyncManualResetEvent));
+
             try
             {
                 await asyncManualResetEvent.WaitAsync(cancellationToken).ConfigureAwait(false);

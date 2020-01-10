@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Text;
 
@@ -29,12 +30,12 @@
             stream = new ExifToolStayOpenStream(Encoding.UTF8, OperatingSystemHelper.NewLine);
         }
 
-        [Theory]
-        [InlineData("   ")]
-        [InlineData(null)]
-        public void Ctor_ShouldThrow_WhenExecutableArgumentIsInvalid(string invalidExecutable)
+        [Fact]
+        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute", Justification = "Improve readability test")]
+        public void Ctor_ShouldThrow_WhenExecutableArgumentIsNull()
         {
             // arrange
+            string invalidExecutable = null;
 
             // act
             Action act = () => _ = new MedallionShellAdapter(
@@ -45,6 +46,23 @@
 
             // assert
             act.Should().ThrowExactly<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Ctor_ShouldThrow_WhenExecutableArgumentIsWhitespaceString()
+        {
+            // arrange
+            string invalidExecutable = "  ";
+
+            // act
+            Action act = () => _ = new MedallionShellAdapter(
+                                                             invalidExecutable,
+                                                             defaultArgs,
+                                                             stream,
+                                                             null);
+
+            // assert
+            act.Should().ThrowExactly<ArgumentException>();
         }
 
         [Fact]

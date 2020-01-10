@@ -5,6 +5,7 @@
     using System.IO;
     using System.Threading.Tasks;
 
+    using CoenM.ExifToolLib.Internals.Guards;
     using JetBrains.Annotations;
     using Medallion.Shell;
 
@@ -15,14 +16,12 @@
 
         public MedallionShellAdapter(
             [NotNull] string executable,
-            IEnumerable<string> args,
+            [CanBeNull] IEnumerable<string> args,
             [NotNull] Stream outputStream,
             [CanBeNull] Stream errorStream = null)
         {
-            if (string.IsNullOrWhiteSpace(executable))
-                throw new ArgumentNullException(nameof(executable));
-            if (outputStream == null)
-                throw new ArgumentNullException(nameof(outputStream));
+            Guard.NotNullOrWhiteSpace(executable, nameof(executable));
+            Guard.NotNull(outputStream, nameof(outputStream));
 
             if (errorStream == null)
             {
@@ -79,7 +78,6 @@
         public async Task WriteLineAsync([NotNull] string text)
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            // ReSharper disable once HeuristicUnreachableCode
             if (text != null)
                 await cmd.StandardInput.WriteLineAsync(text).ConfigureAwait(false);
         }

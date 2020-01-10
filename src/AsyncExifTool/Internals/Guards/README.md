@@ -1,0 +1,1 @@
+Shamelessly copied SixLabors/ImageSharp 
