@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Runtime.CompilerServices;
 
     using JetBrains.Annotations;
@@ -11,7 +12,7 @@
     /// Provides methods to protect against invalid parameters.
     /// </summary>
     [DebuggerStepThrough]
-    [PublicAPI]
+    [ExcludeFromCodeCoverage]
     internal static class Guard
     {
         /// <summary>

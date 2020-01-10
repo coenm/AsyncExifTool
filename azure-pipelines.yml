@@ -21,7 +21,7 @@ variables:
   - name: COVERLET_INCLUDE_FILTER
     value: '[*]AsyncExifTool.*%2c[AsyncExifTool*]*'
   - name: COVERLET_EXCLUDE_ATTRIBUTE
-    value: 'DebuggerNonUserCodeAttribute'
+    value: 'DebuggerNonUserCodeAttribute%2cExcludeFromCodeCoverageAttribute%2cGeneratedCodeAttribute%2cCompilerGeneratedAttribute'
 
 jobs:
 

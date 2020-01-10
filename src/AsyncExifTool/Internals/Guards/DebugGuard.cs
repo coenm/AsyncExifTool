@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
 
     using JetBrains.Annotations;
 
@@ -10,7 +11,7 @@
     /// Provides methods to protect against invalid parameters for a DEBUG build.
     /// </summary>
     [DebuggerStepThrough]
-    [PublicAPI]
+    [ExcludeFromCodeCoverage]
     internal static class DebugGuard
     {
         /// <summary>
