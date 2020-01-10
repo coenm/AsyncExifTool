@@ -429,3 +429,7 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 tools/exiftool.exe
 *.diff
+
+
+# Generated jetbrains annotations
+*.ExternalAnnotations.xml

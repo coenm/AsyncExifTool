@@ -42,12 +42,11 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
-  <!-- <ItemGroup Condition="'$(EnableSourceLink)' == 'true'"> -->
-  <ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(EnableSourceLink)' == 'true'">
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
 
-  <ItemGroup>  
+  <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\icon\AsyncExifTool.512.png" Pack="true" PackagePath="$(PackageIcon)" Visible="false" />
   </ItemGroup>
 
@@ -59,7 +58,10 @@
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\stylecop.json" />
   </ItemGroup>
 
+
+
   <ItemGroup>
+    <!-- Make internals visisble for test project (based on convention) -->
     <!-- https://blog.sanderaernouts.com/make-internals-visible-with-new-csproj-format -->
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>$(AssemblyName).Test</_Parameter1>
@@ -73,6 +75,19 @@
     </PackageReference>
 
     <PackageReference Include="GitVersionTask">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' == 'true' AND '$(Configuration)' == 'Release' ">
+    <!-- For a release, we want to generate ReSharper annotations in a seperate xml file to be included in the package -->
+    <PackageReference Include="Fody" >
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
+    <PackageReference Include="JetBrainsAnnotations.Fody">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
