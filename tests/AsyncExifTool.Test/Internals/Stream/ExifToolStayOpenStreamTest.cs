@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -29,19 +30,32 @@
             sut?.Dispose();
         }
 
-        [Theory]
-        [InlineData("")]
-        [InlineData(null)]
-        public void Ctor_ThrowsException_WhenEndLineIsNullOrEmpty(string endLine)
+        [Fact]
+        public void Ctor_ThrowsException_WhenEndLineIsEmpty()
         {
             // arrange
+            var endLine = string.Empty;
 
             // act
             Action act = () => new ExifToolStayOpenStream(Encoding.UTF8, endLine, 200);
 
             // assert
-            act.Should().ThrowExactly<ArgumentNullException>();
-        }
+            act.Should().Throw<ArgumentException>();
+         }
+
+        [Fact]
+        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute", Justification = "Improve readability test")]
+        public void Ctor_ThrowsException_WhenEndLineIsNullOrEmpty()
+        {
+            // arrange
+            string endLine = null;
+
+            // act
+            Action act = () => new ExifToolStayOpenStream(Encoding.UTF8, endLine, 200);
+
+            // assert
+            act.Should().Throw<ArgumentNullException>();
+         }
 
         [Fact]
         public void ExifToolStayOpenStreamCtorThrowsArgumentOutOfRangeWhenBufferSizeIsNegativeTest()

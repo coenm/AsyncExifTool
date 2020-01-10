@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Text;
 
+    using CoenM.ExifToolLib.Internals.Guards;
     using JetBrains.Annotations;
 
     /// <summary>
@@ -26,19 +27,17 @@
             [NotNull] string exifToolNewLine,
             [CanBeNull] IReadOnlyCollection<string> commonArgs)
         {
-            if (string.IsNullOrWhiteSpace(exifToolFullFilename))
-                throw new ArgumentNullException(nameof(exifToolFullFilename));
-            ExifToolFullFilename = exifToolFullFilename;
+            Guard.NotNullOrWhiteSpace(exifToolFullFilename, nameof(exifToolFullFilename));
+            Guard.NotNull(exifToolResultEncoding, nameof(exifToolResultEncoding));
+            Guard.NotNullOrEmpty(exifToolNewLine, nameof(exifToolNewLine));
 
-            ExifToolEncoding = exifToolResultEncoding ?? throw new ArgumentNullException(nameof(exifToolResultEncoding));
+            ExifToolFullFilename = exifToolFullFilename;
+            ExifToolEncoding = exifToolResultEncoding;
+            ExifToolNewLine = exifToolNewLine;
 
             CommonArgs = commonArgs == null
                 ? new List<string>(0)
                 : commonArgs.Where(item => item != null).ToList();
-
-            if (string.IsNullOrEmpty(exifToolNewLine))
-                throw new ArgumentNullException(nameof(exifToolNewLine));
-            ExifToolNewLine = exifToolNewLine;
         }
 
         /// <summary>

@@ -82,7 +82,7 @@
             Action act = () => _ = new LogEntry(logLevel, message, null);
 
             // assert
-            act.Should().ThrowExactly<ArgumentNullException>();
+            act.Should().ThrowExactly<ArgumentException>();
         }
     }
 }

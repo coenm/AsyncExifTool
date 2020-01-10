@@ -2,10 +2,15 @@
 {
     using System;
 
+    using CoenM.ExifToolLib.Internals.Guards;
+    using JetBrains.Annotations;
+
     internal class DataCapturedArgs : EventArgs
     {
-        public DataCapturedArgs(string key, string data)
+        public DataCapturedArgs([NotNull] string key, [NotNull] string data)
         {
+            DebugGuard.NotNullOrWhiteSpace(key, nameof(key));
+            DebugGuard.NotNull(data, nameof(data)); // can be empty
             Key = key;
             Data = data;
         }

@@ -1,6 +1,6 @@
 ﻿namespace CoenM.ExifToolLib.Internals.MedallionShell
 {
-    using System;
+    using CoenM.ExifToolLib.Internals.Guards;
 
     using JetBrains.Annotations;
     using Medallion.Shell;
@@ -11,7 +11,8 @@
 
         public CommandResultAdapter([NotNull] CommandResult commandResult)
         {
-            this.commandResult = commandResult ?? throw new ArgumentNullException(nameof(commandResult));
+            Guard.NotNull(commandResult, nameof(commandResult));
+            this.commandResult = commandResult;
         }
 
         public int ExitCode => commandResult.ExitCode;

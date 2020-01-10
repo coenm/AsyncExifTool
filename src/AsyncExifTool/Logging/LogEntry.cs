@@ -2,6 +2,7 @@
 {
     using System;
 
+    using CoenM.ExifToolLib.Internals.Guards;
     using JetBrains.Annotations;
 
     /// <summary>
@@ -10,11 +11,17 @@
     // https://stackoverflow.com/questions/5646820/logger-wrapper-best-practice/5646876#5646876
     public readonly struct LogEntry
     {
+        /// <summary>
+        /// Log entry to write to <see cref="ILogger"/> instance(s).
+        /// </summary>
+        /// <param name="severity">Log severity.</param>
+        /// <param name="message">Log message. Cannot be null or empty.</param>
+        /// <param name="exception">Exception to log. Optional. Can be <c>null</c>.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="message"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="message"/> is empty or whitespace.</exception>
         internal LogEntry(LogLevel severity, [NotNull] string message, Exception exception = null)
         {
-            if (string.IsNullOrWhiteSpace(message))
-                throw new ArgumentNullException(nameof(message));
-
+            Guard.NotNullOrWhiteSpace(message, nameof(message));
             Severity = severity;
             Message = message;
             Exception = exception;
