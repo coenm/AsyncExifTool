@@ -9,10 +9,10 @@
     using System.Threading.Tasks;
 
     using CoenM.ExifToolLib.Internals;
-    using CoenM.ExifToolLib.Internals.AsyncManualResetEvent;
     using CoenM.ExifToolLib.Internals.Guards;
     using CoenM.ExifToolLib.Internals.MedallionShell;
     using CoenM.ExifToolLib.Internals.Stream;
+    using CoenM.ExifToolLib.Internals.TimeoutExtensions;
     using CoenM.ExifToolLib.Logging;
     using JetBrains.Annotations;
     using Nito.AsyncEx;
@@ -109,11 +109,10 @@
                 stream.Update += StreamOnUpdate;
 
                 shell = CreateShell(exifToolPath, exifToolArguments, stream, null);
-
-                // possible race condition.. to fix
                 shell.ProcessExited += ShellOnProcessExited;
-
                 cmdExitedSubscribed = true;
+
+                shell.Initialize();
                 initialized = true;
 
                 logger.Info("Initialized");
@@ -222,8 +221,16 @@
                     // Try quit ExifTool process using '-stay_open' 'false' arguments.
                     var command = new[] { ExifToolArguments.StayOpen, ExifToolArguments.BoolFalse };
 
-                    // todo ct can be cancelled..
-                    await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);
+                    try
+                    {
+                        using var cts = new CancellationTokenSource(timeout);
+                        await ExecuteOnlyAsync(command, CancellationToken.None)
+                            .WithWaitCancellation(cts.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // ignore
+                    }
 
                     await cmdExitedMre.WaitOneAsync(timeout).ConfigureAwait(false);
                 }

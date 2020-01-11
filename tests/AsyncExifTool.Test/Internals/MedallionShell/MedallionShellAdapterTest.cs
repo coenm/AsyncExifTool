@@ -41,6 +41,7 @@
             stream = new ExifToolStayOpenStream(Encoding.UTF8, OperatingSystemHelper.NewLine);
             sut = new MedallionShellAdapter(ExifToolSystemConfiguration.ExifToolExecutable, defaultArgs, stream);
             sut.ProcessExited += SutOnProcessExited;
+            sut.Initialize();
         }
 
         public Task InitializeAsync() => Task.CompletedTask;
@@ -56,7 +57,7 @@
 
         [ExifTool]
         [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows, reason: "Sometimes this tests hangs on AppVeyor (windows).")]
-        public async Task KillingSutShouldInvokeProcessExitedEventTest()
+        public async Task KillingSut_ShouldInvokeProcessExitedEventTest()
         {
             // arrange
 

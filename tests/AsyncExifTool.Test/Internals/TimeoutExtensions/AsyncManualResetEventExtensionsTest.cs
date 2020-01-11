@@ -1,4 +1,4 @@
-﻿namespace CoenM.ExifToolLibTest.Internals.AsyncManualResetEvent
+﻿namespace CoenM.ExifToolLibTest.Internals.TimeoutExtensions
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -9,7 +9,7 @@
     using Nito.AsyncEx;
     using Xunit;
 
-    using Sut = CoenM.ExifToolLib.Internals.AsyncManualResetEvent.AsyncManualResetEventExtensions;
+    using Sut = CoenM.ExifToolLib.Internals.TimeoutExtensions.AsyncManualResetEventExtensions;
 
     [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute", Justification = "Readability test")]
     public class AsyncManualResetEventExtensionsTest

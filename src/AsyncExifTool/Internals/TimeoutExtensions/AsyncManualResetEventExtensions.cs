@@ -1,4 +1,4 @@
-﻿namespace CoenM.ExifToolLib.Internals.AsyncManualResetEvent
+﻿namespace CoenM.ExifToolLib.Internals.TimeoutExtensions
 {
     using System;
     using System.Threading;
