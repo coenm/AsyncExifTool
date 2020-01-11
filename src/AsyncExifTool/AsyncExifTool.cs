@@ -226,13 +226,13 @@
                         using var cts = new CancellationTokenSource(timeout);
                         await ExecuteOnlyAsync(command, CancellationToken.None)
                             .WithWaitCancellation(cts.Token);
-
-                        await cmdExitedMre.WaitOneAsync(timeout).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
                         // ignore
                     }
+
+                    await cmdExitedMre.WaitOneAsync(timeout).ConfigureAwait(false);
                 }
 
                 if (!cmdExited)
