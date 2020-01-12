@@ -94,6 +94,7 @@
         /// <summary>
         /// Initialize <see cref="AsyncExifTool"/>. This will start the ExifTool process on the host.
         /// </summary>
+        /// <exception cref="AsyncExifToolInitialisationException">Thrown when the ExifTool process throws an exception when started.</exception>
         public void Initialize()
         {
             if (initialized)
@@ -112,7 +113,18 @@
                 shell.ProcessExited += ShellOnProcessExited;
                 cmdExitedSubscribed = true;
 
-                shell.Initialize();
+                try
+                {
+                    shell.Initialize();
+                }
+                catch (Exception e)
+                {
+                    shell.ProcessExited -= ShellOnProcessExited;
+                    cmdExitedSubscribed = false;
+
+                    throw new AsyncExifToolInitialisationException("Could not initialise exiftool", e);
+                }
+
                 initialized = true;
 
                 logger.Info("Initialized");
@@ -208,7 +220,6 @@
                 stopQueueCts?.Cancel();
 
                 var timeout = TimeSpan.FromMilliseconds(100);
-
                 if (!cmdExited)
                 {
                     // This is really not okay. Not sure why or when the stay-open False command doesn't seem to work.

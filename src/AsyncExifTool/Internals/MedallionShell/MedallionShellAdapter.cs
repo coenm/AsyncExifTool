@@ -16,7 +16,7 @@
         [CanBeNull] private readonly List<string> args;
         [NotNull] private readonly Stream outputStream;
         [CanBeNull] private readonly Stream errorStream;
-        [NotNull] private Command cmd;
+        [CanBeNull] private Command cmd;
         private bool initialized;
 
         public MedallionShellAdapter(
