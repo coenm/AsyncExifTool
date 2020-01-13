@@ -23,16 +23,16 @@
         {
             add
             {
-                if (logger.IsEnabled(LogLevel.Debug))
-                    logger.Log(new LogEntry(LogLevel.Debug, $"Added shells {nameof(ProcessExited)} event handler."));
+                if (logger.IsEnabled(LogLevel.Trace))
+                    logger.Log(new LogEntry(LogLevel.Trace, $"Added shells {nameof(ProcessExited)} event handler."));
 
                 decoratee.ProcessExited += value;
             }
 
             remove
             {
-                if (logger.IsEnabled(LogLevel.Debug))
-                    logger.Log(new LogEntry(LogLevel.Debug, $"Removed shells {nameof(ProcessExited)} event handler."));
+                if (logger.IsEnabled(LogLevel.Trace))
+                    logger.Log(new LogEntry(LogLevel.Trace, $"Removed shells {nameof(ProcessExited)} event handler."));
 
                 decoratee.ProcessExited -= value;
             }
@@ -42,37 +42,35 @@
 
         public void Initialize()
         {
-            if (logger.IsEnabled(LogLevel.Debug))
-                logger.Log(new LogEntry(LogLevel.Debug, "Start initialising shell"));
+            if (logger.IsEnabled(LogLevel.Trace))
+                logger.Log(new LogEntry(LogLevel.Trace, "Start initialising shell"));
             decoratee.Initialize();
         }
 
         public Task WriteLineAsync(string text)
         {
-            if (logger.IsEnabled(LogLevel.Debug))
-                logger.Log(new LogEntry(LogLevel.Debug, $"WriteLineAsync: {text}"));
+            if (logger.IsEnabled(LogLevel.Trace))
+                logger.Log(new LogEntry(LogLevel.Trace, $"WriteLineAsync: {text}"));
 
             return decoratee.WriteLineAsync(text);
         }
 
         public void Kill()
         {
-            if (logger.IsEnabled(LogLevel.Debug))
-                logger.Log(new LogEntry(LogLevel.Debug, $"Killing shell"));
+            if (logger.IsEnabled(LogLevel.Trace))
+                logger.Log(new LogEntry(LogLevel.Trace, $"Killing shell"));
 
             decoratee.Kill();
         }
 
         public async Task<bool> TryCancelAsync()
         {
-            if (logger.IsEnabled(LogLevel.Debug))
-                logger.Log(new LogEntry(LogLevel.Debug, "TryCancel the current shell process"));
+            if (!logger.IsEnabled(LogLevel.Trace))
+                return await decoratee.TryCancelAsync().ConfigureAwait(false);
 
+            logger.Log(new LogEntry(LogLevel.Trace, "TryCancel the current shell process"));
             var result = await decoratee.TryCancelAsync().ConfigureAwait(false);
-
-            if (logger.IsEnabled(LogLevel.Debug))
-                logger.Log(new LogEntry(LogLevel.Debug, $"TryCancel returned {result}."));
-
+            logger.Log(new LogEntry(LogLevel.Trace, $"TryCancel returned {result}."));
             return result;
         }
 
@@ -81,8 +79,8 @@
             if (!(decoratee is IDisposable disposable))
                 return;
 
-            if (logger.IsEnabled(LogLevel.Debug))
-                logger.Log(new LogEntry(LogLevel.Debug, "Dispose shell."));
+            if (logger.IsEnabled(LogLevel.Trace))
+                logger.Log(new LogEntry(LogLevel.Trace, "Dispose shell."));
 
             disposable.Dispose();
         }
