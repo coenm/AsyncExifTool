@@ -172,7 +172,12 @@
 
         internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
         {
-            return new MedallionShellAdapter(exifToolFullPath, args, outputStream, errorStream);
+            var medallionShellAdapter = new MedallionShellAdapter(exifToolFullPath, args, outputStream, errorStream);
+
+            if (logger is NullLogger)
+                return medallionShellAdapter;
+
+            return new LoggingShellDecorator(medallionShellAdapter, logger);
         }
 
         private static void Ignore(Action action)
@@ -253,7 +258,8 @@
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine($"Exception happened during kill {e.Message}");
+                        if (logger.IsEnabled(LogLevel.Error))
+                            logger.Log(new LogEntry(LogLevel.Error, "Killing the process threw an exception.", e));
                     }
                 }
 
