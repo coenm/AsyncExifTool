@@ -433,3 +433,4 @@ tools/exiftool.exe
 
 # Generated jetbrains annotations
 *.ExternalAnnotations.xml
+/exiftool-*.zip
