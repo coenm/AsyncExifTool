@@ -17,7 +17,7 @@ variables:
   - name: buildConfiguration
     value: 'Release'
   - name: COVERLET_EXCLUDE_FILTER
-    value: '[TestHelper]*%2c[*.Test]*%2c[xunit.*]*'
+    value: '[Samples]*%2c[TestHelper]*%2c[*.Test]*%2c[xunit.*]*'
   - name: COVERLET_INCLUDE_FILTER
     value: '[*]AsyncExifTool.*%2c[AsyncExifTool*]*'
   - name: COVERLET_EXCLUDE_ATTRIBUTE
