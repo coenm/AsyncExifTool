@@ -1,5 +1,6 @@
 ﻿namespace CoenM.ExifToolLibTest.Internals.MedallionShell
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -175,6 +176,73 @@
                 .Then(A.CallTo(() => decoratee.Kill()).MustHaveHappenedOnceExactly());
             A.CallTo(() => logger.Log(A<LogEntry>._)).MustNotHaveHappened();
             loggedEntries.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void ProcessExitedEventHandlerSubscriptionAdd_ShouldLog_WhenEnabled()
+        {
+            // arrange
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).Returns(true);
+
+            // act
+            sut.ProcessExited += SutOnProcessExited;
+
+            // assert
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly()
+                .Then(A.CallTo(() => logger.Log(A<LogEntry>._)).MustHaveHappened());
+
+            loggedEntries.Should().BeEquivalentTo(new LogEntry(LogLevel.Trace, "Added shells ProcessExited event handler."));
+        }
+
+        [Fact]
+        public void ProcessExitedEventHandlerSubscriptionAdd_ShouldNotLog_WhenDisabled()
+        {
+            // arrange
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).Returns(false);
+
+            // act
+            sut.ProcessExited += SutOnProcessExited;
+
+            // assert
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => logger.Log(A<LogEntry>._)).MustNotHaveHappened();
+            loggedEntries.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void ProcessExitedEventHandlerSubscriptionRemove_ShouldLog_WhenEnabled()
+        {
+            // arrange
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).Returns(true);
+
+            // act
+            sut.ProcessExited -= SutOnProcessExited;
+
+            // assert
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly()
+                .Then(A.CallTo(() => logger.Log(A<LogEntry>._)).MustHaveHappened());
+
+            loggedEntries.Should().BeEquivalentTo(new LogEntry(LogLevel.Trace, "Removed shells ProcessExited event handler."));
+        }
+
+        [Fact]
+        public void ProcessExitedEventHandlerSubscriptionRemove_ShouldNotLog_WhenDisabled()
+        {
+            // arrange
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).Returns(false);
+
+            // act
+            sut.ProcessExited -= SutOnProcessExited;
+
+            // assert
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => logger.Log(A<LogEntry>._)).MustNotHaveHappened();
+            loggedEntries.Should().BeEmpty();
+        }
+
+        private void SutOnProcessExited(object? sender, EventArgs e)
+        {
+            return;
         }
     }
 }
