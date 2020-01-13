@@ -240,6 +240,36 @@
             loggedEntries.Should().BeEmpty();
         }
 
+        [Fact]
+        public async Task Task_ShouldNotLog()
+        {
+            // arrange
+            IShellResult taskResult = A.Dummy<IShellResult>();
+            A.CallTo(() => decoratee.Task).Returns(Task.FromResult(taskResult));
+
+            // act
+            var result = await sut.Task;
+
+            // assert
+            A.CallTo(decoratee).MustHaveHappenedOnceExactly();
+            A.CallTo(logger).MustNotHaveHappened();
+            result.Should().Be(taskResult);
+        }
+
+        [Fact]
+        public void Dispose_ShouldReturn_WhenDecorateeDoesNotImplementIDisposable()
+        {
+            // arrange
+
+            // act
+            sut.Dispose();
+
+            // assert
+            A.CallTo(logger).MustNotHaveHappened();;
+            A.CallTo(decoratee).MustNotHaveHappened();
+            loggedEntries.Should().BeEmpty();
+        }
+
         private void SutOnProcessExited(object sender, EventArgs e)
         {
         }
