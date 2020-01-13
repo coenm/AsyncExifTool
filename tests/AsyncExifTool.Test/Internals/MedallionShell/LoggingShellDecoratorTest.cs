@@ -110,5 +110,71 @@
             result.Should().Be(decorateeTryCancelSucceeded);
         }
 
+        [Fact]
+        public async Task WriteLineAsync_ShouldLog_WhenEnabled()
+        {
+            // arrange
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).Returns(true);
+
+            // act
+            await sut.WriteLineAsync("test text");
+
+            // assert
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly()
+                .Then(A.CallTo(() => logger.Log(A<LogEntry>._)).MustHaveHappened())
+                .Then(A.CallTo(() => decoratee.WriteLineAsync("test text")).MustHaveHappenedOnceExactly());
+
+            loggedEntries.Should().BeEquivalentTo(
+                new LogEntry(LogLevel.Trace, "WriteLineAsync: test text"));
+        }
+
+        [Fact]
+        public async Task WriteLineAsync_ShouldNotLog_WhenDisabled()
+        {
+            // arrange
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).Returns(false);
+
+            // act
+            await sut.WriteLineAsync("test text");
+
+            // assert
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly()
+                .Then(A.CallTo(() => decoratee.WriteLineAsync("test text")).MustHaveHappenedOnceExactly());
+            A.CallTo(() => logger.Log(A<LogEntry>._)).MustNotHaveHappened();
+            loggedEntries.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Kill_ShouldLog_WhenEnabled()
+        {
+            // arrange
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).Returns(true);
+
+            // act
+            sut.Kill();
+
+            // assert
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly()
+                .Then(A.CallTo(() => logger.Log(A<LogEntry>._)).MustHaveHappened())
+                .Then(A.CallTo(() => decoratee.Kill()).MustHaveHappenedOnceExactly());
+
+            loggedEntries.Should().BeEquivalentTo(new LogEntry(LogLevel.Trace, "Killing shell"));
+        }
+
+        [Fact]
+        public void Kill_ShouldNotLog_WhenDisabled()
+        {
+            // arrange
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).Returns(false);
+
+            // act
+            sut.Kill();
+
+            // assert
+            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly()
+                .Then(A.CallTo(() => decoratee.Kill()).MustHaveHappenedOnceExactly());
+            A.CallTo(() => logger.Log(A<LogEntry>._)).MustNotHaveHappened();
+            loggedEntries.Should().BeEmpty();
+        }
     }
 }
