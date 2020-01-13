@@ -240,9 +240,8 @@
             loggedEntries.Should().BeEmpty();
         }
 
-        private void SutOnProcessExited(object? sender, EventArgs e)
+        private void SutOnProcessExited(object sender, EventArgs e)
         {
-            return;
         }
     }
 }
