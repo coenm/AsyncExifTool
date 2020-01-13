@@ -40,7 +40,7 @@
             AsyncExifToolConfiguration configuration = null;
 
             // act
-            Action act = () => new AsyncExifTool(configuration);
+            Action act = () => _ = new AsyncExifTool(configuration);
 
             // assert
             act.Should().Throw<ArgumentNullException>();
@@ -54,7 +54,7 @@
             ILogger logger = null;
 
             // act
-            Action act = () => new AsyncExifTool(AsyncExifToolConfigurationFactory.Create(), logger);
+            Action act = () => _ = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create(), logger);
 
             // assert
             act.Should().Throw<ArgumentNullException>();
@@ -95,6 +95,20 @@
 
             // assert
             testSut.CreateShellCalled.Should().Be(1);
+        }
+
+        [Fact]
+        public void Initialize_ShouldThrow_WhenShellThrows()
+        {
+            // arrange
+            A.CallTo(() => shell.Initialize())
+             .Throws(() => new ApplicationException("Dummy test exception"));
+
+            // act
+            Action act = () => sut.Initialize();
+
+            // assert
+            act.Should().ThrowExactly<AsyncExifToolInitialisationException>();
         }
 
         [Fact]
@@ -238,7 +252,7 @@
             A.CallTo(() => shell.WriteLineAsync("-execute3")).MustNotHaveHappened();
         }
 
-        private async Task IgnoreException(Task task)
+        private static async Task IgnoreException(Task task)
         {
             try
             {
