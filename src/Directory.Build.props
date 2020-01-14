@@ -7,22 +7,18 @@
 
   <PropertyGroup>
     <Authors>Coen van den Munckhof</Authors>
+    <Owners>$(Authors)</Owners>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <IncludeSymbols>true</IncludeSymbols>
     <DebugType>embedded</DebugType>
-    <NeutralLanguage>en</NeutralLanguage>
-  </PropertyGroup>
-
-
-  <PropertyGroup>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <IsPackable>true</IsPackable>
+    <IsPackable>false</IsPackable>
     <Title>AsyncExifTool</Title>
     <PackageId>CoenM.AsyncExifTool</PackageId>
     <PackageDescription>AsynExifTool is a wrapper around the ExifTool lirbary making use of the '-stay-open' argument.</PackageDescription>
     <Description>AsynExifTool is a wrapper around the ExifTool lirbary. This library makes use of the ExifTool '-stay-open' argument to only start the ExifTool proccess once.</Description>
-    <PackageTags>ExifTool;AsyncExifTool;Image;Metadata</PackageTags>
+    <PackageTags>ExifTool;AsyncExifTool;Image;Metadata;Exif;</PackageTags>
     <PackageProjectUrl>https://github.com/coenm/AsyncExifTool</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
