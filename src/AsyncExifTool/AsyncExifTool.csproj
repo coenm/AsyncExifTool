@@ -10,6 +10,9 @@
     <IsPackable>true</IsPackable>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageReleaseNotes>
+      1.0.0-beta002:
+      * Added errorstream for exiftool for capturing exiftool errors;
+      1.0.0-beta001:
       * Initial release;
       * C#8 syntax;
       * NETSTANDARD2.1 differs from other targets as it depends on IAsyncDisposable, instead of IDisposable;
