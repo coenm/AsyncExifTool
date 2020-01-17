@@ -59,6 +59,14 @@
             act.Should().ThrowExactly<ArgumentNullException>();
         }
 
+        private static string Serialize(AsyncExifToolException ex)
+        {
+            var bf = new BinaryFormatter();
+            using var ms = new MemoryStream();
+            bf.Serialize(ms, ex);
+            return Encoding.Z85Extended.Encode(ms.ToArray());
+        }
+
         private static AsyncExifToolException Deserialize(string z85EncodedData)
         {
             byte[] byes = Encoding.Z85Extended.Decode(z85EncodedData).ToArray();

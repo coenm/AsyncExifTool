@@ -15,7 +15,7 @@
         [NotNull] private readonly string executable;
         [CanBeNull] private readonly List<string> args;
         [NotNull] private readonly Stream outputStream;
-        [CanBeNull] private readonly Stream errorStream;
+        [NotNull] private readonly Stream errorStream;
         [CanBeNull] private Command cmd;
         private bool initialized;
 
@@ -23,7 +23,7 @@
             [NotNull] string executable,
             [CanBeNull] IEnumerable<string> args,
             [NotNull] Stream outputStream,
-            [CanBeNull] Stream errorStream = null)
+            [NotNull] Stream errorStream)
         {
             Guard.NotNullOrWhiteSpace(executable, nameof(executable));
             Guard.NotNull(outputStream, nameof(outputStream));
@@ -48,17 +48,9 @@
             if (initialized)
                 return;
 
-            if (errorStream == null)
-            {
-                cmd = Command.Run(executable, args)
-                    .RedirectTo(outputStream);
-            }
-            else
-            {
-                cmd = Command.Run(executable, args)
-                    .RedirectTo(outputStream)
-                    .RedirectStandardErrorTo(errorStream);
-            }
+            cmd = Command.Run(executable, args)
+                .RedirectTo(outputStream)
+                .RedirectStandardErrorTo(errorStream);
 
             Task = System.Threading.Tasks.Task.Run(async () =>
             {

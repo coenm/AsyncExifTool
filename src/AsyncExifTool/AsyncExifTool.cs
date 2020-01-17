@@ -38,6 +38,7 @@
         private readonly List<string> exifToolArguments;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> waitingTasks;
         private readonly ExifToolStayOpenStream stream;
+        private readonly ExifToolErrorStream errorStream;
         private readonly AsyncManualResetEvent cmdExitedMre;
         private readonly ILogger logger;
         private IShell shell;
@@ -69,7 +70,8 @@
 
             this.logger = logger;
 
-            stream = new ExifToolStayOpenStream(configuration.ExifToolEncoding, configuration.ExifToolNewLine);
+            stream = new ExifToolStayOpenStream(configuration.ExifToolEncoding, configuration.ExifToolNewLine, logger: logger);
+            errorStream = new ExifToolErrorStream(logger, configuration.ExifToolEncoding);
             stopQueueCts = new CancellationTokenSource();
             initialized = false;
             disposed = false;
@@ -108,8 +110,9 @@
                 logger.Info("Initializing");
 
                 stream.Update += StreamOnUpdate;
+                errorStream.Error += StreamOnError;
 
-                shell = CreateShell(exifToolPath, exifToolArguments, stream, null);
+                shell = CreateShell(exifToolPath, exifToolArguments, stream, errorStream);
                 shell.ProcessExited += ShellOnProcessExited;
                 cmdExitedSubscribed = true;
 
@@ -275,8 +278,10 @@
                 }
 
                 stream.Update -= StreamOnUpdate;
+                errorStream.Error -= StreamOnError;
                 UnsubscribeCmdOnProcessExitedOnce();
                 Ignore(() => stream.Dispose());
+                Ignore(() => errorStream.Dispose());
                 shell = null;
                 disposed = true;
                 disposing = false;
@@ -330,6 +335,15 @@
                 return;
 
             tcs.TrySetResult(dataCapturedArgs.Data);
+        }
+
+        private void StreamOnError(object sender, ErrorCapturedArgs e)
+        {
+            foreach (var item in waitingTasks.ToArray())
+            {
+                if (waitingTasks.TryRemove(item.Key, out var tcs))
+                    tcs.TrySetException(new Exception(e.Data));
+            }
         }
 
         private void ShellOnProcessExited(object sender, EventArgs eventArgs)
