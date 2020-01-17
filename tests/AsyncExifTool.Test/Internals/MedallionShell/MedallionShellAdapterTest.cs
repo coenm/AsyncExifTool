@@ -9,6 +9,7 @@
     using CoenM.ExifToolLib.Internals;
     using CoenM.ExifToolLib.Internals.MedallionShell;
     using CoenM.ExifToolLib.Internals.Stream;
+    using CoenM.ExifToolLib.Logging;
     using CoenM.ExifToolLibTest.TestInternals;
     using EagleEye.TestHelper.XUnit;
     using FluentAssertions;
@@ -38,8 +39,9 @@
                                         "-",
                                     };
 
-            stream = new ExifToolStayOpenStream(Encoding.UTF8, OperatingSystemHelper.NewLine);
-            sut = new MedallionShellAdapter(ExifToolSystemConfiguration.ExifToolExecutable, defaultArgs, stream);
+            stream = new ExifToolStayOpenStream(Encoding.UTF8, OperatingSystemHelper.NewLine, new NullLogger());
+            var errorStream = new ExifToolErrorStream(new NullLogger(), Encoding.UTF8);
+            sut = new MedallionShellAdapter(ExifToolSystemConfiguration.ExifToolExecutable, defaultArgs, stream, errorStream);
             sut.ProcessExited += SutOnProcessExited;
             sut.Initialize();
         }

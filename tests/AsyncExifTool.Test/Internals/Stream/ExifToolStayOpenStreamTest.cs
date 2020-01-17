@@ -8,6 +8,7 @@
     using System.Text;
 
     using CoenM.ExifToolLib.Internals.Stream;
+    using CoenM.ExifToolLib.Logging;
     using FluentAssertions;
     using TestHelper;
     using Xunit;
@@ -20,7 +21,7 @@
         public ExifToolStayOpenStreamTest()
         {
             capturedEvents = new List<DataCapturedArgs>();
-            sut = new ExifToolStayOpenStream(Encoding.UTF8, OperatingSystemHelper.NewLine, 200);
+            sut = new ExifToolStayOpenStream(Encoding.UTF8, OperatingSystemHelper.NewLine, new NullLogger(), 200);
             sut.Update += SutOnUpdate;
         }
 
@@ -37,7 +38,7 @@
             var endLine = string.Empty;
 
             // act
-            Action act = () => new ExifToolStayOpenStream(Encoding.UTF8, endLine, 200);
+            Action act = () => new ExifToolStayOpenStream(Encoding.UTF8, endLine, new NullLogger(), 200);
 
             // assert
             act.Should().Throw<ArgumentException>();
@@ -51,7 +52,7 @@
             string endLine = null;
 
             // act
-            Action act = () => new ExifToolStayOpenStream(Encoding.UTF8, endLine, 200);
+            Action act = () => new ExifToolStayOpenStream(Encoding.UTF8, endLine, new NullLogger(), 200);
 
             // assert
             act.Should().Throw<ArgumentNullException>();
@@ -63,7 +64,7 @@
             // arrange
 
             // act
-            Action act = () => _ = new ExifToolStayOpenStream(null, OperatingSystemHelper.NewLine, -1);
+            Action act = () => _ = new ExifToolStayOpenStream(null, OperatingSystemHelper.NewLine, new NullLogger(), -1);
 
             // assert
             act.Should().Throw<ArgumentOutOfRangeException>();

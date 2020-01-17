@@ -8,6 +8,7 @@
 
     using CoenM.ExifToolLib.Internals.MedallionShell;
     using CoenM.ExifToolLib.Internals.Stream;
+    using CoenM.ExifToolLib.Logging;
     using FluentAssertions;
     using TestHelper;
     using Xunit;
@@ -27,7 +28,7 @@
                                         "-",
                                     };
 
-            stream = new ExifToolStayOpenStream(Encoding.UTF8, OperatingSystemHelper.NewLine);
+            stream = new ExifToolStayOpenStream(Encoding.UTF8, OperatingSystemHelper.NewLine, new NullLogger());
         }
 
         [Fact]

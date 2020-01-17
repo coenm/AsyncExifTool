@@ -4,7 +4,6 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
 
     using CoenM.ExifToolLib;
@@ -56,6 +55,27 @@
             // just for fun
             output.WriteLine(version);
             output.WriteLine(result);
+        }
+
+        [Fact]
+        [Xunit.Categories.IntegrationTest]
+        [ExifTool]
+        public async Task RunExiftoolForVersionAndImageErrorTest()
+        {
+            // arrange
+            var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
+            sut.Initialize();
+
+            // act
+            var getMetadataNonExistingImageTask = sut.ExecuteAsync(image + "does not exist");
+            Func<Task> act = async () => await getMetadataNonExistingImageTask;
+            var version = await sut.GetVersionAsync().ConfigureAwait(false);
+
+            // assert
+            act.Should().Throw<Exception>();
+            version.Should().NotBeNullOrEmpty();
+
+            await sut.DisposeAsync().ConfigureAwait(false);
         }
 
         [Fact]

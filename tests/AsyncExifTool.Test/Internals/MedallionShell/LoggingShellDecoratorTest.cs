@@ -265,7 +265,7 @@
             sut.Dispose();
 
             // assert
-            A.CallTo(logger).MustNotHaveHappened();;
+            A.CallTo(logger).MustNotHaveHappened();
             A.CallTo(decoratee).MustNotHaveHappened();
             loggedEntries.Should().BeEmpty();
         }

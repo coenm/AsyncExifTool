@@ -6,6 +6,7 @@
     using System.Text;
 
     using CoenM.ExifToolLib.Internals.Guards;
+    using CoenM.ExifToolLib.Logging;
     using JetBrains.Annotations;
 
     internal class ExifToolStayOpenStream : Stream
@@ -16,20 +17,24 @@
         private readonly byte[] endOfMessageSequenceStart;
         private readonly byte[] endOfMessageSequenceEnd;
         private readonly int bufferSize;
+        private readonly ILogger logger;
         private int index;
 
         public ExifToolStayOpenStream(
             [CanBeNull] Encoding encoding,
             [NotNull] string endLine,
+            [NotNull] ILogger logger,
             int bufferSize = OneMb)
         {
             Guard.MustBeGreaterThan(bufferSize, 0, nameof(bufferSize));
             Guard.NotNullOrEmpty(endLine, nameof(endLine));
+            Guard.NotNull(logger, nameof(logger));
 
             var prefix = endLine + "{ready";
             var suffix = "}" + endLine;
 
             this.bufferSize = bufferSize;
+            this.logger = logger;
             this.encoding = encoding ?? new UTF8Encoding();
             cache = new byte[this.bufferSize];
             index = 0;
@@ -68,6 +73,8 @@
                 return;
             if (count > bufferSize - index)
                 throw new ArgumentException("The sum of offset and count is greater than the buffer length.");
+
+            logger?.Warn("ExifToolStayOpenStream: " + encoding.GetString(buffer, offset, count));
 
             Array.Copy(buffer, 0, cache, index, count);
             index += count;
