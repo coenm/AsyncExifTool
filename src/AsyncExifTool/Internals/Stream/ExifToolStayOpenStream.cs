@@ -74,7 +74,8 @@
             if (count > bufferSize - index)
                 throw new ArgumentException("The sum of offset and count is greater than the buffer length.");
 
-            logger?.Warn("ExifToolStayOpenStream: " + encoding.GetString(buffer, offset, count));
+            if (logger.IsEnabled(LogLevel.Trace))
+                logger.Trace("ExifToolStayOpenStream: " + encoding.GetString(buffer, offset, count));
 
             Array.Copy(buffer, 0, cache, index, count);
             index += count;
