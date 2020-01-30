@@ -1,104 +1,29 @@
-﻿/*
-namespace CoenM.ExifToolLibTest.Internals.Stream
+﻿namespace CoenM.ExifToolLibTest.Internals.Stream
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Text;
 
     using CoenM.ExifToolLib.Internals.Stream;
-    using CoenM.ExifToolLib.Logging;
     using FluentAssertions;
     using TestHelper;
     using Xunit;
 
-    public class ExifToolErrorStreamTest : IDisposable
+    public class ExifToolStdErrWriterTest : IDisposable
     {
-        private readonly ExifToolErrorStream sut;
+        private readonly ExifToolStdErrWriter sut;
         private readonly List<ErrorCapturedArgs> capturedEvents;
 
-        public ExifToolErrorStreamTest()
+        public ExifToolStdErrWriterTest()
         {
             capturedEvents = new List<ErrorCapturedArgs>();
-            sut = new ExifToolErrorStream(new NullLogger(), Encoding.UTF8);
+            sut = new ExifToolStdErrWriter(Encoding.UTF8);
             sut.Error += SutOnError;
         }
 
         public void Dispose()
         {
             sut.Error -= SutOnError;
-            sut?.Dispose();
-        }
-
-        [Fact]
-        public void DefaultPropertiesShouldNoThrowAndDoNotDoAnythingTest()
-        {
-            sut.CanWrite.Should().BeTrue();
-            sut.CanRead.Should().BeFalse();
-            sut.CanSeek.Should().BeFalse();
-            sut.Length.Should().Be(0);
-            sut.Position.Should().Be(0);
-        }
-
-        [Fact]
-        public void SetPositionShouldNotDoAnythingTest()
-        {
-            // arrange
-
-            // assume
-            sut.Position.Should().Be(0);
-
-            // act
-            sut.Position = 100;
-
-            // assert
-            sut.Position.Should().Be(0);
-        }
-
-        [Fact]
-        public void FlushShouldNotDoAnythingAndDefinitelyNotThrowTest()
-        {
-            sut.Flush();
-        }
-
-        [Fact]
-        public void SeekAlwaysReturnsZeroTest()
-        {
-            // arrange
-
-            // act
-            var result = sut.Seek(0, SeekOrigin.Begin);
-
-            // assert
-            result.Should().Be(0);
-        }
-
-        [Fact]
-        public void SetLengthDoesNotDoAnythingTest()
-        {
-            // arrange
-
-            // assume
-            sut.Length.Should().Be(0);
-
-            // act
-            sut.SetLength(100);
-
-            // assert
-            sut.Length.Should().Be(0);
-        }
-
-        [Fact]
-        public void ReadThrowsTest()
-        {
-            // arrange
-            var buffer = new byte[100];
-
-            // act
-            Action act = () => _ = sut.Read(buffer, 0, 100);
-
-            // assert
-            act.Should().Throw<NotSupportedException>();
         }
 
         [Theory]
@@ -162,4 +87,3 @@ namespace CoenM.ExifToolLibTest.Internals.Stream
         }
     }
 }
-*/

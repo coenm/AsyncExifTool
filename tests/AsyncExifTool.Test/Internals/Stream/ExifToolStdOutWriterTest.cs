@@ -61,99 +61,11 @@
             // arrange
 
             // act
-            Action act = () => _ = new ExifToolStdOutWriter(null, OperatingSystemHelper.NewLine, -1);
+            Action act = () => _ = new ExifToolStdOutWriter(Encoding.UTF32, OperatingSystemHelper.NewLine, -1);
 
             // assert
             act.Should().Throw<ArgumentOutOfRangeException>();
         }
-
-        /*
-        [Fact]
-        public void DefaultPropertiesShouldNoThrowAndDoNotDoAnythingTest()
-        {
-            sut.CanWrite.Should().BeTrue();
-            sut.CanRead.Should().BeFalse();
-            sut.CanSeek.Should().BeFalse();
-
-            // nothing is written yet.
-            sut.Length.Should().Be(0);
-            sut.Position.Should().Be(0);
-        }
-
-        [Fact]
-        public void SetPositionShouldNotDoAnythingTest()
-        {
-            // arrange
-
-            // assume
-            sut.Position.Should().Be(0);
-
-            // act
-            sut.Position = 100;
-
-            // assert
-            sut.Position.Should().Be(0);
-        }
-
-        [Fact]
-        public void FlushShouldNotDoAnythingAndDefinitelyNotThrowTest()
-        {
-            sut.Flush();
-        }
-
-        [Fact]
-        public void SeekAlwaysReturnsZeroTest()
-        {
-            // arrange
-
-            // act
-            var result = sut.Seek(0, SeekOrigin.Begin);
-
-            // assert
-            result.Should().Be(0);
-        }
-
-        [Fact]
-        public void SetLengthDoesNotDoAnythingTest()
-        {
-            // arrange
-
-            // assume
-            sut.Length.Should().Be(0);
-
-            // act
-            sut.SetLength(100);
-
-            // assert
-            sut.Length.Should().Be(0);
-        }
-
-        [Fact]
-        public void ReadThrowsTest()
-        {
-            // arrange
-            var buffer = new byte[100];
-
-            // act
-            Action act = () => _ = sut.Read(buffer, 0, 100);
-
-            // assert
-            act.Should().Throw<NotSupportedException>();
-        }
-
-        [Theory]
-        [ClassData(typeof(InvalidWriteInputWithoutException))]
-        public void Write_ShouldDoNothing_WhenInputIsNotValid(byte[] buffer, int offset, int count)
-        {
-            // arrange
-
-            // act
-            sut.Write(buffer, offset, count);
-
-            // assert
-            sut.Length.Should().Be(0);
-        }
-        */
 
         [Theory]
         [ClassData(typeof(InvalidWriteInputWithException))]

@@ -7,8 +7,8 @@
 
     public class BytesWriterLogDecoratorTest
     {
-        private IBytesWriter decoratee;
-        private ILogger log;
+        private readonly IBytesWriter decoratee;
+        private readonly ILogger log;
 
         public BytesWriterLogDecoratorTest()
         {

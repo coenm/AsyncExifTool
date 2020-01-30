@@ -19,18 +19,19 @@
         private int index;
 
         public ExifToolStdOutWriter(
-            [CanBeNull] Encoding encoding,
+            [NotNull] Encoding encoding,
             [NotNull] string endLine,
             int bufferSize = OneMb)
         {
-            Guard.MustBeGreaterThan(bufferSize, 0, nameof(bufferSize));
+            Guard.NotNull(encoding, nameof(encoding));
             Guard.NotNullOrEmpty(endLine, nameof(endLine));
+            Guard.MustBeGreaterThan(bufferSize, 0, nameof(bufferSize));
 
             var prefix = endLine + "{ready";
             var suffix = "}" + endLine;
 
             this.bufferSize = bufferSize;
-            this.encoding = encoding ?? new UTF8Encoding();
+            this.encoding = encoding;
             cache = new byte[this.bufferSize];
             index = 0;
             endOfMessageSequenceStart = this.encoding.GetBytes(prefix);

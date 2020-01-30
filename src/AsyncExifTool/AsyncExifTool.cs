@@ -70,7 +70,7 @@
 
             this.logger = logger;
             stream = new ExifToolStdOutWriter(configuration.ExifToolEncoding, configuration.ExifToolNewLine);
-            errorStream = new ExifToolStdErrWriter(configuration.ExifToolEncoding, configuration.ExifToolNewLine);
+            errorStream = new ExifToolStdErrWriter(configuration.ExifToolEncoding);
             stopQueueCts = new CancellationTokenSource();
             initialized = false;
             disposed = false;

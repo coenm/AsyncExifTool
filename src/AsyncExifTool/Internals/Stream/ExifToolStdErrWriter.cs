@@ -4,26 +4,23 @@
     using System.Text;
 
     using CoenM.ExifToolLib.Internals.Guards;
-
     using JetBrains.Annotations;
 
     internal class ExifToolStdErrWriter : IBytesWriter
     {
-        [NotNull] private readonly string endLine;
         private readonly Encoding encoding;
 
-        public ExifToolStdErrWriter([CanBeNull] Encoding encoding, [NotNull] string endLine)
+        public ExifToolStdErrWriter([NotNull] Encoding encoding)
         {
-            Guard.NotNullOrEmpty(endLine, nameof(endLine));
-
-            this.encoding = encoding ?? new UTF8Encoding();
-            this.endLine = endLine;
+            Guard.NotNull(encoding, nameof(encoding));
+            this.encoding = encoding;
         }
 
         public event EventHandler<ErrorCapturedArgs> Error;
 
         public void Reset()
         {
+            // todo?
         }
 
         public void Write(byte[] buffer, int offset, int count)

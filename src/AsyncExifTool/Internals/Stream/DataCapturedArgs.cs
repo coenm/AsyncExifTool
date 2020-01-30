@@ -10,8 +10,8 @@
         public DataCapturedArgs([NotNull] string key, [NotNull] string data)
         {
             DebugGuard.NotNullOrWhiteSpace(key, nameof(key));
+            DebugGuard.NotNull(data, nameof(data)); // can be empty
 
-            // DebugGuard.NotNull(data, nameof(data)); // can be empty
             Key = key;
             Data = data;
         }

@@ -40,7 +40,7 @@
                                     };
 
             stream = new WriteDelegatedDummyStream(new ExifToolStdOutWriter(Encoding.UTF8, OperatingSystemHelper.NewLine));
-            var errorStream = new WriteDelegatedDummyStream(new ExifToolStdErrWriter(Encoding.UTF8, OperatingSystemHelper.NewLine));
+            var errorStream = new WriteDelegatedDummyStream(new ExifToolStdErrWriter(Encoding.UTF8));
 
             sut = new MedallionShellAdapter(ExifToolSystemConfiguration.ExifToolExecutable, defaultArgs, stream, errorStream);
             sut.ProcessExited += SutOnProcessExited;
