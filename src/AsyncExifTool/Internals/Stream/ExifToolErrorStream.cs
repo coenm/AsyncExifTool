@@ -53,7 +53,7 @@
                 return;
 
             var stringData = encoding.GetString(buffer, offset, count);
-            logger?.Warn("ExifToolErrorStream: " + stringData);
+            logger.Trace("ExifToolErrorStream: " + stringData);
             Error?.Invoke(this, new ErrorCapturedArgs(stringData));
         }
 

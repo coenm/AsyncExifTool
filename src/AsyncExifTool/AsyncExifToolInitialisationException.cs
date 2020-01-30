@@ -5,7 +5,7 @@
     using System.Security.Permissions;
 
     /// <summary>
-    /// AsyncExifTool Initialistion Exception.
+    /// AsyncExifTool Initialisation Exception.
     /// </summary>
     [Serializable]
     public sealed class AsyncExifToolInitialisationException : Exception
