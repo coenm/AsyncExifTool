@@ -37,8 +37,8 @@
 
         private readonly List<string> exifToolArguments;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> waitingTasks;
-        private readonly ExifToolStayOpenStream stream;
-        private readonly ExifToolErrorStream errorStream;
+        private readonly ExifToolStdOutWriter stream;
+        private readonly ExifToolStdErrWriter errorStream;
         private readonly AsyncManualResetEvent cmdExitedMre;
         private readonly ILogger logger;
         private IShell shell;
@@ -69,9 +69,8 @@
             Guard.NotNull(logger, nameof(logger));
 
             this.logger = logger;
-
-            stream = new ExifToolStayOpenStream(configuration.ExifToolEncoding, configuration.ExifToolNewLine, logger: logger);
-            errorStream = new ExifToolErrorStream(logger, configuration.ExifToolEncoding);
+            stream = new ExifToolStdOutWriter(configuration.ExifToolEncoding, configuration.ExifToolNewLine);
+            errorStream = new ExifToolStdErrWriter(configuration.ExifToolEncoding, configuration.ExifToolNewLine);
             stopQueueCts = new CancellationTokenSource();
             initialized = false;
             disposed = false;
@@ -185,9 +184,21 @@
         }
 #endif
 
-        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
+        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, ExifToolStdOutWriter exiftoolStdOutWriter, ExifToolStdErrWriter exiftoolStdErrWriter)
         {
-            var medallionShellAdapter = new MedallionShellAdapter(exifToolFullPath, args, outputStream, errorStream);
+            var stdOutWriter = logger is NullLogger ? (IBytesWriter)new BytesWriterLogDecorator(exiftoolStdOutWriter, logger, "ExifTool stdout") : exiftoolStdOutWriter;
+            var stdErrWriter = logger is NullLogger ? (IBytesWriter)new BytesWriterLogDecorator(exiftoolStdErrWriter, logger, "ExifTool stderr") : exiftoolStdErrWriter;
+
+            return CreateShell(
+                               exifToolFullPath,
+                               args,
+                               new WriteDelegatedDummyStream(stdOutWriter),
+                               new WriteDelegatedDummyStream(stdErrWriter));
+        }
+
+        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errStream)
+        {
+            var medallionShellAdapter = new MedallionShellAdapter(exifToolFullPath, args, outputStream, errStream);
 
             if (logger is NullLogger)
                 return medallionShellAdapter;
@@ -280,8 +291,6 @@
                 stream.Update -= StreamOnUpdate;
                 errorStream.Error -= StreamOnError;
                 UnsubscribeCmdOnProcessExitedOnce();
-                Ignore(() => stream.Dispose());
-                Ignore(() => errorStream.Dispose());
                 shell = null;
                 disposed = true;
                 disposing = false;

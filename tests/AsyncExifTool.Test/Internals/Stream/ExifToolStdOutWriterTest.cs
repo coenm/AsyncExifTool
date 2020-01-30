@@ -3,32 +3,29 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.IO;
     using System.Linq;
     using System.Text;
 
     using CoenM.ExifToolLib.Internals.Stream;
-    using CoenM.ExifToolLib.Logging;
     using FluentAssertions;
     using TestHelper;
     using Xunit;
 
-    public class ExifToolStayOpenStreamTest : IDisposable
+    public class ExifToolStdOutWriterTest : IDisposable
     {
-        private readonly ExifToolStayOpenStream sut;
+        private readonly ExifToolStdOutWriter sut;
         private readonly List<DataCapturedArgs> capturedEvents;
 
-        public ExifToolStayOpenStreamTest()
+        public ExifToolStdOutWriterTest()
         {
             capturedEvents = new List<DataCapturedArgs>();
-            sut = new ExifToolStayOpenStream(Encoding.UTF8, OperatingSystemHelper.NewLine, new NullLogger(), 200);
+            sut = new ExifToolStdOutWriter(Encoding.UTF8, OperatingSystemHelper.NewLine, 200);
             sut.Update += SutOnUpdate;
         }
 
         public void Dispose()
         {
             sut.Update -= SutOnUpdate;
-            sut?.Dispose();
         }
 
         [Fact]
@@ -38,7 +35,7 @@
             var endLine = string.Empty;
 
             // act
-            Action act = () => new ExifToolStayOpenStream(Encoding.UTF8, endLine, new NullLogger(), 200);
+            Action act = () => new ExifToolStdOutWriter(Encoding.UTF8, endLine, 200);
 
             // assert
             act.Should().Throw<ArgumentException>();
@@ -52,24 +49,25 @@
             string endLine = null;
 
             // act
-            Action act = () => new ExifToolStayOpenStream(Encoding.UTF8, endLine, new NullLogger(), 200);
+            Action act = () => new ExifToolStdOutWriter(Encoding.UTF8, endLine, 200);
 
             // assert
             act.Should().Throw<ArgumentNullException>();
          }
 
         [Fact]
-        public void ExifToolStayOpenStreamCtorThrowsArgumentOutOfRangeWhenBufferSizeIsNegativeTest()
+        public void ExifToolStdOutWriterCtorThrowsArgumentOutOfRangeWhenBufferSizeIsNegativeTest()
         {
             // arrange
 
             // act
-            Action act = () => _ = new ExifToolStayOpenStream(null, OperatingSystemHelper.NewLine, new NullLogger(), -1);
+            Action act = () => _ = new ExifToolStdOutWriter(null, OperatingSystemHelper.NewLine, -1);
 
             // assert
             act.Should().Throw<ArgumentOutOfRangeException>();
         }
 
+        /*
         [Fact]
         public void DefaultPropertiesShouldNoThrowAndDoNotDoAnythingTest()
         {
@@ -155,6 +153,7 @@
             // assert
             sut.Length.Should().Be(0);
         }
+        */
 
         [Theory]
         [ClassData(typeof(InvalidWriteInputWithException))]

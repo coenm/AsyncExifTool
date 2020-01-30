@@ -1,4 +1,5 @@
-﻿namespace CoenM.ExifToolLibTest.Internals.Stream
+﻿/*
+namespace CoenM.ExifToolLibTest.Internals.Stream
 {
     using System;
     using System.Collections.Generic;
@@ -161,3 +162,4 @@
         }
     }
 }
+*/

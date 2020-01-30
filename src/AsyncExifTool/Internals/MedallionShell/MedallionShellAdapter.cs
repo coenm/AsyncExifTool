@@ -72,6 +72,9 @@
         {
             try
             {
+                if (cmd == null)
+                    return true;
+
                 return await cmd.TrySignalAsync(CommandSignal.ControlC)
                          .ConfigureAwait(false);
             }
@@ -83,7 +86,7 @@
 
         public void Kill()
         {
-            cmd.Kill();
+            cmd?.Kill();
         }
 
         public async Task WriteLineAsync([NotNull] string text)
