@@ -80,6 +80,20 @@
             act.Should().Throw<ArgumentException>();
         }
 
+        [Theory]
+        [ClassData(typeof(InvalidWriteInputWithoutException))]
+        public void Write_ShouldNotThrow_WhenInputIsNotValid(byte[] buffer, int offset, int count)
+        {
+            // arrange
+
+            // act
+            sut.Write(buffer, offset, count);
+
+            // assert
+            capturedEvents.Should().BeEmpty();
+        }
+
+
         [Fact]
         public void SingleWriteShouldNotFireEvent()
         {
@@ -167,6 +181,7 @@
             {
                 Add(null, 1, 1); // buffer is null
                 Add(ValidBuffer, 0, 0); // count is zero
+                Add(ValidBuffer, 0, -3); // count is negative
                 Add(ValidBuffer, ValidBuffer.Length - 2, 0); // count is zero
                 Add(ValidBuffer, ValidBuffer.Length + 1, 1); // offset is behind length of buffer
                 /*Add(ValidBuffer, -1, ValidBuffer.Length); // offset is negative*/
@@ -179,7 +194,6 @@
         {
             public InvalidWriteInputWithException()
             {
-                Add(ValidBuffer, 0, -1); // count is negative
                 /* Add(ValidBuffer, ValidBuffer.Length - 1, 2); // offset + count is behind length of buffer */
                 Add(ValidBuffer201, 0, ValidBuffer201.Length); // offset is behind length of buffer
                 /* Add(ValidBuffer, -1, ValidBuffer.Length); // offset is negative */
