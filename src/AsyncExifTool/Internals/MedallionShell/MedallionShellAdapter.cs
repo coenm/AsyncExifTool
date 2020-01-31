@@ -102,6 +102,7 @@
             Ignore(() => ((IDisposable)cmd).Dispose());
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "RCS1075:Avoid empty catch clause that catches System.Exception.", Justification = "Intention of the method.")]
         private static void Ignore(Action action)
         {
             try

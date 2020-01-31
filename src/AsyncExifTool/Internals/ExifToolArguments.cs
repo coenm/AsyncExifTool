@@ -10,11 +10,11 @@
         public const string BoolFalse = "False";
         public const string CommonArgs = "-common_args";
 
-
         /// <summary>
-        /// Keep reading -@ argfile even after EOF
+        /// Keep reading -@ argfile even after EOF.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="enabled">boolean variable indicating to enable or disable the 'stay_open' functionality.</param>
+        /// <returns>Exiftool arguments.</returns>
         public static IEnumerable<string> StayOpenMode(bool enabled)
         {
             yield return StayOpen;
@@ -24,8 +24,7 @@
         /// <summary>
         /// Keep reading commands from stdin.
         /// </summary>
-        /// <returns></returns>
-        /// <returns></returns>
+        /// <returns>Exiftool arguments.</returns>
         public static IEnumerable<string> ReadCommandLineArgumentsFromStdIn()
         {
             // Read command-line arguments from file.

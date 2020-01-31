@@ -99,7 +99,7 @@
         public static void HasValue<T>(T? value, string parameterName)
             where T : struct
         {
-            if (value.HasValue == false)
+            if (!value.HasValue)
                 ThrowArgumentNullException(parameterName);
         }
 

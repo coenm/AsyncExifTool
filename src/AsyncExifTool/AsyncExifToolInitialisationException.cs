@@ -5,7 +5,7 @@
     using System.Security.Permissions;
 
     /// <summary>
-    /// AsyncExifTool Initialistion Exception.
+    /// AsyncExifTool Initialisation Exception.
     /// </summary>
     [Serializable]
     public sealed class AsyncExifToolInitialisationException : Exception
@@ -15,7 +15,7 @@
         {
         }
 
-        /// <remarks>Required because AsyncExifToolInitialisationException implements ISerializable interface.</remarks>
+        // Required because AsyncExifToolInitialisationException implements ISerializable interface.
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         private AsyncExifToolInitialisationException(SerializationInfo info, StreamingContext context)
             : base(info, context)
