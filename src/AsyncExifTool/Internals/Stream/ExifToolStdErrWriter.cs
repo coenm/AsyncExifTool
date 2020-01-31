@@ -29,7 +29,7 @@
             // ReSharper disable once HeuristicUnreachableCode
             if (buffer == null)
                 return;
-            if (count == 0)
+            if (count <= 0)
                 return;
             if (offset + count > buffer.Length)
                 return;
