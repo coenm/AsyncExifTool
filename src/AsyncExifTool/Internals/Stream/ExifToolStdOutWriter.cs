@@ -2,14 +2,13 @@
 {
     using System;
     using System.Diagnostics;
-    using System.IO;
     using System.Text;
 
     using CoenM.ExifToolLib.Internals.Guards;
-    using CoenM.ExifToolLib.Logging;
+
     using JetBrains.Annotations;
 
-    internal class ExifToolStayOpenStream : Stream
+    internal class ExifToolStdOutWriter : IBytesWriter
     {
         private const int OneMb = 1024 * 1024;
         private readonly Encoding encoding;
@@ -17,25 +16,22 @@
         private readonly byte[] endOfMessageSequenceStart;
         private readonly byte[] endOfMessageSequenceEnd;
         private readonly int bufferSize;
-        private readonly ILogger logger;
         private int index;
 
-        public ExifToolStayOpenStream(
-            [CanBeNull] Encoding encoding,
+        public ExifToolStdOutWriter(
+            [NotNull] Encoding encoding,
             [NotNull] string endLine,
-            [NotNull] ILogger logger,
             int bufferSize = OneMb)
         {
-            Guard.MustBeGreaterThan(bufferSize, 0, nameof(bufferSize));
+            Guard.NotNull(encoding, nameof(encoding));
             Guard.NotNullOrEmpty(endLine, nameof(endLine));
-            Guard.NotNull(logger, nameof(logger));
+            Guard.MustBeGreaterThan(bufferSize, 0, nameof(bufferSize));
 
             var prefix = endLine + "{ready";
             var suffix = "}" + endLine;
 
             this.bufferSize = bufferSize;
-            this.logger = logger;
-            this.encoding = encoding ?? new UTF8Encoding();
+            this.encoding = encoding;
             cache = new byte[this.bufferSize];
             index = 0;
             endOfMessageSequenceStart = this.encoding.GetBytes(prefix);
@@ -44,38 +40,23 @@
 
         public event EventHandler<DataCapturedArgs> Update;
 
-        public override bool CanRead => false;
-
-        public override bool CanSeek => false;
-
-        public override bool CanWrite => true;
-
-        public override long Length => index;
-
-        public override long Position
+        public void Reset()
         {
-            get => index;
-            set
-            {
-                // do nothing but also don't throw an exception.
-            }
+            index = 0;
         }
 
-        public override void Write(byte[] buffer, int offset, int count)
+        public void Write(byte[] buffer, int offset, int count)
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             // ReSharper disable once HeuristicUnreachableCode
             if (buffer == null)
                 return;
-            if (count == 0)
+            if (count <= 0)
                 return;
             if (offset + count > buffer.Length)
                 return;
             if (count > bufferSize - index)
                 throw new ArgumentException("The sum of offset and count is greater than the buffer length.");
-
-            if (logger.IsEnabled(LogLevel.Trace))
-                logger.Trace("ExifToolStayOpenStream: " + encoding.GetString(buffer, offset, count));
 
             Array.Copy(buffer, 0, cache, index, count);
             index += count;
@@ -129,26 +110,6 @@
                 Array.Copy(cache, lastEndIndex, cache, 0, index - lastEndIndex);
 
             index -= lastEndIndex;
-        }
-
-        public override void Flush()
-        {
-            // intentionally do nothing.
-        }
-
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            return 0;
-        }
-
-        public override void SetLength(long value)
-        {
-            // intentionally do nothing.
-        }
-
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            throw new NotSupportedException("Write only stream.");
         }
     }
 }

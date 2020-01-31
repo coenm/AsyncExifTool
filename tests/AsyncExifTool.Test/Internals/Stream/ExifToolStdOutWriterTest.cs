@@ -3,32 +3,29 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.IO;
     using System.Linq;
     using System.Text;
 
     using CoenM.ExifToolLib.Internals.Stream;
-    using CoenM.ExifToolLib.Logging;
     using FluentAssertions;
     using TestHelper;
     using Xunit;
 
-    public class ExifToolStayOpenStreamTest : IDisposable
+    public class ExifToolStdOutWriterTest : IDisposable
     {
-        private readonly ExifToolStayOpenStream sut;
+        private readonly ExifToolStdOutWriter sut;
         private readonly List<DataCapturedArgs> capturedEvents;
 
-        public ExifToolStayOpenStreamTest()
+        public ExifToolStdOutWriterTest()
         {
             capturedEvents = new List<DataCapturedArgs>();
-            sut = new ExifToolStayOpenStream(Encoding.UTF8, OperatingSystemHelper.NewLine, new NullLogger(), 200);
+            sut = new ExifToolStdOutWriter(Encoding.UTF8, OperatingSystemHelper.NewLine, 200);
             sut.Update += SutOnUpdate;
         }
 
         public void Dispose()
         {
             sut.Update -= SutOnUpdate;
-            sut?.Dispose();
         }
 
         [Fact]
@@ -38,7 +35,7 @@
             var endLine = string.Empty;
 
             // act
-            Action act = () => new ExifToolStayOpenStream(Encoding.UTF8, endLine, new NullLogger(), 200);
+            Action act = () => new ExifToolStdOutWriter(Encoding.UTF8, endLine, 200);
 
             // assert
             act.Should().Throw<ArgumentException>();
@@ -52,108 +49,22 @@
             string endLine = null;
 
             // act
-            Action act = () => new ExifToolStayOpenStream(Encoding.UTF8, endLine, new NullLogger(), 200);
+            Action act = () => new ExifToolStdOutWriter(Encoding.UTF8, endLine, 200);
 
             // assert
             act.Should().Throw<ArgumentNullException>();
          }
 
         [Fact]
-        public void ExifToolStayOpenStreamCtorThrowsArgumentOutOfRangeWhenBufferSizeIsNegativeTest()
+        public void ExifToolStdOutWriterCtorThrowsArgumentOutOfRangeWhenBufferSizeIsNegativeTest()
         {
             // arrange
 
             // act
-            Action act = () => _ = new ExifToolStayOpenStream(null, OperatingSystemHelper.NewLine, new NullLogger(), -1);
+            Action act = () => _ = new ExifToolStdOutWriter(Encoding.UTF32, OperatingSystemHelper.NewLine, -1);
 
             // assert
             act.Should().Throw<ArgumentOutOfRangeException>();
-        }
-
-        [Fact]
-        public void DefaultPropertiesShouldNoThrowAndDoNotDoAnythingTest()
-        {
-            sut.CanWrite.Should().BeTrue();
-            sut.CanRead.Should().BeFalse();
-            sut.CanSeek.Should().BeFalse();
-
-            // nothing is written yet.
-            sut.Length.Should().Be(0);
-            sut.Position.Should().Be(0);
-        }
-
-        [Fact]
-        public void SetPositionShouldNotDoAnythingTest()
-        {
-            // arrange
-
-            // assume
-            sut.Position.Should().Be(0);
-
-            // act
-            sut.Position = 100;
-
-            // assert
-            sut.Position.Should().Be(0);
-        }
-
-        [Fact]
-        public void FlushShouldNotDoAnythingAndDefinitelyNotThrowTest()
-        {
-            sut.Flush();
-        }
-
-        [Fact]
-        public void SeekAlwaysReturnsZeroTest()
-        {
-            // arrange
-
-            // act
-            var result = sut.Seek(0, SeekOrigin.Begin);
-
-            // assert
-            result.Should().Be(0);
-        }
-
-        [Fact]
-        public void SetLengthDoesNotDoAnythingTest()
-        {
-            // arrange
-
-            // assume
-            sut.Length.Should().Be(0);
-
-            // act
-            sut.SetLength(100);
-
-            // assert
-            sut.Length.Should().Be(0);
-        }
-
-        [Fact]
-        public void ReadThrowsTest()
-        {
-            // arrange
-            var buffer = new byte[100];
-
-            // act
-            Action act = () => _ = sut.Read(buffer, 0, 100);
-
-            // assert
-            act.Should().Throw<NotSupportedException>();
-        }
-
-        [Theory]
-        [ClassData(typeof(InvalidWriteInputWithoutException))]
-        public void Write_ShouldDoNothing_WhenInputIsNotValid(byte[] buffer, int offset, int count)
-        {
-            // arrange
-
-            // act
-            sut.Write(buffer, offset, count);
-
-            // assert
-            sut.Length.Should().Be(0);
         }
 
         [Theory]
@@ -168,6 +79,20 @@
             // assert
             act.Should().Throw<ArgumentException>();
         }
+
+        [Theory]
+        [ClassData(typeof(InvalidWriteInputWithoutException))]
+        public void Write_ShouldNotThrow_WhenInputIsNotValid(byte[] buffer, int offset, int count)
+        {
+            // arrange
+
+            // act
+            sut.Write(buffer, offset, count);
+
+            // assert
+            capturedEvents.Should().BeEmpty();
+        }
+
 
         [Fact]
         public void SingleWriteShouldNotFireEvent()
@@ -256,6 +181,7 @@
             {
                 Add(null, 1, 1); // buffer is null
                 Add(ValidBuffer, 0, 0); // count is zero
+                Add(ValidBuffer, 0, -3); // count is negative
                 Add(ValidBuffer, ValidBuffer.Length - 2, 0); // count is zero
                 Add(ValidBuffer, ValidBuffer.Length + 1, 1); // offset is behind length of buffer
                 /*Add(ValidBuffer, -1, ValidBuffer.Length); // offset is negative*/
@@ -268,7 +194,6 @@
         {
             public InvalidWriteInputWithException()
             {
-                Add(ValidBuffer, 0, -1); // count is negative
                 /* Add(ValidBuffer, ValidBuffer.Length - 1, 2); // offset + count is behind length of buffer */
                 Add(ValidBuffer201, 0, ValidBuffer201.Length); // offset is behind length of buffer
                 /* Add(ValidBuffer, -1, ValidBuffer.Length); // offset is negative */

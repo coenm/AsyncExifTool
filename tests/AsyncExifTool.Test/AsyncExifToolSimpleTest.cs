@@ -213,12 +213,12 @@
             controlExecute1.Release.Set(); // signal 'exiftool' to finish the request of task1.
 
             var result1 = await resultTask1;
-            await IgnoreException(resultTask2);
+            Func<Task> result2 = async () => await resultTask2;
             var result3 = await resultTask3;
 
             // assert
             result1.Should().Be("fake result a");
-            resultTask2.IsCanceled.Should().BeTrue();
+            result2.Should().ThrowExactly<TaskCanceledException>();
             result3.Should().Be("fake result c");
         }
 
@@ -239,10 +239,11 @@
             controlExecute1.Release.Set(); // signal 'exiftool' to finish the request of task1.
 
             await resultTask1;
-            await IgnoreException(resultTask2);
+            Func<Task> result2 = async () => await resultTask2;
             await resultTask3;
 
             // assert
+            result2.Should().ThrowExactly<TaskCanceledException>();
             A.CallTo(() => shell.WriteLineAsync("a")).MustHaveHappenedOnceExactly()
                 .Then(A.CallTo(() => shell.WriteLineAsync("-execute1")).MustHaveHappenedOnceExactly())
                 .Then(A.CallTo(() => shell.WriteLineAsync("c")).MustHaveHappenedOnceExactly())
@@ -250,18 +251,6 @@
 
             A.CallTo(() => shell.WriteLineAsync("b")).MustNotHaveHappened();
             A.CallTo(() => shell.WriteLineAsync("-execute3")).MustNotHaveHappened();
-        }
-
-        private static async Task IgnoreException(Task task)
-        {
-            try
-            {
-                await task;
-            }
-            catch (Exception)
-            {
-                // ignore
-            }
         }
 
         private class TestableAsyncFakeExifTool : AsyncExifTool

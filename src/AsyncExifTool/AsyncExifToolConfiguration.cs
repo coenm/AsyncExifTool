@@ -58,6 +58,7 @@
         /// <summary>
         /// Common arguments.
         /// </summary>
+        [NotNull]
         public List<string> CommonArgs { get; }
     }
 }
