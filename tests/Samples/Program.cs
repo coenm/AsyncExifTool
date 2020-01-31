@@ -16,7 +16,7 @@ namespace Samples
         {
             ConfigureNLog();
             var nlogLogger = LogManager.GetCurrentClassLogger(typeof(AsyncExifTool));
-            
+
             Console.WriteLine("Sample application using AsynExifTool in combination with NLog");
 
             // AsyncExifTool configuration. Please make sure exiftool.exe is accessible.
@@ -53,7 +53,6 @@ namespace Samples
             {
                 Console.WriteLine(await exiftool.GetVersionAsync());
             }
-
 
             try
             {

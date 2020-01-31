@@ -79,14 +79,10 @@
             cmdExitedMre = new AsyncManualResetEvent(false);
             key = 0;
             exifToolPath = configuration.ExifToolFullFilename;
-            exifToolArguments = new List<string>
-                {
-                    ExifToolArguments.StayOpen,
-                    ExifToolArguments.BoolTrue,
-                    "-@", // read from argument file
-                    "-", // argument file is std in
-                }
-                .Concat(configuration.CommonArgs.ToList())
+            exifToolArguments = new List<string>()
+                .Concat(ExifToolArguments.StayOpenMode(true))
+                .Concat(ExifToolArguments.ReadCommandLineArgumentsFromStdIn())
+                .Concat(configuration.CommonArgs)
                 .ToList();
 
             waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
@@ -184,7 +180,7 @@
         }
 #endif
 
-        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, ExifToolStdOutWriter exiftoolStdOutWriter, ExifToolStdErrWriter exiftoolStdErrWriter)
+        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, [NotNull] ExifToolStdOutWriter exiftoolStdOutWriter, [NotNull] ExifToolStdErrWriter exiftoolStdErrWriter)
         {
             var stdOutWriter = logger is NullLogger ? (IBytesWriter)new BytesWriterLogDecorator(exiftoolStdOutWriter, logger, "ExifTool stdout") : exiftoolStdOutWriter;
             var stdErrWriter = logger is NullLogger ? (IBytesWriter)new BytesWriterLogDecorator(exiftoolStdErrWriter, logger, "ExifTool stderr") : exiftoolStdErrWriter;
