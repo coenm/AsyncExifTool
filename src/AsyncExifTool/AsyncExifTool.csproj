@@ -1,15 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- 
-    Also target net461. This is because .NET 4.6.1 does not support NetStandard 2.0, even though it claims to. 
-    See  https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/cross-platform-targeting#multi-targeting 
+    <!--
+    Also target net461. This is because .NET 4.6.1 does not support NetStandard 2.0, even though it claims to.
+    See  https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/cross-platform-targeting#multi-targeting
     -->
     <TargetFrameworks>netstandard2.0;netstandard2.1;net461</TargetFrameworks>
 	  <RootNamespace>CoenM.ExifToolLib</RootNamespace>
     <IsPackable>true</IsPackable>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageReleaseNotes>
+      1.0.0-beta003:
+      * Log with trace level instead of warning;
       1.0.0-beta002:
       * Added errorstream for exiftool for capturing exiftool errors;
       1.0.0-beta001:
