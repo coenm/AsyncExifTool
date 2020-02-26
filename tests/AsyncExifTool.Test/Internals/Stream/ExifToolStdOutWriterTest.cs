@@ -5,7 +5,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
-
+    using CoenM.ExifToolLib.Internals;
     using CoenM.ExifToolLib.Internals.Stream;
     using FluentAssertions;
     using TestHelper;
@@ -93,7 +93,6 @@
             capturedEvents.Should().BeEmpty();
         }
 
-
         [Fact]
         public void SingleWriteShouldNotFireEvent()
         {
@@ -108,6 +107,21 @@
         }
 
         [Fact]
+        public void ParseEmptyMessage()
+        {
+            // arrange
+            const string msg = "{ready0}\r\nbla";
+
+            // act
+            WriteMessageToSut(msg);
+
+            // assert
+            capturedEvents.Should().ContainSingle();
+            capturedEvents.First().Key.Should().Be("0");
+            capturedEvents.First().Data.Should().Be(string.Empty.ConvertToOsString());
+        }
+
+        [Fact]
         public void ParseSingleMessage()
         {
             // arrange
@@ -119,7 +133,7 @@
             // assert
             capturedEvents.Should().ContainSingle();
             capturedEvents.First().Key.Should().Be("0");
-            capturedEvents.First().Data.Should().Be("a b c\r\nd e f".ConvertToOsString());
+            capturedEvents.First().Data.Should().Be("a b c\r\nd e f\r\n".ConvertToOsString());
         }
 
         [Fact]
@@ -135,10 +149,10 @@
             capturedEvents.Should().HaveCount(2);
 
             capturedEvents[0].Key.Should().Be("0");
-            capturedEvents[0].Data.Should().Be("a b c");
+            capturedEvents[0].Data.Should().Be("a b c\r\n");
 
             capturedEvents[1].Key.Should().Be("1");
-            capturedEvents[1].Data.Should().Be("d e f");
+            capturedEvents[1].Data.Should().Be("d e f\r\n");
         }
 
         [Fact]
@@ -160,8 +174,8 @@
 
             // assert
             capturedEvents.Should().HaveCount(2)
-                           .And.Contain(x => x.Key == "0" && x.Data == "a b c\r\nd e f".ConvertToOsString())
-                           .And.Contain(x => x.Key == "2133" && x.Data == "ghi jkl".ConvertToOsString());
+                           .And.Contain(x => x.Key == "0" && x.Data == "a b c\r\nd e f\r\n".ConvertToOsString())
+                           .And.Contain(x => x.Key == "2133" && x.Data == "ghi jkl\r\n".ConvertToOsString());
         }
 
         private void WriteMessageToSut(string message)

@@ -193,7 +193,7 @@
             var result = await sut.ExecuteAsync(args, CancellationToken.None);
 
             // assert
-            result.Should().Be($"fake result abc{OperatingSystemHelper.NewLine}fake result def");
+            result.Should().Be($"fake result abc{OperatingSystemHelper.NewLine}fake result def" + ExifToolExecutable.NewLine);
         }
 
         [Fact]
@@ -217,9 +217,9 @@
             var result3 = await resultTask3;
 
             // assert
-            result1.Should().Be("fake result a");
+            result1.Should().Be("fake result a" + ExifToolExecutable.NewLine);
             result2.Should().ThrowExactly<TaskCanceledException>();
-            result3.Should().Be("fake result c");
+            result3.Should().Be("fake result c" + ExifToolExecutable.NewLine);
         }
 
         [Fact]
