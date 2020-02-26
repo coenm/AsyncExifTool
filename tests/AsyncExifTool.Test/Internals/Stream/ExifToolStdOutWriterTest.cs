@@ -5,7 +5,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
-    using CoenM.ExifToolLib.Internals;
+
     using CoenM.ExifToolLib.Internals.Stream;
     using FluentAssertions;
     using TestHelper;
@@ -110,7 +110,7 @@
         public void ParseEmptyMessage()
         {
             // arrange
-            const string msg = "{ready0}\r\nbla";
+            string msg = "{ready0}\r\nbla".ConvertToOsString();
 
             // act
             WriteMessageToSut(msg);
@@ -125,7 +125,7 @@
         public void ParseSingleMessage()
         {
             // arrange
-            const string msg = "a b c\r\nd e f\r\n{ready0}\r\n";
+            var msg = "a b c\r\nd e f\r\n{ready0}\r\n".ConvertToOsString();
 
             // act
             WriteMessageToSut(msg);
@@ -140,7 +140,7 @@
         public void ParseTwoMessagesInSingleWrite()
         {
             // arrange
-            const string msg = "a b c\r\n{ready0}\r\nd e f\r\n{ready1}\r\nxyz";
+            var msg = "a b c\r\n{ready0}\r\nd e f\r\n{ready1}\r\nxyz".ConvertToOsString();
 
             // act
             WriteMessageToSut(msg);
@@ -149,10 +149,10 @@
             capturedEvents.Should().HaveCount(2);
 
             capturedEvents[0].Key.Should().Be("0");
-            capturedEvents[0].Data.Should().Be("a b c\r\n");
+            capturedEvents[0].Data.Should().Be("a b c\r\n".ConvertToOsString());
 
             capturedEvents[1].Key.Should().Be("1");
-            capturedEvents[1].Data.Should().Be("d e f\r\n");
+            capturedEvents[1].Data.Should().Be("d e f\r\n".ConvertToOsString());
         }
 
         [Fact]
@@ -166,11 +166,11 @@
             const string msg5 = "3}\r\n";
 
             // act
-            WriteMessageToSut(msg1);
-            WriteMessageToSut(msg2);
-            WriteMessageToSut(msg3);
-            WriteMessageToSut(msg4);
-            WriteMessageToSut(msg5);
+            WriteMessageToSut(msg1.ConvertToOsString());
+            WriteMessageToSut(msg2.ConvertToOsString());
+            WriteMessageToSut(msg3.ConvertToOsString());
+            WriteMessageToSut(msg4.ConvertToOsString());
+            WriteMessageToSut(msg5.ConvertToOsString());
 
             // assert
             capturedEvents.Should().HaveCount(2)
