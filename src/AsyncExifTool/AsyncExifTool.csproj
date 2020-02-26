@@ -10,6 +10,9 @@
     <IsPackable>true</IsPackable>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageReleaseNotes>
+      1.0.1
+      * Fix empty-result bug;
+      * Improve logging.
       1.0.0
       * Initial release;
       * C#8 syntax;
