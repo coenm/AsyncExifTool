@@ -27,7 +27,7 @@
             Guard.NotNullOrEmpty(endLine, nameof(endLine));
             Guard.MustBeGreaterThan(bufferSize, 0, nameof(bufferSize));
 
-            var prefix = endLine + "{ready";
+            var prefix = "{ready";
             var suffix = "}" + endLine;
 
             this.bufferSize = bufferSize;

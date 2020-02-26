@@ -93,7 +93,6 @@
             capturedEvents.Should().BeEmpty();
         }
 
-
         [Fact]
         public void SingleWriteShouldNotFireEvent()
         {
@@ -108,10 +107,10 @@
         }
 
         [Fact]
-        public void ParseSingleMessage()
+        public void ParseEmptyMessage()
         {
             // arrange
-            const string msg = "a b c\r\nd e f\r\n{ready0}\r\n";
+            string msg = "{ready0}\r\nbla".ConvertToOsString();
 
             // act
             WriteMessageToSut(msg);
@@ -119,14 +118,29 @@
             // assert
             capturedEvents.Should().ContainSingle();
             capturedEvents.First().Key.Should().Be("0");
-            capturedEvents.First().Data.Should().Be("a b c\r\nd e f".ConvertToOsString());
+            capturedEvents.First().Data.Should().Be(string.Empty.ConvertToOsString());
+        }
+
+        [Fact]
+        public void ParseSingleMessage()
+        {
+            // arrange
+            var msg = "a b c\r\nd e f\r\n{ready0}\r\n".ConvertToOsString();
+
+            // act
+            WriteMessageToSut(msg);
+
+            // assert
+            capturedEvents.Should().ContainSingle();
+            capturedEvents.First().Key.Should().Be("0");
+            capturedEvents.First().Data.Should().Be("a b c\r\nd e f\r\n".ConvertToOsString());
         }
 
         [Fact]
         public void ParseTwoMessagesInSingleWrite()
         {
             // arrange
-            const string msg = "a b c\r\n{ready0}\r\nd e f\r\n{ready1}\r\nxyz";
+            var msg = "a b c\r\n{ready0}\r\nd e f\r\n{ready1}\r\nxyz".ConvertToOsString();
 
             // act
             WriteMessageToSut(msg);
@@ -135,10 +149,10 @@
             capturedEvents.Should().HaveCount(2);
 
             capturedEvents[0].Key.Should().Be("0");
-            capturedEvents[0].Data.Should().Be("a b c");
+            capturedEvents[0].Data.Should().Be("a b c\r\n".ConvertToOsString());
 
             capturedEvents[1].Key.Should().Be("1");
-            capturedEvents[1].Data.Should().Be("d e f");
+            capturedEvents[1].Data.Should().Be("d e f\r\n".ConvertToOsString());
         }
 
         [Fact]
@@ -152,16 +166,16 @@
             const string msg5 = "3}\r\n";
 
             // act
-            WriteMessageToSut(msg1);
-            WriteMessageToSut(msg2);
-            WriteMessageToSut(msg3);
-            WriteMessageToSut(msg4);
-            WriteMessageToSut(msg5);
+            WriteMessageToSut(msg1.ConvertToOsString());
+            WriteMessageToSut(msg2.ConvertToOsString());
+            WriteMessageToSut(msg3.ConvertToOsString());
+            WriteMessageToSut(msg4.ConvertToOsString());
+            WriteMessageToSut(msg5.ConvertToOsString());
 
             // assert
             capturedEvents.Should().HaveCount(2)
-                           .And.Contain(x => x.Key == "0" && x.Data == "a b c\r\nd e f".ConvertToOsString())
-                           .And.Contain(x => x.Key == "2133" && x.Data == "ghi jkl".ConvertToOsString());
+                           .And.Contain(x => x.Key == "0" && x.Data == "a b c\r\nd e f\r\n".ConvertToOsString())
+                           .And.Contain(x => x.Key == "2133" && x.Data == "ghi jkl\r\n".ConvertToOsString());
         }
 
         private void WriteMessageToSut(string message)

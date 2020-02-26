@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
 
     using CoenM.ExifToolLib;
+    using CoenM.ExifToolLib.Internals;
     using CoenM.ExifToolLibTest.TestInternals;
     using EagleEye.TestHelper.XUnit;
     using FluentAssertions;
@@ -99,7 +100,35 @@
                 .ConfigureAwait(false);
 
             // assert
-            result.Should().Be("ImageSize                       : 1712x2288");
+            result.Should().Be("ImageSize                       : 1712x2288" + ExifToolExecutable.NewLine);
+
+            await sut.DisposeAsync().ConfigureAwait(false);
+
+            // just for fun
+            output.WriteLine(image);
+            output.WriteLine(result);
+        }
+
+        [Fact]
+        [Xunit.Categories.IntegrationTest]
+        [ExifTool]
+        public async Task RunExiftool_ShouldReturnEmpty_WhenQueriedTagDoesNotExist()
+        {
+            // arrange
+            var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
+            sut.Initialize();
+
+            // act
+            var result = await sut.ExecuteAsync(
+                                                new[]
+                                                {
+                                                    "-ExposureTime",
+                                                    image,
+                                                })
+                                  .ConfigureAwait(false);
+
+            // assert
+            result.Should().Be(string.Empty);
 
             await sut.DisposeAsync().ConfigureAwait(false);
 
