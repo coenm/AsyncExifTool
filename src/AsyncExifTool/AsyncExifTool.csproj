@@ -12,6 +12,7 @@
     <PackageReleaseNotes>
       1.0.1
       * Fix empty-result bug;
+      * Removed configuration for exiftool newline character;
       * Improve logging.
       1.0.0
       * Initial release;
