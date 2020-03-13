@@ -15,7 +15,6 @@
     using CoenM.ExifToolLibTest.TestInternals;
     using FakeItEasy;
     using FluentAssertions;
-    using TestHelper;
     using Xunit;
 
     public class AsyncExifToolSimpleTest
@@ -193,7 +192,7 @@
             var result = await sut.ExecuteAsync(args, CancellationToken.None);
 
             // assert
-            result.Should().Be($"fake result abc{OperatingSystemHelper.NewLine}fake result def");
+            result.Should().Be($"fake result abc{Environment.NewLine}fake result def" + Environment.NewLine);
         }
 
         [Fact]
@@ -213,13 +212,13 @@
             controlExecute1.Release.Set(); // signal 'exiftool' to finish the request of task1.
 
             var result1 = await resultTask1;
-            await IgnoreException(resultTask2);
+            Func<Task> result2 = async () => await resultTask2;
             var result3 = await resultTask3;
 
             // assert
-            result1.Should().Be("fake result a");
-            resultTask2.IsCanceled.Should().BeTrue();
-            result3.Should().Be("fake result c");
+            result1.Should().Be("fake result a" + Environment.NewLine);
+            result2.Should().ThrowExactly<TaskCanceledException>();
+            result3.Should().Be("fake result c" + Environment.NewLine);
         }
 
         [Fact]
@@ -239,10 +238,11 @@
             controlExecute1.Release.Set(); // signal 'exiftool' to finish the request of task1.
 
             await resultTask1;
-            await IgnoreException(resultTask2);
+            Func<Task> result2 = async () => await resultTask2;
             await resultTask3;
 
             // assert
+            result2.Should().ThrowExactly<TaskCanceledException>();
             A.CallTo(() => shell.WriteLineAsync("a")).MustHaveHappenedOnceExactly()
                 .Then(A.CallTo(() => shell.WriteLineAsync("-execute1")).MustHaveHappenedOnceExactly())
                 .Then(A.CallTo(() => shell.WriteLineAsync("c")).MustHaveHappenedOnceExactly())
@@ -250,18 +250,6 @@
 
             A.CallTo(() => shell.WriteLineAsync("b")).MustNotHaveHappened();
             A.CallTo(() => shell.WriteLineAsync("-execute3")).MustNotHaveHappened();
-        }
-
-        private static async Task IgnoreException(Task task)
-        {
-            try
-            {
-                await task;
-            }
-            catch (Exception)
-            {
-                // ignore
-            }
         }
 
         private class TestableAsyncFakeExifTool : AsyncExifTool
@@ -325,7 +313,7 @@
                         {
                             var result = text.Replace("-execute", "{ready") + "}";
 
-                            var data = Encoding.UTF8.GetBytes(result + OperatingSystemHelper.NewLine);
+                            var data = Encoding.UTF8.GetBytes(result + Environment.NewLine);
 #if NETCOREAPP3_0
                             await exifToolStream.WriteAsync(data);
 #else
@@ -334,7 +322,7 @@
                             return;
                         }
 
-                        var dataFakeResult = Encoding.UTF8.GetBytes($"fake result {text}{OperatingSystemHelper.NewLine}");
+                        var dataFakeResult = Encoding.UTF8.GetBytes($"fake result {text}{Environment.NewLine}");
 #if NETCOREAPP3_0
                         await exifToolStream.WriteAsync(dataFakeResult);
 #else

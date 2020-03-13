@@ -15,7 +15,7 @@
         {
         }
 
-        /// <remarks>Required because AsyncExifToolInitialisationException implements ISerializable interface.</remarks>
+        // Required because AsyncExifToolInitialisationException implements ISerializable interface.
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         private AsyncExifToolInitialisationException(SerializationInfo info, StreamingContext context)
             : base(info, context)

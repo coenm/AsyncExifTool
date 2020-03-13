@@ -20,7 +20,6 @@ According to [exiftool.org](https://exiftool.org/)
 
 > ExifTool is a platform-independent Perl library plus a command-line application for reading, writing and editing meta information in a wide variety of files. ExifTool supports many different metadata formats including EXIF, GPS, IPTC, XMP, JFIF, GeoTIFF, ICC Profile, Photoshop IRB, FlashPix, AFCP and ID3, as well as the maker notes of many digital cameras by Canon, Casio, DJI, FLIR, FujiFilm, GE, GoPro, HP, JVC/Victor, Kodak, Leaf, Minolta/Konica-Minolta, Motorola, Nikon, Nintendo, Olympus/Epson, Panasonic/Leica, Pentax/Asahi, Phase One, Reconyx, Ricoh, Samsung, Sanyo, Sigma/Foveon and Sony.
 
-
 ## Branching model
 
 This project uses [GitFlow](http://nvie.com/posts/a-successful-git-branching-model/) as branching model.
@@ -37,13 +36,11 @@ AsyncExifTool has optional logging available. You have to implement the `ILogger
 
 You *cannot* depend on log messages for further releases as these might change 
 
-
 ## Async Dispose
 
 `IAsyncDispose` is available since `netstandard2.1`. This library also targets `netstandard2.0` and `net461` where `AsyncExifTool` not only implements the older `IDisposable` interface but also has an  extra `AsyncDispose` method available. 
 
 You should explicitly call this method when you want to use this.
-
 
 ## API
 
@@ -58,11 +55,8 @@ var exifToolPath = @"D:\exiftool.exe";
 // What encoding should AsyncExifTool use to decode the resulting bytes
 var exifToolResultEncoding = Encoding.UTF8;
 
-// The newline characters used. Windows is '\r\n', otherwise '\n'.
-var exifToolResultNewLine = "\r\n";
-
 // Construction of the ExifToolConfiguration
-var config = new AsyncExifToolConfiguration(exifToolPath, exifToolResultEncoding, exifToolResultNewLine);
+var config = new AsyncExifToolConfiguration(exifToolPath, exifToolResultEncoding);
 ```
 
 Use the configuration to create an instance of AsyncExifTool.

@@ -32,34 +32,17 @@
         }
 
         [Fact]
-        public void Trace_ShouldPassMessageToLogger_WhenLogLevelIsEnabled()
+        public void Trace_ShouldAlwaysPassMessageToLogger()
         {
             // arrange
-            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).Returns(true);
 
             // act
             Sut.Trace(logger, "test message");
 
             // assert
-            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly()
-                .Then(A.CallTo(() => logger.Log(A<LogEntry>._)).MustHaveHappenedOnceExactly());
-
+            A.CallTo(() => logger.IsEnabled(A<LogLevel>._)).MustNotHaveHappened();
+            A.CallTo(() => logger.Log(A<LogEntry>._)).MustHaveHappenedOnceExactly();
             logEntries.Should().BeEquivalentTo(new LogEntry(LogLevel.Trace, "test message"));
-        }
-
-        [Fact]
-        public void Trace_ShouldNotPassMessageToLogger_WhenLogLevelIsDisabled()
-        {
-            // arrange
-            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).Returns(false);
-
-            // act
-            Sut.Trace(logger, "test message");
-
-            // assert
-            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => logger.Log(A<LogEntry>._)).MustNotHaveHappened();
-            logEntries.Should().BeEmpty();
         }
 
         [Fact]

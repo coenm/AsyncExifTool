@@ -24,7 +24,7 @@
             StandardError = standardError;
         }
 
-        /// <remarks>Required because AsyncExiftoolException implements ISerializable interface.</remarks>
+        // Required because AsyncExiftoolException implements ISerializable interface.
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         private AsyncExifToolException(SerializationInfo info, StreamingContext context)
             : base(info, context)
@@ -48,17 +48,17 @@
         /// <summary>
         /// ExitCode of the ExifTool process.
         /// </summary>
-        public int ExitCode { get; private set; }
+        public int ExitCode { get; }
 
         /// <summary>
         /// Standard output of the ExifTool process.
         /// </summary>
-        public string StandardOutput { get; private set; }
+        public string StandardOutput { get; }
 
         /// <summary>
         /// Standard error of the ExifTool process.
         /// </summary>
-        public string StandardError { get; private set; }
+        public string StandardError { get; }
 
         /// <inheritdoc/>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]

@@ -16,7 +16,7 @@ namespace Samples
         {
             ConfigureNLog();
             var nlogLogger = LogManager.GetCurrentClassLogger(typeof(AsyncExifTool));
-            
+
             Console.WriteLine("Sample application using AsynExifTool in combination with NLog");
 
             // AsyncExifTool configuration. Please make sure exiftool.exe is accessible.
@@ -24,7 +24,6 @@ namespace Samples
             var asyncExifToolConfiguration = new AsyncExifToolConfiguration(
                 "exiftool.exe",
                 Encoding.UTF8,
-                Environment.NewLine,
                 commonArgs);
 
             // Create a logger for AsyncExifTool. AsyncExifTool does not require any logging framework. You have to write your own adapter.
@@ -53,7 +52,6 @@ namespace Samples
             {
                 Console.WriteLine(await exiftool.GetVersionAsync());
             }
-
 
             try
             {

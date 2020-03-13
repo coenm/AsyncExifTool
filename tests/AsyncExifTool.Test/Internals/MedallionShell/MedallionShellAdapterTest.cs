@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
@@ -9,11 +10,9 @@
     using CoenM.ExifToolLib.Internals;
     using CoenM.ExifToolLib.Internals.MedallionShell;
     using CoenM.ExifToolLib.Internals.Stream;
-    using CoenM.ExifToolLib.Logging;
     using CoenM.ExifToolLibTest.TestInternals;
     using EagleEye.TestHelper.XUnit;
     using FluentAssertions;
-    using TestHelper;
     using TestHelper.XUnit.Facts;
     using Xunit;
     using Xunit.Abstractions;
@@ -23,7 +22,7 @@
     {
         private const int FallbackTestTimeout = 5000;
         private readonly ITestOutputHelper output;
-        private readonly ExifToolStayOpenStream stream;
+        private readonly Stream stream;
         private readonly ManualResetEventSlim mreSutExited;
         private readonly MedallionShellAdapter sut;
 
@@ -39,8 +38,9 @@
                                         "-",
                                     };
 
-            stream = new ExifToolStayOpenStream(Encoding.UTF8, OperatingSystemHelper.NewLine, new NullLogger());
-            var errorStream = new ExifToolErrorStream(new NullLogger(), Encoding.UTF8);
+            stream = new WriteDelegatedDummyStream(new ExifToolStdOutWriter(Encoding.UTF8));
+            var errorStream = new WriteDelegatedDummyStream(new ExifToolStdErrWriter(Encoding.UTF8));
+
             sut = new MedallionShellAdapter(ExifToolSystemConfiguration.ExifToolExecutable, defaultArgs, stream, errorStream);
             sut.ProcessExited += SutOnProcessExited;
             sut.Initialize();

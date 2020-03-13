@@ -1,5 +1,6 @@
 ﻿namespace CoenM.ExifToolLibTest
 {
+    using System;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -89,8 +90,8 @@
             // assert
             readResultBefore.Should().Contain("Subject                         : dog, new york, puppy");
             readResultBefore.Should().NotContain("Subject                         : dog, new york, puppy, def, abc, xyz");
-            writeResult.Should().Be("    1 image files updated");
-            readResultAfter.Should().Contain("Subject                         : dog, new york, puppy, def, abc, xyz");
+            writeResult.Should().Be("    1 image files updated" + Environment.NewLine);
+            readResultAfter.Should().Contain("Subject                         : dog, new york, puppy, def, abc, xyz" + Environment.NewLine);
 
             // just for fun
             output.WriteLine(readResultAfter);

@@ -35,8 +35,8 @@
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
 
     <!--Unittesting-->
-    <PackageReference Update="FakeItEasy" Version="5.5.0" />
-    <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="5.3.0" />
+    <PackageReference Update="FakeItEasy" Version="6.0.0" />
+    <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="6.0.0" />
     <PackageReference Update="FluentAssertions" Version="5.10.0" />
     <PackageReference Update="FluentAssertions.Analyzers" Version="0.11.4" />
 

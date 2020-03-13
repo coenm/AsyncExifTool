@@ -37,8 +37,8 @@
 
         private readonly List<string> exifToolArguments;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> waitingTasks;
-        private readonly ExifToolStayOpenStream stream;
-        private readonly ExifToolErrorStream errorStream;
+        private readonly ExifToolStdOutWriter stream;
+        private readonly ExifToolStdErrWriter errorStream;
         private readonly AsyncManualResetEvent cmdExitedMre;
         private readonly ILogger logger;
         private IShell shell;
@@ -69,9 +69,8 @@
             Guard.NotNull(logger, nameof(logger));
 
             this.logger = logger;
-
-            stream = new ExifToolStayOpenStream(configuration.ExifToolEncoding, configuration.ExifToolNewLine, logger: logger);
-            errorStream = new ExifToolErrorStream(logger, configuration.ExifToolEncoding);
+            stream = new ExifToolStdOutWriter(configuration.ExifToolEncoding);
+            errorStream = new ExifToolStdErrWriter(configuration.ExifToolEncoding);
             stopQueueCts = new CancellationTokenSource();
             initialized = false;
             disposed = false;
@@ -80,14 +79,10 @@
             cmdExitedMre = new AsyncManualResetEvent(false);
             key = 0;
             exifToolPath = configuration.ExifToolFullFilename;
-            exifToolArguments = new List<string>
-                {
-                    ExifToolArguments.StayOpen,
-                    ExifToolArguments.BoolTrue,
-                    "-@", // read from argument file
-                    "-", // argument file is std in
-                }
-                .Concat(configuration.CommonArgs.ToList())
+            exifToolArguments = new List<string>()
+                .Concat(ExifToolArguments.StayOpenMode(true))
+                .Concat(ExifToolArguments.ReadCommandLineArgumentsFromStdIn())
+                .Concat(configuration.CommonArgs)
                 .ToList();
 
             waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
@@ -185,9 +180,21 @@
         }
 #endif
 
-        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errorStream)
+        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, [NotNull] ExifToolStdOutWriter exiftoolStdOutWriter, [NotNull] ExifToolStdErrWriter exiftoolStdErrWriter)
         {
-            var medallionShellAdapter = new MedallionShellAdapter(exifToolFullPath, args, outputStream, errorStream);
+            var stdOutWriter = logger is NullLogger ? (IBytesWriter)new BytesWriterLogDecorator(exiftoolStdOutWriter, logger, "ExifTool stdout") : exiftoolStdOutWriter;
+            var stdErrWriter = logger is NullLogger ? (IBytesWriter)new BytesWriterLogDecorator(exiftoolStdErrWriter, logger, "ExifTool stderr") : exiftoolStdErrWriter;
+
+            return CreateShell(
+                               exifToolFullPath,
+                               args,
+                               new WriteDelegatedDummyStream(stdOutWriter),
+                               new WriteDelegatedDummyStream(stdErrWriter));
+        }
+
+        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errStream)
+        {
+            var medallionShellAdapter = new MedallionShellAdapter(exifToolFullPath, args, outputStream, errStream);
 
             if (logger is NullLogger)
                 return medallionShellAdapter;
@@ -195,6 +202,7 @@
             return new LoggingShellDecorator(medallionShellAdapter, logger);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "RCS1075:Avoid empty catch clause that catches System.Exception.", Justification = "Intention of the method.")]
         private static void Ignore(Action action)
         {
             try
@@ -280,8 +288,6 @@
                 stream.Update -= StreamOnUpdate;
                 errorStream.Error -= StreamOnError;
                 UnsubscribeCmdOnProcessExitedOnce();
-                Ignore(() => stream.Dispose());
-                Ignore(() => errorStream.Dispose());
                 shell = null;
                 disposed = true;
                 disposing = false;
