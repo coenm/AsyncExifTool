@@ -13,7 +13,6 @@
             return new AsyncExifToolConfiguration(
                                                   ExifToolSystemConfiguration.ExifToolExecutable,
                                                   Encoding.UTF8,
-                                                  ExifToolExecutable.NewLine,
                                                   new List<string> { ExifToolArguments.CommonArgs, });
         }
     }

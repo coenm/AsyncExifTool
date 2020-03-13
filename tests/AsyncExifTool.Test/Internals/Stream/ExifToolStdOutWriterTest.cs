@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
 
@@ -19,7 +18,7 @@
         public ExifToolStdOutWriterTest()
         {
             capturedEvents = new List<DataCapturedArgs>();
-            sut = new ExifToolStdOutWriter(Encoding.UTF8, OperatingSystemHelper.NewLine, 200);
+            sut = new ExifToolStdOutWriter(Encoding.UTF8, 200);
             sut.Update += SutOnUpdate;
         }
 
@@ -29,39 +28,12 @@
         }
 
         [Fact]
-        public void Ctor_ThrowsException_WhenEndLineIsEmpty()
-        {
-            // arrange
-            var endLine = string.Empty;
-
-            // act
-            Action act = () => new ExifToolStdOutWriter(Encoding.UTF8, endLine, 200);
-
-            // assert
-            act.Should().Throw<ArgumentException>();
-         }
-
-        [Fact]
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute", Justification = "Improve readability test")]
-        public void Ctor_ThrowsException_WhenEndLineIsNullOrEmpty()
-        {
-            // arrange
-            string endLine = null;
-
-            // act
-            Action act = () => new ExifToolStdOutWriter(Encoding.UTF8, endLine, 200);
-
-            // assert
-            act.Should().Throw<ArgumentNullException>();
-         }
-
-        [Fact]
         public void ExifToolStdOutWriterCtorThrowsArgumentOutOfRangeWhenBufferSizeIsNegativeTest()
         {
             // arrange
 
             // act
-            Action act = () => _ = new ExifToolStdOutWriter(Encoding.UTF32, OperatingSystemHelper.NewLine, -1);
+            Action act = () => _ = new ExifToolStdOutWriter(Encoding.UTF32, -1);
 
             // assert
             act.Should().Throw<ArgumentOutOfRangeException>();

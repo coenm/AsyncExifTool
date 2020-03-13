@@ -1,5 +1,6 @@
 ﻿namespace TestHelper
 {
+    using System;
     using System.Runtime.InteropServices;
     using System.Text;
 
@@ -18,10 +19,7 @@
         public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
         [PublicAPI]
-        public static string NewLine => IsWindows ? WindowsEol : LinuxEol;
-
-        [PublicAPI]
-        public static byte[] NewLineBytes => Encoding.ASCII.GetBytes(NewLine);
+        public static byte[] NewLineBytes => Encoding.ASCII.GetBytes(Environment.NewLine);
 
         /// <summary>
         /// Convert a string with either Linux or Windows line-endings to the OS specific line-endings.

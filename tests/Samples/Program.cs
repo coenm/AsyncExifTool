@@ -24,7 +24,6 @@ namespace Samples
             var asyncExifToolConfiguration = new AsyncExifToolConfiguration(
                 "exiftool.exe",
                 Encoding.UTF8,
-                Environment.NewLine,
                 commonArgs);
 
             // Create a logger for AsyncExifTool. AsyncExifTool does not require any logging framework. You have to write your own adapter.

@@ -13,7 +13,6 @@
     using CoenM.ExifToolLibTest.TestInternals;
     using EagleEye.TestHelper.XUnit;
     using FluentAssertions;
-    using TestHelper;
     using TestHelper.XUnit.Facts;
     using Xunit;
     using Xunit.Abstractions;
@@ -39,7 +38,7 @@
                                         "-",
                                     };
 
-            stream = new WriteDelegatedDummyStream(new ExifToolStdOutWriter(Encoding.UTF8, OperatingSystemHelper.NewLine));
+            stream = new WriteDelegatedDummyStream(new ExifToolStdOutWriter(Encoding.UTF8));
             var errorStream = new WriteDelegatedDummyStream(new ExifToolStdErrWriter(Encoding.UTF8));
 
             sut = new MedallionShellAdapter(ExifToolSystemConfiguration.ExifToolExecutable, defaultArgs, stream, errorStream);

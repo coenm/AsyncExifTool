@@ -15,7 +15,6 @@
     using CoenM.ExifToolLibTest.TestInternals;
     using FakeItEasy;
     using FluentAssertions;
-    using TestHelper;
     using Xunit;
 
     public class AsyncExifToolSimpleTest
@@ -193,7 +192,7 @@
             var result = await sut.ExecuteAsync(args, CancellationToken.None);
 
             // assert
-            result.Should().Be($"fake result abc{OperatingSystemHelper.NewLine}fake result def" + ExifToolExecutable.NewLine);
+            result.Should().Be($"fake result abc{Environment.NewLine}fake result def" + Environment.NewLine);
         }
 
         [Fact]
@@ -217,9 +216,9 @@
             var result3 = await resultTask3;
 
             // assert
-            result1.Should().Be("fake result a" + ExifToolExecutable.NewLine);
+            result1.Should().Be("fake result a" + Environment.NewLine);
             result2.Should().ThrowExactly<TaskCanceledException>();
-            result3.Should().Be("fake result c" + ExifToolExecutable.NewLine);
+            result3.Should().Be("fake result c" + Environment.NewLine);
         }
 
         [Fact]
@@ -314,7 +313,7 @@
                         {
                             var result = text.Replace("-execute", "{ready") + "}";
 
-                            var data = Encoding.UTF8.GetBytes(result + OperatingSystemHelper.NewLine);
+                            var data = Encoding.UTF8.GetBytes(result + Environment.NewLine);
 #if NETCOREAPP3_0
                             await exifToolStream.WriteAsync(data);
 #else
@@ -323,7 +322,7 @@
                             return;
                         }
 
-                        var dataFakeResult = Encoding.UTF8.GetBytes($"fake result {text}{OperatingSystemHelper.NewLine}");
+                        var dataFakeResult = Encoding.UTF8.GetBytes($"fake result {text}{Environment.NewLine}");
 #if NETCOREAPP3_0
                         await exifToolStream.WriteAsync(dataFakeResult);
 #else

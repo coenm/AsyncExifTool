@@ -20,15 +20,13 @@
 
         public ExifToolStdOutWriter(
             [NotNull] Encoding encoding,
-            [NotNull] string endLine,
             int bufferSize = OneMb)
         {
             Guard.NotNull(encoding, nameof(encoding));
-            Guard.NotNullOrEmpty(endLine, nameof(endLine));
             Guard.MustBeGreaterThan(bufferSize, 0, nameof(bufferSize));
 
             var prefix = "{ready";
-            var suffix = "}" + endLine;
+            var suffix = "}" + Environment.NewLine;
 
             this.bufferSize = bufferSize;
             this.encoding = encoding;

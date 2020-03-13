@@ -7,7 +7,6 @@
     using System.Threading.Tasks;
 
     using CoenM.ExifToolLib;
-    using CoenM.ExifToolLib.Internals;
     using CoenM.ExifToolLibTest.TestInternals;
     using EagleEye.TestHelper.XUnit;
     using FluentAssertions;
@@ -100,7 +99,7 @@
                 .ConfigureAwait(false);
 
             // assert
-            result.Should().Be("ImageSize                       : 1712x2288" + ExifToolExecutable.NewLine);
+            result.Should().Be("ImageSize                       : 1712x2288" + Environment.NewLine);
 
             await sut.DisposeAsync().ConfigureAwait(false);
 

@@ -9,7 +9,6 @@
     using CoenM.ExifToolLib.Internals.MedallionShell;
     using CoenM.ExifToolLib.Internals.Stream;
     using FluentAssertions;
-    using TestHelper;
     using Xunit;
 
     public class MedallionShellAdapterCtorTest
@@ -27,7 +26,7 @@
                                         "-",
                                     };
 
-            stream = new WriteDelegatedDummyStream(new ExifToolStdOutWriter(Encoding.UTF8, OperatingSystemHelper.NewLine));
+            stream = new WriteDelegatedDummyStream(new ExifToolStdOutWriter(Encoding.UTF8));
         }
 
         [Fact]
