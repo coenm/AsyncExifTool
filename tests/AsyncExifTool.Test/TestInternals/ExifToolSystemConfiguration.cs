@@ -13,10 +13,13 @@
         private static readonly string EmbeddedResourceNs = "ExifToolAsyncTest"; // typeof(ExifToolSystemConfiguration).Namespace;
         private static readonly Lazy<string> GetConfigExiftoolVersionImpl = new Lazy<string>(GetConfiguredExiftoolVersion);
         private static readonly Lazy<string> GetExifToolExecutableImpl = new Lazy<string>(GetExifToolExecutable);
+        private static readonly Lazy<string> GetExifCustomConfigFileImpl = new Lazy<string>(GetExifCustomConfigFile);
 
         public static string ConfiguredVersion => GetConfigExiftoolVersionImpl.Value;
 
         public static string ExifToolExecutable => GetExifToolExecutableImpl.Value;
+
+        public static string CustomExifToolConfigFile => GetExifCustomConfigFileImpl.Value;
 
         private static string GetExifToolExecutable()
         {
@@ -28,6 +31,17 @@
                 return fullFilename;
 
             return osFilename;
+        }
+
+        private static string GetExifCustomConfigFile()
+        {
+            const string configFilename = "AsyncExifTool.ExifTool_config";
+
+            var fullFilename = TestEnvironment.GetFullPath("tests", configFilename);
+            if (File.Exists(fullFilename))
+                return fullFilename;
+
+            return configFilename;
         }
 
         private static string GetConfiguredExiftoolVersion()

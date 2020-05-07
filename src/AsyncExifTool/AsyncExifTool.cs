@@ -35,7 +35,7 @@
         private readonly object initializedSyncLock = new object();
         private readonly CancellationTokenSource stopQueueCts;
 
-        private readonly List<string> exifToolArguments;
+        private readonly string[] exifToolArguments;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> waitingTasks;
         private readonly ExifToolStdOutWriter stream;
         private readonly ExifToolStdErrWriter errorStream;
@@ -79,11 +79,13 @@
             cmdExitedMre = new AsyncManualResetEvent(false);
             key = 0;
             exifToolPath = configuration.ExifToolFullFilename;
-            exifToolArguments = new List<string>()
+
+            exifToolArguments = Enumerable.Empty<string>()
+                .Concat(ExifToolArguments.ExifToolArgumentsConfigFile(configuration.ConfigurationFilename))
                 .Concat(ExifToolArguments.StayOpenMode(true))
                 .Concat(ExifToolArguments.ReadCommandLineArgumentsFromStdIn())
                 .Concat(configuration.CommonArgs)
-                .ToList();
+                .ToArray();
 
             waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
         }

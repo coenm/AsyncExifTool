@@ -1,0 +1,35 @@
+# exiftool config file
+%Image::ExifTool::UserDefined = (
+    'Image::ExifTool::XMP::Main' => {
+        CoenmAsyncExifTool => {
+            SubDirectory => {
+                TagTable => 'Image::ExifTool::UserDefined::CoenmAsyncExifTool',
+            },
+        },
+    },
+);
+
+%Image::ExifTool::UserDefined::CoenmAsyncExifTool = (
+    GROUPS => { 0 => 'XMP', 1 => 'XMP-CoenmAsyncExifTool', 2 => 'Other' },
+    NAMESPACE => { 'CoenmAsyncExifTool' => 'http://ns.github.com/coenm/AsyncExifTool/1.0/' }, # just an uri
+    WRITABLE => 'string',
+
+    MyCustomId => {
+        Name => 'MyCustomId',
+        Writable => 'string',
+    },
+
+    MyCustomTimestamp => {
+        Name => 'MyCustomTimestamp',
+        Writable => 'date', # "YYYY:mm:dd HH:MM:SS[.ss][+/-HH:MM]"
+    },
+
+    MyCustomTags => {
+        Name => 'MyCustomTags',
+        Writable => 'string',
+        List => 'Bag',
+    },
+
+);
+1;  #end
+
