@@ -1,10 +1,10 @@
-﻿using System;
-
-namespace Samples
+﻿namespace Samples
 {
+    using System;
     using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
+
     using CoenM.ExifToolLib;
     using NLog;
     using NLog.Config;
@@ -17,7 +17,7 @@ namespace Samples
             ConfigureNLog();
             var nlogLogger = LogManager.GetCurrentClassLogger(typeof(AsyncExifTool));
 
-            Console.WriteLine("Sample application using AsynExifTool in combination with NLog");
+            Console.WriteLine("Sample application using AsyncExifTool in combination with NLog");
 
             // AsyncExifTool configuration. Please make sure exiftool.exe is accessible.
             var commonArgs = new List<string>();
@@ -62,7 +62,6 @@ namespace Samples
             {
                 Console.WriteLine("dummy command result exception: " + e.Message);
             }
-
 
             var file = @"1.jpg";
             try
@@ -119,7 +118,6 @@ namespace Samples
                     Layout = @"${date:format=HH\:mm\:ss} ${level} ${message} ${exception}"
                 };
             config.AddTarget(consoleTarget);
-
 
             config.AddRuleForAllLevels(consoleTarget); // all to console
 

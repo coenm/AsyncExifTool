@@ -1,6 +1,5 @@
 ﻿namespace CoenM.ExifToolLibTest
 {
-    using System;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -14,12 +13,12 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class AsyncExifToolShouldWriteToImagesTest : IAsyncLifetime
+    public class AsyncExifToolShouldWriteCustomTagsToImagesTest : IAsyncLifetime
     {
         private readonly ITestOutputHelper output;
         private string image;
 
-        public AsyncExifToolShouldWriteToImagesTest(ITestOutputHelper output)
+        public AsyncExifToolShouldWriteCustomTagsToImagesTest(ITestOutputHelper output)
         {
             this.output = output;
 
@@ -44,7 +43,7 @@
 
             Directory.Exists(tmpPath).Should().BeTrue("Temp path should exists");
 
-            var newImagePath = Path.Combine(tmpPath, nameof(AsyncExifToolShouldWriteToImagesTest) + new FileInfo(image).Name);
+            var newImagePath = Path.Combine(tmpPath, nameof(AsyncExifToolShouldWriteCustomTagsToImagesTest) + new FileInfo(image).Name);
             if (!File.Exists(newImagePath))
                 File.Copy(image, newImagePath);
 
@@ -70,28 +69,33 @@
         [Xunit.Categories.IntegrationTest]
         [ExifTool]
         [Fact]
-        public async Task WriteXmpSubjectsToImageTest()
+        public async Task WriteCustomXmpTagsToImageTest()
         {
             // arrange
 #if NETCOREAPP3_0
-            await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
+            await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.CreateWithCustomConfig());
 #else
-            using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
+            using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.CreateWithCustomConfig());
 #endif
             sut.Initialize();
 
             // act
-            var @params = new[] { "-XMP-dc:Subject+=def", "-XMP-dc:Subject+=abc", "-XMP-dc:Subject=xyz", image, };
+            var @params = new[] { "-XMP-CoenmAsyncExifTool:MyCustomId=test123", "-XMP-CoenmAsyncExifTool:MyCustomTimestamp=2020:05:08 12:00:45+02:00", "-XMP-CoenmAsyncExifTool:MyCustomTags+=holidays", "-XMP-CoenmAsyncExifTool:MyCustomTags+=summer", image, };
 
             var readResultBefore = await sut.ExecuteAsync(image).ConfigureAwait(false);
             var writeResult = await sut.ExecuteAsync(@params).ConfigureAwait(false);
             var readResultAfter = await sut.ExecuteAsync(image).ConfigureAwait(false);
 
             // assert
-            readResultBefore.Should().Contain("Subject                         : dog, new york, puppy");
-            readResultBefore.Should().NotContain("Subject                         : dog, new york, puppy, def, abc, xyz");
-            writeResult.Should().Be("    1 image files updated" + Environment.NewLine);
-            readResultAfter.Should().Contain("Subject                         : dog, new york, puppy, def, abc, xyz" + Environment.NewLine);
+            writeResult.Trim().Should().Be("1 image files updated");
+
+            readResultBefore.Should().NotContain("My Custom Id                    : test123");
+            readResultBefore.Should().NotContain("My Custom Tags                  : holidays, summer");
+            readResultBefore.Should().NotContain("My Custom Timestamp             : 2020:05:08 12:00:45");
+
+            readResultAfter.Should().Contain("My Custom Id                    : test123");
+            readResultAfter.Should().Contain("My Custom Tags                  : holidays, summer");
+            readResultAfter.Should().Contain("My Custom Timestamp             : 2020:05:08 12:00:45+02:00");
 
             // just for fun
             output.WriteLine(readResultAfter);

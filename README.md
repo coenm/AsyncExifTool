@@ -57,6 +57,10 @@ var exifToolResultEncoding = Encoding.UTF8;
 
 // Construction of the ExifToolConfiguration
 var config = new AsyncExifToolConfiguration(exifToolPath, exifToolResultEncoding);
+
+// or when using a custom configuration file:
+var config = new AsyncExifToolConfiguration(exifToolPath, pathToCustomConfigurationFile, exifToolResultEncoding);
+
 ```
 
 Use the configuration to create an instance of AsyncExifTool.
@@ -84,6 +88,8 @@ var task1 = asyncExifTool.ExecuteAsync( .. );
 var task2 = asyncExifTool.ExecuteAsync( .. );
 var task3 = asyncExifTool.ExecuteAsync( .. );
 
+// writing metadata
+var result3 = await asyncExifTool.ExecuteAsync(new [] { "-XMP-dc:Subject+=Summer", "D:\image1.jpg" }, ct);
 
 // Disposing AsyncExifTool
 // ExifTool is closed and cannot be initialized anymore nor does it accept any requests.

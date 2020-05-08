@@ -2,6 +2,8 @@
 {
     using System.Collections.Generic;
 
+    using JetBrains.Annotations;
+
     internal static class ExifToolArguments
     {
         public const string Version = "-ver";
@@ -32,6 +34,20 @@
 
             // argument file is std in
             yield return "-";
+        }
+
+        /// <summary>
+        /// Use custom configuration file.
+        /// </summary>
+        /// <param name="filename">filename to configuration file.</param>
+        /// <returns>Exiftool arguments.</returns>
+        public static IEnumerable<string> ExifToolArgumentsConfigFile([CanBeNull] string filename)
+        {
+            if (string.IsNullOrWhiteSpace(filename))
+                yield break;
+
+            yield return "-config";
+            yield return filename;
         }
     }
 }
