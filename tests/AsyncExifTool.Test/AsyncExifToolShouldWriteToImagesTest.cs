@@ -44,7 +44,7 @@
 
             Directory.Exists(tmpPath).Should().BeTrue("Temp path should exists");
 
-            var newImagePath = Path.Combine(tmpPath, new FileInfo(image).Name);
+            var newImagePath = Path.Combine(tmpPath, nameof(AsyncExifToolShouldWriteToImagesTest) + new FileInfo(image).Name);
             if (!File.Exists(newImagePath))
                 File.Copy(image, newImagePath);
 
@@ -69,7 +69,7 @@
 
         [Xunit.Categories.IntegrationTest]
         [ExifTool]
-        [ConditionalHostFact(TestHostMode.Skip, TestHost.AzureDevopsWindows, reason: "This test is probably the reason that DevOps agent running on windows hangs.")]
+        [Fact]
         public async Task WriteXmpSubjectsToImageTest()
         {
             // arrange
