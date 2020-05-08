@@ -11,18 +11,17 @@
         public static AsyncExifToolConfiguration Create()
         {
             return new AsyncExifToolConfiguration(
-                                                  ExifToolSystemConfiguration.ExifToolExecutable,
-                                                  Encoding.UTF8,
-                                                  null,
-                                                  new List<string> { ExifToolArguments.CommonArgs, });
+                ExifToolSystemConfiguration.ExifToolExecutable,
+                Encoding.UTF8,
+                new List<string> { ExifToolArguments.CommonArgs, });
         }
 
         public static AsyncExifToolConfiguration CreateWithCustomConfig()
         {
             return new AsyncExifToolConfiguration(
                 ExifToolSystemConfiguration.ExifToolExecutable,
-                Encoding.UTF8,
                 ExifToolSystemConfiguration.CustomExifToolConfigFile,
+                Encoding.UTF8,
                 new List<string> { ExifToolArguments.CommonArgs, });
         }
     }

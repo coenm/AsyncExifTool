@@ -17,14 +17,14 @@
         /// Create configuration for <see cref="AsyncExifTool"/>.
         /// </summary>
         /// <param name="exifToolFullFilename">Full path to exiftool on the executing host. No checks are made in the configuration if the path is valid.</param>
-        /// <param name="exifToolResultEncoding">Encoding how to decode the ExifTool output.</param>
         /// <param name="configurationFilename">Full path of external configuration filename. Can be null. see '-config' option in the exiftool Application documentation.</param>
+        /// <param name="exifToolResultEncoding">Encoding how to decode the ExifTool output.</param>
         /// <param name="commonArgs">Define common arguments. See '-common_args' in the online ExifTool documentation.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="exifToolFullFilename"/>, or <paramref name="exifToolResultEncoding"/> is <c>null</c>.</exception>
         public AsyncExifToolConfiguration(
             [NotNull] string exifToolFullFilename,
-            [NotNull] Encoding exifToolResultEncoding,
             [CanBeNull] string configurationFilename,
+            [NotNull] Encoding exifToolResultEncoding,
             [CanBeNull] IReadOnlyCollection<string> commonArgs)
         {
             Guard.NotNullOrWhiteSpace(exifToolFullFilename, nameof(exifToolFullFilename));
@@ -38,6 +38,21 @@
             CommonArgs = commonArgs == null
                 ? new List<string>(0)
                 : commonArgs.Where(item => item != null).ToList();
+        }
+
+        /// <summary>
+        /// Create configuration for <see cref="AsyncExifTool"/> with no custom exiftool configuration.
+        /// </summary>
+        /// <param name="exifToolFullFilename">Full path to exiftool on the executing host. No checks are made in the configuration if the path is valid.</param>
+        /// <param name="exifToolResultEncoding">Encoding how to decode the ExifTool output.</param>
+        /// <param name="commonArgs">Define common arguments. See '-common_args' in the online ExifTool documentation.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="exifToolFullFilename"/>, or <paramref name="exifToolResultEncoding"/> is <c>null</c>.</exception>
+        public AsyncExifToolConfiguration(
+            [NotNull] string exifToolFullFilename,
+            [NotNull] Encoding exifToolResultEncoding,
+            [CanBeNull] IReadOnlyCollection<string> commonArgs)
+            : this(exifToolFullFilename, null, exifToolResultEncoding, commonArgs)
+        {
         }
 
         /// <summary>
@@ -59,7 +74,6 @@
         /// <summary>
         /// Common arguments.
         /// </summary>
-        [NotNull]
-        public List<string> CommonArgs { get; }
+        [NotNull] public List<string> CommonArgs { get; }
     }
 }
