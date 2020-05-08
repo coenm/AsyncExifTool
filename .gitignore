@@ -428,6 +428,7 @@ $RECYCLE.BIN/
 !.vscode/launch.json
 !.vscode/extensions.json
 tools/exiftool.exe
+tools/exiftool*.exe
 *.diff
 
 
