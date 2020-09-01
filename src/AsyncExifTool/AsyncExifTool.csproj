@@ -6,7 +6,7 @@
     See  https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/cross-platform-targeting#multi-targeting
     -->
     <TargetFrameworks>netstandard2.0;netstandard2.1;net461</TargetFrameworks>
-	  <RootNamespace>CoenM.ExifToolLib</RootNamespace>
+    <RootNamespace>CoenM.ExifToolLib</RootNamespace>
     <IsPackable>true</IsPackable>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageReleaseNotes>

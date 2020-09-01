@@ -100,6 +100,7 @@ jobs:
       command: pack
       configuration: '$(BuildConfiguration)'
       nobuild: false
+      includesymbols: true
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact'
