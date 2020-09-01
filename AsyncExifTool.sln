@@ -11,6 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestHelper", "tests\TestHel
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9AD3C3AB-6830-44FA-B191-A28ED3D5C742}"
 	ProjectSection(SolutionItems) = preProject
+		tests\AsyncExifTool.ExifTool_config = tests\AsyncExifTool.ExifTool_config
 		azure-pipelines.yml = azure-pipelines.yml
 		EXIFTOOL_VERSION = EXIFTOOL_VERSION
 		GitVersion.yml = GitVersion.yml
@@ -43,7 +44,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{983B7756-255
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{59D60AD8-463D-4557-A0C8-48942B37338A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples", "tests\Samples\Samples.csproj", "{92199C7C-61BA-4782-8C93-E437466C26B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Samples", "tests\Samples\Samples.csproj", "{92199C7C-61BA-4782-8C93-E437466C26B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

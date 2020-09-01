@@ -10,6 +10,8 @@
     <IsPackable>true</IsPackable>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageReleaseNotes>
+      1.1.0
+      * Support for custom exiftool config file.
       1.0.1
       * Fix empty-result bug;
       * Removed configuration for exiftool newline character;
