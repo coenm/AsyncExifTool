@@ -21,10 +21,10 @@
 
             #region ExifToolConfiguration
             // We need to tell AsyncExifTool where exiftool executable is located.
-            var exifToolPath = @"D:\exiftool.exe";
+            var exifToolExe = @"D:\exiftool.exe";
 
             // The encoding AsyncExifTool should use to decode the resulting bytes
-            var exifToolResultEncoding = Encoding.UTF8;
+            var exifToolEncoding = Encoding.UTF8;
 
             // common args for each exiftool command.
             // see https://exiftool.org/exiftool_pod.html#common_args for more information.
@@ -38,22 +38,24 @@
             // see https://exiftool.org/exiftool_pod.html#config-CFGFILE for more information.
             // make sure the filename exists.
             // it is also possible to create a configuration without a custom exiftool config.
-            var pathToCustomConfigurationFile = @"C:\AsyncExifTool.ExifTool_config";
+            var customExifToolConfigFile = @"C:\AsyncExifTool.ExifTool_config";
 
             // Create configuration to be used in AsyncExifTool.
-            var asyncExifToolConfiguration = string.IsNullOrWhiteSpace(pathToCustomConfigurationFile)
-                ? new AsyncExifToolConfiguration(exifToolPath, exifToolResultEncoding, commonArgs)
-                : new AsyncExifToolConfiguration(exifToolPath, pathToCustomConfigurationFile, exifToolResultEncoding, commonArgs);
+            var asyncExifToolConfiguration = string.IsNullOrWhiteSpace(customExifToolConfigFile)
+                ? new AsyncExifToolConfiguration(exifToolExe, exifToolEncoding, commonArgs)
+                : new AsyncExifToolConfiguration(exifToolExe, customExifToolConfigFile, exifToolEncoding, commonArgs);
 
             #endregion
+
+
 
             // Create a logger for AsyncExifTool. AsyncExifTool does not require any logging framework. You have to write your own adapter.
             var logger = new AsyncExifToolToNLogAdapter(nlogLogger);
 
             // Create AsyncExifTool instance. You can also do this without a logger.
-            // ie:
             // await using var exiftool = new AsyncExifTool(asyncExifToolConfiguration);
             await using var exiftool = new AsyncExifTool(asyncExifToolConfiguration, logger);
+
             try
             {
                 // initialize. At this point the exiftool process is started.
