@@ -34,8 +34,9 @@ This project uses [GitFlow](http://nvie.com/posts/a-successful-git-branching-mod
 ## Dependencies
 
 AsyncExifTool has two external dependencies;
+
 - [MedallionShell](https://www.nuget.org/packages/MedallionShell/) for managing the process to ExifTool;
-- Async primitives from the [Nito.AsyncEx](https://www.nuget.org/packages/Nito.AsyncEx/) package. 
+- Async primitives from the [Nito.AsyncEx](https://www.nuget.org/packages/Nito.AsyncEx/) package.
 
 ## Logging
 
@@ -45,7 +46,7 @@ You *cannot* depend on log messages for further releases as these might change
 
 ## Async Dispose
 
-`IAsyncDispose` is available since `netstandard2.1`. This library also targets `netstandard2.0` and `net461` where `AsyncExifTool` not only implements the older `IDisposable` interface but also has an  extra `AsyncDispose` method available. 
+`IAsyncDispose` is available since `netstandard2.1`. This library also targets `netstandard2.0` and `net461` where `AsyncExifTool` not only implements the older `IDisposable` interface but also has an  extra `AsyncDispose` method available.
 
 You should explicitly call this method when you want to use this.
 
@@ -83,41 +84,47 @@ var asyncExifToolConfiguration = string.IsNullOrWhiteSpace(customExifToolConfigF
     ? new AsyncExifToolConfiguration(exifToolExe, exifToolEncoding, commonArgs)
     : new AsyncExifToolConfiguration(exifToolExe, customExifToolConfigFile, exifToolEncoding, commonArgs);
 ```
-<sup><a href='/tests/Samples/Program.cs#L22-L48' title='File snippet `exiftoolconfiguration` was extracted from'>snippet source</a> | <a href='#snippet-exiftoolconfiguration' title='Navigate to start of snippet `exiftoolconfiguration`'>anchor</a></sup>
+<sup><a href='/tests/Samples/Program.cs#L23-L49' title='File snippet `exiftoolconfiguration` was extracted from'>snippet source</a> | <a href='#snippet-exiftoolconfiguration' title='Navigate to start of snippet `exiftoolconfiguration`'>anchor</a></sup>
 <!-- endSnippet -->
 
 Use the configuration to create an instance of AsyncExifTool.
 
-```csharp
-var asyncExifTool = new AsyncExifTool(config);
+<!-- snippet: ExifToolExampleUsage -->
+<a id='snippet-exiftoolexampleusage'></a>
+```cs
+var asyncExifTool = new AsyncExifTool(asyncExifToolConfiguration);
 
-// to make asyncExifTool operational, we need to initialize.
+// To make asyncExifTool operational, we need to initialize.
+// This method can throw an exception
 asyncExifTool.Initialize();
 
 // Define cancellation token to make it possible to cancel an exiftool request if it is not already passed to exiftool.
 // Otherwise, cancelling is not possible at this moment.
 var ct = CancellationToken.None;
 
-// from this moment on, asyncExifTool accepts exiftool commands.
-// ie.
-// get exiftool version
-var result1 = await asyncExifTool.ExecuteAsync(new [] { "-ver" }, ct);
+// From this moment on, asyncExifTool accepts exiftool commands.
+// i.e. get exiftool version
+var result1 = await asyncExifTool.ExecuteAsync(new[] { "-ver" }, ct);
 
 // Get ImageSize and ExposureTime tag names and values.
-var result2 = await asyncExifTool.ExecuteAsync(new [] { "-s", "-ImageSize", "-ExposureTime", "D:\image1.jpg" } /* cancellation token is optional */);
+// CancellationToken is optional for ExecuteAsync method.
+var result2 = await asyncExifTool.ExecuteAsync(new[] { "-s", "-ImageSize", "-ExposureTime", @"D:\image1.jpg" });
 
-// requests are queued and processed one at a time while keeping exiftool 'open'.
-var task1 = asyncExifTool.ExecuteAsync( .. );
-var task2 = asyncExifTool.ExecuteAsync( .. );
-var task3 = asyncExifTool.ExecuteAsync( .. );
+// Commands are queued and processed one at a time while keeping exiftool 'open'.
+var exifToolCommand = new[] { "-ver" };
+var task1 = asyncExifTool.ExecuteAsync(exifToolCommand, CancellationToken.None);
+var task2 = asyncExifTool.ExecuteAsync(exifToolCommand);
+var task3 = asyncExifTool.ExecuteAsync(exifToolCommand, ct);
 
-// writing metadata
-var result3 = await asyncExifTool.ExecuteAsync(new [] { "-XMP-dc:Subject+=Summer", "D:\image1.jpg" }, ct);
+// Example writing metadata to image
+var result3 = await asyncExifTool.ExecuteAsync(new[] { "-XMP-dc:Subject+=Summer", @"D:\image1.jpg" }, ct);
 
 // Disposing AsyncExifTool
 // ExifTool is closed and cannot be initialized anymore nor does it accept any requests.
 await asyncExifTool.DisposeAsync();
 ```
+<sup><a href='/tests/Samples/Program.cs#L154-L187' title='File snippet `exiftoolexampleusage` was extracted from'>snippet source</a> | <a href='#snippet-exiftoolexampleusage' title='Navigate to start of snippet `exiftoolexampleusage`'>anchor</a></sup>
+<!-- endSnippet -->
 
 ## Icon
 

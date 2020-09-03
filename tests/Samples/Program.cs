@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using CoenM.ExifToolLib;
@@ -46,7 +47,6 @@
                 : new AsyncExifToolConfiguration(exifToolExe, customExifToolConfigFile, exifToolEncoding, commonArgs);
 
             #endregion
-
 
 
             // Create a logger for AsyncExifTool. AsyncExifTool does not require any logging framework. You have to write your own adapter.
@@ -146,6 +146,45 @@
 
             // Step 4. Activate the configuration
             LogManager.Configuration = config;
+        }
+
+        private static async Task MarkDownExample(AsyncExifToolConfiguration asyncExifToolConfiguration)
+        {
+            // This method contains a snippet to be used in the README.md
+            // begin-snippet: ExifToolExampleUsage
+
+            var asyncExifTool = new AsyncExifTool(asyncExifToolConfiguration);
+
+            // To make asyncExifTool operational, we need to initialize.
+            // This method can throw an exception
+            asyncExifTool.Initialize();
+
+            // Define cancellation token to make it possible to cancel an exiftool request if it is not already passed to exiftool.
+            // Otherwise, cancelling is not possible at this moment.
+            var ct = CancellationToken.None;
+
+            // From this moment on, asyncExifTool accepts exiftool commands.
+            // i.e. get exiftool version
+            var result1 = await asyncExifTool.ExecuteAsync(new[] { "-ver" }, ct);
+
+            // Get ImageSize and ExposureTime tag names and values.
+            // CancellationToken is optional for ExecuteAsync method.
+            var result2 = await asyncExifTool.ExecuteAsync(new[] { "-s", "-ImageSize", "-ExposureTime", @"D:\image1.jpg" });
+
+            // Commands are queued and processed one at a time while keeping exiftool 'open'.
+            var exifToolCommand = new[] { "-ver" };
+            var task1 = asyncExifTool.ExecuteAsync(exifToolCommand, CancellationToken.None);
+            var task2 = asyncExifTool.ExecuteAsync(exifToolCommand);
+            var task3 = asyncExifTool.ExecuteAsync(exifToolCommand, ct);
+
+            // Example writing metadata to image
+            var result3 = await asyncExifTool.ExecuteAsync(new[] { "-XMP-dc:Subject+=Summer", @"D:\image1.jpg" }, ct);
+
+            // Disposing AsyncExifTool
+            // ExifTool is closed and cannot be initialized anymore nor does it accept any requests.
+            await asyncExifTool.DisposeAsync();
+
+            // end-snippet
         }
     }
 }
