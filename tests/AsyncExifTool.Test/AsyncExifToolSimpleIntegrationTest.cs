@@ -65,8 +65,7 @@ namespace CoenM.ExifToolLibTest
             sut.Initialize();
 
             // act
-            Task<string> getMetadataNonExistingImageTask = sut.ExecuteAsync(_image + "does not exist");
-            Func<Task> act = async () => await getMetadataNonExistingImageTask;
+            Func<Task> act = async () => await sut.ExecuteAsync(_image + "does not exist");
             var version = await sut.GetVersionAsync().ConfigureAwait(false);
 
             // assert
@@ -116,22 +115,17 @@ namespace CoenM.ExifToolLibTest
             sut.Initialize();
 
             // act
-            var result = await sut.ExecuteAsync(
-                                                new[]
-                                                {
-                                                    "-ExposureTime",
-                                                    _image,
-                                                })
-                                  .ConfigureAwait(false);
+            Func<Task> act = async () => _ = await sut.ExecuteAsync(
+                                                          new[]
+                                                              {
+                                                                  "-ExposureTime",
+                                                                  _image,
+                                                              });
 
             // assert
-            result.Should().Be(string.Empty);
+            _ = act.Should().ThrowExactly<Exception>().WithMessage("Warning: IPTCDigest is not current. XMP may be out of sync - *");
 
             await sut.DisposeAsync().ConfigureAwait(false);
-
-            // just for fun
-            _output.WriteLine(_image);
-            _output.WriteLine(result);
         }
 
         [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows)]
