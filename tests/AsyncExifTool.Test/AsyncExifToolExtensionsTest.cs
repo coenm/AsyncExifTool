@@ -1,12 +1,10 @@
-﻿namespace CoenM.ExifToolLibTest
+namespace CoenM.ExifToolLibTest
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
-
     using FluentAssertions;
     using Xunit;
-
     using Sut = CoenM.ExifToolLib.AsyncExifToolExtensions;
 
     public class AsyncExifToolExtensionsTest

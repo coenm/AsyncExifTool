@@ -1,26 +1,24 @@
-﻿namespace CoenM.ExifToolLib.Internals.Stream
+namespace CoenM.ExifToolLib.Internals.Stream
 {
     using System;
     using System.Diagnostics;
     using System.Text;
-
     using CoenM.ExifToolLib.Internals.Guards;
-
     using JetBrains.Annotations;
 
     internal class ExifToolStdOutWriter : IBytesWriter
     {
-        private const int OneMb = 1024 * 1024;
-        private readonly Encoding encoding;
-        private readonly byte[] cache;
-        private readonly byte[] endOfMessageSequenceStart;
-        private readonly byte[] endOfMessageSequenceEnd;
-        private readonly int bufferSize;
-        private int index;
+        private const int ONE_MB = 1024 * 1024;
+        private readonly Encoding _encoding;
+        private readonly byte[] _cache;
+        private readonly byte[] _endOfMessageSequenceStart;
+        private readonly byte[] _endOfMessageSequenceEnd;
+        private readonly int _bufferSize;
+        private int _index;
 
         public ExifToolStdOutWriter(
             [NotNull] Encoding encoding,
-            int bufferSize = OneMb)
+            int bufferSize = ONE_MB)
         {
             Guard.NotNull(encoding, nameof(encoding));
             Guard.MustBeGreaterThan(bufferSize, 0, nameof(bufferSize));
@@ -28,19 +26,19 @@
             var prefix = "{ready";
             var suffix = "}" + Environment.NewLine;
 
-            this.bufferSize = bufferSize;
-            this.encoding = encoding;
-            cache = new byte[this.bufferSize];
-            index = 0;
-            endOfMessageSequenceStart = this.encoding.GetBytes(prefix);
-            endOfMessageSequenceEnd = this.encoding.GetBytes(suffix);
+            this._bufferSize = bufferSize;
+            this._encoding = encoding;
+            _cache = new byte[this._bufferSize];
+            _index = 0;
+            _endOfMessageSequenceStart = this._encoding.GetBytes(prefix);
+            _endOfMessageSequenceEnd = this._encoding.GetBytes(suffix);
         }
 
         public event EventHandler<DataCapturedArgs> Update;
 
         public void Reset()
         {
-            index = 0;
+            _index = 0;
         }
 
         public void Write(byte[] buffer, int offset, int count)
@@ -48,66 +46,93 @@
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             // ReSharper disable once HeuristicUnreachableCode
             if (buffer == null)
+            {
                 return;
-            if (count <= 0)
-                return;
-            if (offset + count > buffer.Length)
-                return;
-            if (count > bufferSize - index)
-                throw new ArgumentException("The sum of offset and count is greater than the buffer length.");
+            }
 
-            Array.Copy(buffer, 0, cache, index, count);
-            index += count;
+            if (count <= 0)
+            {
+                return;
+            }
+
+            if (offset + count > buffer.Length)
+            {
+                return;
+            }
+
+            if (count > _bufferSize - _index)
+            {
+                throw new ArgumentException("The sum of offset and count is greater than the buffer length.");
+            }
+
+            Array.Copy(buffer, 0, _cache, _index, count);
+            _index += count;
 
             var lastEndIndex = 0;
 
-            for (var i = 0; i < index - 1; i++)
+            for (var i = 0; i < _index - 1; i++)
             {
                 var j = 0;
-                while (j < endOfMessageSequenceStart.Length && cache[i + j] == endOfMessageSequenceStart[j])
+                while (j < _endOfMessageSequenceStart.Length && _cache[i + j] == _endOfMessageSequenceStart[j])
+                {
                     j++;
+                }
 
-                if (j != endOfMessageSequenceStart.Length)
+                if (j != _endOfMessageSequenceStart.Length)
+                {
                     continue;
+                }
 
                 j += i;
 
                 // expect numbers as key.
                 var keyStartIndex = j;
-                while (j < index && cache[j] >= '0' && cache[j] <= '9')
+                while (j < _index && _cache[j] >= '0' && _cache[j] <= '9')
+                {
                     j++;
+                }
 
                 if (keyStartIndex == j)
+                {
                     continue;
+                }
 
                 var keyLength = j - keyStartIndex;
 
                 var k = 0;
-                while (k < endOfMessageSequenceEnd.Length && cache[j + k] == endOfMessageSequenceEnd[k])
+                while (k < _endOfMessageSequenceEnd.Length && _cache[j + k] == _endOfMessageSequenceEnd[k])
+                {
                     k++;
+                }
 
-                if (k != endOfMessageSequenceEnd.Length)
+                if (k != _endOfMessageSequenceEnd.Length)
+                {
                     continue;
+                }
 
                 j += k;
 
-                var content = encoding.GetString(cache, lastEndIndex, i - lastEndIndex);
-                var key = encoding.GetString(cache, keyStartIndex, keyLength);
+                var content = _encoding.GetString(_cache, lastEndIndex, i - lastEndIndex);
+                var key = _encoding.GetString(_cache, keyStartIndex, keyLength);
                 Update?.Invoke(this, new DataCapturedArgs(key, content));
 
                 i = j;
                 lastEndIndex = j;
             }
 
-            Debug.Assert(lastEndIndex <= index, "Expect that lastEndindex is less then index");
+            Debug.Assert(lastEndIndex <= _index, "Expect that lastEndindex is less then index");
 
             if (lastEndIndex == 0)
+            {
                 return;
+            }
 
-            if (index > lastEndIndex)
-                Array.Copy(cache, lastEndIndex, cache, 0, index - lastEndIndex);
+            if (_index > lastEndIndex)
+            {
+                Array.Copy(_cache, lastEndIndex, _cache, 0, _index - lastEndIndex);
+            }
 
-            index -= lastEndIndex;
+            _index -= lastEndIndex;
         }
     }
 }

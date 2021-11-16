@@ -1,10 +1,9 @@
-﻿namespace CoenM.ExifToolLibTest
+namespace CoenM.ExifToolLibTest
 {
     using System;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-
     using CoenM.ExifToolLib;
     using CoenM.ExifToolLibTest.TestInternals;
     using EagleEye.TestHelper.XUnit;
@@ -16,18 +15,18 @@
 
     public class AsyncExifToolShouldWriteToImagesTest : IAsyncLifetime
     {
-        private readonly ITestOutputHelper output;
-        private string image;
+        private readonly ITestOutputHelper _output;
+        private string _image;
 
         public AsyncExifToolShouldWriteToImagesTest(ITestOutputHelper output)
         {
-            this.output = output;
+            _output = output;
 
-            image = Directory
+            _image = Directory
                      .GetFiles(TestImages.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
                      .SingleOrDefault();
 
-            image.Should().NotBeNullOrEmpty("Image should exist on system.");
+            _image.Should().NotBeNullOrEmpty("Image should exist on system.");
         }
 
         public Task InitializeAsync()
@@ -39,30 +38,42 @@
 
             var tmpPath = Path.GetTempPath();
             tmpPath.Should().NotBeNullOrWhiteSpace("We need an temp path");
+
             if (!Directory.Exists(tmpPath))
+            {
                 Directory.CreateDirectory(tmpPath);
+            }
 
             Directory.Exists(tmpPath).Should().BeTrue("Temp path should exists");
 
-            var newImagePath = Path.Combine(tmpPath, nameof(AsyncExifToolShouldWriteToImagesTest) + new FileInfo(image).Name);
+            var newImagePath = Path.Combine(tmpPath, nameof(AsyncExifToolShouldWriteToImagesTest) + new FileInfo(_image).Name);
             if (!File.Exists(newImagePath))
-                File.Copy(image, newImagePath);
+            {
+                File.Copy(_image, newImagePath);
+            }
 
             File.Exists(newImagePath).Should().BeTrue("Image should have been copied to temp directory.");
 
-            image = newImagePath;
+            _image = newImagePath;
             return Task.CompletedTask;
         }
 
         public Task DisposeAsync()
         {
             if (TestEnvironment.RunsOnDevOps && TestEnvironment.IsWindows)
+            {
                 return Task.CompletedTask;
+            }
 
-            if (File.Exists(image))
-                File.Delete(image);
-            if (File.Exists(image + "_original"))
-                File.Delete(image + "_original");
+            if (File.Exists(_image))
+            {
+                File.Delete(_image);
+            }
+
+            if (File.Exists(_image + "_original"))
+            {
+                File.Delete(_image + "_original");
+            }
 
             return Task.CompletedTask;
         }
@@ -73,7 +84,7 @@
         public async Task WriteXmpSubjectsToImageTest()
         {
             // arrange
-#if NETCOREAPP3_0
+#if NETCOREAPP3_1
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
 #else
             using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
@@ -81,11 +92,11 @@
             sut.Initialize();
 
             // act
-            var @params = new[] { "-XMP-dc:Subject+=def", "-XMP-dc:Subject+=abc", "-XMP-dc:Subject=xyz", image, };
+            var @params = new[] { "-XMP-dc:Subject+=def", "-XMP-dc:Subject+=abc", "-XMP-dc:Subject=xyz", _image, };
 
-            var readResultBefore = await sut.ExecuteAsync(image).ConfigureAwait(false);
+            var readResultBefore = await sut.ExecuteAsync(_image).ConfigureAwait(false);
             var writeResult = await sut.ExecuteAsync(@params).ConfigureAwait(false);
-            var readResultAfter = await sut.ExecuteAsync(image).ConfigureAwait(false);
+            var readResultAfter = await sut.ExecuteAsync(_image).ConfigureAwait(false);
 
             // assert
             readResultBefore.Should().Contain("Subject                         : dog, new york, puppy");
@@ -94,7 +105,7 @@
             readResultAfter.Should().Contain("Subject                         : dog, new york, puppy, def, abc, xyz" + Environment.NewLine);
 
             // just for fun
-            output.WriteLine(readResultAfter);
+            _output.WriteLine(readResultAfter);
         }
     }
 }

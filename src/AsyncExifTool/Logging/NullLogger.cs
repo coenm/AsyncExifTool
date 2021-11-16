@@ -1,4 +1,4 @@
-﻿namespace CoenM.ExifToolLib.Logging
+namespace CoenM.ExifToolLib.Logging
 {
     internal sealed class NullLogger : ILogger
     {
@@ -7,6 +7,9 @@
             // intentionally do nothing
         }
 
-        public bool IsEnabled(LogLevel logLevel) => false;
+        public bool IsEnabled(LogLevel logLevel)
+        {
+            return false;
+        }
     }
 }

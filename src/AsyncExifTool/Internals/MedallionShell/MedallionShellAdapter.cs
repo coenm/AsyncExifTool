@@ -1,23 +1,28 @@
-﻿namespace CoenM.ExifToolLib.Internals.MedallionShell
+namespace CoenM.ExifToolLib.Internals.MedallionShell
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-
     using CoenM.ExifToolLib.Internals.Guards;
     using JetBrains.Annotations;
     using Medallion.Shell;
 
     internal class MedallionShellAdapter : IShell, IDisposable
     {
-        [NotNull] private readonly string executable;
-        [CanBeNull] private readonly List<string> args;
-        [NotNull] private readonly Stream outputStream;
-        [NotNull] private readonly Stream errorStream;
-        [CanBeNull] private Command cmd;
-        private bool initialized;
+        [NotNull]
+        private readonly string _executable;
+        [CanBeNull]
+        private readonly List<string> _args;
+        [NotNull]
+        private readonly Stream _outputStream;
+        [NotNull]
+        private readonly Stream _errorStream;
+        [CanBeNull]
+        private Command _cmd;
+
+        private bool _initialized;
 
         public MedallionShellAdapter(
             [NotNull] string executable,
@@ -28,10 +33,10 @@
             Guard.NotNullOrWhiteSpace(executable, nameof(executable));
             Guard.NotNull(outputStream, nameof(outputStream));
 
-            this.executable = executable;
-            this.args = args?.ToList();
-            this.outputStream = outputStream;
-            this.errorStream = errorStream;
+            this._executable = executable;
+            this._args = args?.ToList();
+            this._outputStream = outputStream;
+            this._errorStream = errorStream;
             Task = System.Threading.Tasks.Task.FromResult(new DummyShellResult() as IShellResult);
         }
 
@@ -45,18 +50,20 @@
 
         public void Initialize()
         {
-            if (initialized)
+            if (_initialized)
+            {
                 return;
+            }
 
-            cmd = Command.Run(executable, args)
-                .RedirectTo(outputStream)
-                .RedirectStandardErrorTo(errorStream);
+            _cmd = Command.Run(_executable, _args)
+                          .RedirectTo(_outputStream)
+                          .RedirectStandardErrorTo(_errorStream);
 
             Task = System.Threading.Tasks.Task.Run(async () =>
             {
                 try
                 {
-                    var result = await cmd.Task.ConfigureAwait(false);
+                    CommandResult result = await _cmd.Task.ConfigureAwait(false);
                     return new CommandResultAdapter(result) as IShellResult;
                 }
                 finally
@@ -65,18 +72,20 @@
                 }
             });
 
-            initialized = true;
+            _initialized = true;
         }
 
         public async Task<bool> TryCancelAsync()
         {
             try
             {
-                if (cmd == null)
+                if (_cmd == null)
+                {
                     return true;
+                }
 
-                return await cmd.TrySignalAsync(CommandSignal.ControlC)
-                         .ConfigureAwait(false);
+                return await _cmd.TrySignalAsync(CommandSignal.ControlC)
+                                 .ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -86,23 +95,28 @@
 
         public void Kill()
         {
-            cmd?.Kill();
+            _cmd?.Kill();
         }
 
         public async Task WriteLineAsync([NotNull] string text)
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (text != null)
-                await cmd.StandardInput.WriteLineAsync(text).ConfigureAwait(false);
+            {
+                Command cmd = _cmd;
+                if (cmd != null)
+                {
+                    await cmd.StandardInput.WriteLineAsync(text).ConfigureAwait(false);
+                }
+            }
         }
 
         public void Dispose()
         {
             Ignore(() => Task.Dispose());
-            Ignore(() => ((IDisposable)cmd).Dispose());
+            Ignore(() => ((IDisposable)_cmd)?.Dispose());
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "RCS1075:Avoid empty catch clause that catches System.Exception.", Justification = "Intention of the method.")]
         private static void Ignore(Action action)
         {
             try

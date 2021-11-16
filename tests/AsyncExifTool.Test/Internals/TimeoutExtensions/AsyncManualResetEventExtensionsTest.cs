@@ -1,10 +1,9 @@
-﻿namespace CoenM.ExifToolLibTest.Internals.TimeoutExtensions
+namespace CoenM.ExifToolLibTest.Internals.TimeoutExtensions
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
-
     using FluentAssertions;
     using Nito.AsyncEx;
     using Xunit;
@@ -38,7 +37,7 @@
             using var cts = new CancellationTokenSource();
 
             // act
-            var resultTask = Sut.WaitOneAsync(amre, cts.Token);
+            Task<bool> resultTask = Sut.WaitOneAsync(amre, cts.Token);
             cts.CancelAfter(100);
             var result = await resultTask;
 
@@ -67,7 +66,7 @@
             var timeoutTimespan = TimeSpan.FromDays(1);
 
             // act
-            var resultTask = Sut.WaitOneAsync(amre, timeoutTimespan);
+            Task<bool> resultTask = Sut.WaitOneAsync(amre, timeoutTimespan);
             await Task.Delay(100);
             amre.Set();
             var result = await resultTask;

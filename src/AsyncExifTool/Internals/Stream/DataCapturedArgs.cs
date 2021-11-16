@@ -1,7 +1,6 @@
-﻿namespace CoenM.ExifToolLib.Internals.Stream
+namespace CoenM.ExifToolLib.Internals.Stream
 {
     using System;
-
     using CoenM.ExifToolLib.Internals.Guards;
     using JetBrains.Annotations;
 

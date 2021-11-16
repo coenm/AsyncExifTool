@@ -1,8 +1,7 @@
-﻿namespace CoenM.ExifToolLibTest.Internals.MedallionShell
+namespace CoenM.ExifToolLibTest.Internals.MedallionShell
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
-
     using CoenM.ExifToolLib.Internals.MedallionShell;
     using FluentAssertions;
     using Medallion.Shell;

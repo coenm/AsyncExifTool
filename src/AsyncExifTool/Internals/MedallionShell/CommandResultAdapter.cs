@@ -1,26 +1,26 @@
-﻿namespace CoenM.ExifToolLib.Internals.MedallionShell
+namespace CoenM.ExifToolLib.Internals.MedallionShell
 {
     using CoenM.ExifToolLib.Internals.Guards;
-
     using JetBrains.Annotations;
     using Medallion.Shell;
 
     internal class CommandResultAdapter : IShellResult
     {
-        [NotNull] private readonly CommandResult commandResult;
+        [NotNull]
+        private readonly CommandResult _commandResult;
 
         public CommandResultAdapter([NotNull] CommandResult commandResult)
         {
             Guard.NotNull(commandResult, nameof(commandResult));
-            this.commandResult = commandResult;
+            this._commandResult = commandResult;
         }
 
-        public int ExitCode => commandResult.ExitCode;
+        public int ExitCode => _commandResult.ExitCode;
 
-        public bool Success => commandResult.Success;
+        public bool Success => _commandResult.Success;
 
-        public string StandardOutput => commandResult.StandardOutput;
+        public string StandardOutput => _commandResult.StandardOutput;
 
-        public string StandardError => commandResult.StandardError;
+        public string StandardError => _commandResult.StandardError;
     }
 }

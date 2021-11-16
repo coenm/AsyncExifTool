@@ -1,7 +1,6 @@
-﻿namespace CoenM.ExifToolLib.Internals.Stream
+namespace CoenM.ExifToolLib.Internals.Stream
 {
     using System.Text;
-
     using CoenM.ExifToolLib.Internals.Guards;
     using CoenM.ExifToolLib.Logging;
     using JetBrains.Annotations;
@@ -11,9 +10,12 @@
     /// </summary>
     internal class BytesWriterLogDecorator : IBytesWriter
     {
-        [NotNull] private readonly IBytesWriter decoratee;
-        [NotNull] private readonly ILogger logger;
-        [NotNull] private readonly string logPrefix;
+        [NotNull]
+        private readonly IBytesWriter _decoratee;
+        [NotNull]
+        private readonly ILogger _logger;
+        [NotNull]
+        private readonly string _logPrefix;
 
         public BytesWriterLogDecorator([NotNull] IBytesWriter decoratee, [NotNull] ILogger logger, [NotNull]string logPrefix)
         {
@@ -21,17 +23,19 @@
             Guard.NotNull(logger, nameof(logger));
             Guard.NotNullOrWhiteSpace(logPrefix, nameof(logPrefix));
 
-            this.decoratee = decoratee;
-            this.logger = logger;
-            this.logPrefix = logPrefix;
+            _decoratee = decoratee;
+            _logger = logger;
+            _logPrefix = logPrefix;
         }
 
         public void Write(byte[] buffer, int offset, int count)
         {
-            if (logger.IsEnabled(LogLevel.Trace))
-                logger.Trace($"{logPrefix} (offset:{offset}, count:{count}) content:{Encoding.UTF8.GetString(buffer, offset, count)}");
+            if (_logger.IsEnabled(LogLevel.Trace))
+            {
+                _logger.Trace($"{_logPrefix} (offset:{offset}, count:{count}) content:{Encoding.UTF8.GetString(buffer, offset, count)}");
+            }
 
-            decoratee.Write(buffer, offset, count);
+            _decoratee.Write(buffer, offset, count);
         }
     }
 }

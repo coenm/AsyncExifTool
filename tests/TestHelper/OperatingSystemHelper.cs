@@ -1,16 +1,14 @@
-﻿namespace TestHelper
+namespace TestHelper
 {
     using System;
     using System.Runtime.InteropServices;
     using System.Text;
-
     using JetBrains.Annotations;
 
     public static class OperatingSystemHelper
     {
-        private const string WindowsEol = "\r\n";
-
-        private const string LinuxEol = "\n";
+        private const string WINDOWS_EOL = "\r\n";
+        private const string LINUX_EOL = "\n";
 
         [PublicAPI]
         public static bool IsLinuxOrMacOsx => !IsWindows;
@@ -30,14 +28,18 @@
         public static string ConvertToOsString(this string input)
         {
             if (string.IsNullOrWhiteSpace(input))
+            {
                 return input;
+            }
 
-            var linuxSanitized = input.Replace(WindowsEol, LinuxEol);
+            var linuxSanitized = input.Replace(WINDOWS_EOL, LINUX_EOL);
 
             if (!IsWindows)
+            {
                 return linuxSanitized;
+            }
 
-            return linuxSanitized.Replace(LinuxEol, WindowsEol);
+            return linuxSanitized.Replace(LINUX_EOL, WINDOWS_EOL);
         }
     }
 }

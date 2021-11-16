@@ -1,7 +1,6 @@
-﻿namespace CoenM.ExifToolLib.Logging
+namespace CoenM.ExifToolLib.Logging
 {
     using System;
-
     using CoenM.ExifToolLib.Internals.Guards;
     using JetBrains.Annotations;
 
@@ -12,7 +11,7 @@
     public readonly struct LogEntry
     {
         /// <summary>
-        /// Log entry to write to <see cref="ILogger"/> instance(s).
+        /// Initializes a new instance of the <see cref="LogEntry"/> struct.
         /// </summary>
         /// <param name="severity">Log severity.</param>
         /// <param name="message">Log message. Cannot be null or empty.</param>
@@ -28,17 +27,17 @@
         }
 
         /// <summary>
-        /// Severity of the log entry.
+        /// Gets the severity of the log entry.
         /// </summary>
         public LogLevel Severity { get; }
 
         /// <summary>
-        /// Log message.
+        /// Gets the log message.
         /// </summary>
         public string Message { get; }
 
         /// <summary>
-        /// Exception. Can be null.
+        /// Gets the exception. Can be null.
         /// </summary>
         public Exception Exception { get; }
     }

@@ -1,10 +1,9 @@
-﻿namespace CoenM.ExifToolLibTest.Internals.Stream
+namespace CoenM.ExifToolLibTest.Internals.Stream
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-
     using CoenM.ExifToolLib.Internals.Stream;
     using FluentAssertions;
     using TestHelper;
@@ -12,19 +11,19 @@
 
     public class ExifToolStdOutWriterTest : IDisposable
     {
-        private readonly ExifToolStdOutWriter sut;
-        private readonly List<DataCapturedArgs> capturedEvents;
+        private readonly ExifToolStdOutWriter _sut;
+        private readonly List<DataCapturedArgs> _capturedEvents;
 
         public ExifToolStdOutWriterTest()
         {
-            capturedEvents = new List<DataCapturedArgs>();
-            sut = new ExifToolStdOutWriter(Encoding.UTF8, 200);
-            sut.Update += SutOnUpdate;
+            _capturedEvents = new List<DataCapturedArgs>();
+            _sut = new ExifToolStdOutWriter(Encoding.UTF8, 200);
+            _sut.Update += SutOnUpdate;
         }
 
         public void Dispose()
         {
-            sut.Update -= SutOnUpdate;
+            _sut.Update -= SutOnUpdate;
         }
 
         [Fact]
@@ -46,7 +45,7 @@
             // arrange
 
             // act
-            Action act = () => sut.Write(buffer, offset, count);
+            Action act = () => _sut.Write(buffer, offset, count);
 
             // assert
             act.Should().Throw<ArgumentException>();
@@ -59,23 +58,23 @@
             // arrange
 
             // act
-            sut.Write(buffer, offset, count);
+            _sut.Write(buffer, offset, count);
 
             // assert
-            capturedEvents.Should().BeEmpty();
+            _capturedEvents.Should().BeEmpty();
         }
 
         [Fact]
         public void SingleWriteShouldNotFireEvent()
         {
             // arrange
-            const string msg = "dummy data without delimiter";
+            const string MSG = "dummy data without delimiter";
 
             // act
-            WriteMessageToSut(msg);
+            WriteMessageToSut(MSG);
 
             // assert
-            capturedEvents.Should().BeEmpty();
+            _capturedEvents.Should().BeEmpty();
         }
 
         [Fact]
@@ -88,9 +87,9 @@
             WriteMessageToSut(msg);
 
             // assert
-            capturedEvents.Should().ContainSingle();
-            capturedEvents.First().Key.Should().Be("0");
-            capturedEvents.First().Data.Should().Be(string.Empty.ConvertToOsString());
+            _capturedEvents.Should().ContainSingle();
+            _capturedEvents.First().Key.Should().Be("0");
+            _capturedEvents.First().Data.Should().Be(string.Empty.ConvertToOsString());
         }
 
         [Fact]
@@ -103,9 +102,9 @@
             WriteMessageToSut(msg);
 
             // assert
-            capturedEvents.Should().ContainSingle();
-            capturedEvents.First().Key.Should().Be("0");
-            capturedEvents.First().Data.Should().Be("a b c\r\nd e f\r\n".ConvertToOsString());
+            _capturedEvents.Should().ContainSingle();
+            _capturedEvents.First().Key.Should().Be("0");
+            _capturedEvents.First().Data.Should().Be("a b c\r\nd e f\r\n".ConvertToOsString());
         }
 
         [Fact]
@@ -118,34 +117,34 @@
             WriteMessageToSut(msg);
 
             // assert
-            capturedEvents.Should().HaveCount(2);
+            _capturedEvents.Should().HaveCount(2);
 
-            capturedEvents[0].Key.Should().Be("0");
-            capturedEvents[0].Data.Should().Be("a b c\r\n".ConvertToOsString());
+            _capturedEvents[0].Key.Should().Be("0");
+            _capturedEvents[0].Data.Should().Be("a b c\r\n".ConvertToOsString());
 
-            capturedEvents[1].Key.Should().Be("1");
-            capturedEvents[1].Data.Should().Be("d e f\r\n".ConvertToOsString());
+            _capturedEvents[1].Key.Should().Be("1");
+            _capturedEvents[1].Data.Should().Be("d e f\r\n".ConvertToOsString());
         }
 
         [Fact]
         public void ParseTwoMessagesOverFourWrites()
         {
             // arrange
-            const string msg1 = "a b c\r\nd e f\r\n{ready0}\r\nghi";
-            const string msg2 = " jkl\r\n{re";
-            const string msg3 = "ady";
-            const string msg4 = "213";
-            const string msg5 = "3}\r\n";
+            const string MSG1 = "a b c\r\nd e f\r\n{ready0}\r\nghi";
+            const string MSG2 = " jkl\r\n{re";
+            const string MSG3 = "ady";
+            const string MSG4 = "213";
+            const string MSG5 = "3}\r\n";
 
             // act
-            WriteMessageToSut(msg1.ConvertToOsString());
-            WriteMessageToSut(msg2.ConvertToOsString());
-            WriteMessageToSut(msg3.ConvertToOsString());
-            WriteMessageToSut(msg4.ConvertToOsString());
-            WriteMessageToSut(msg5.ConvertToOsString());
+            WriteMessageToSut(MSG1.ConvertToOsString());
+            WriteMessageToSut(MSG2.ConvertToOsString());
+            WriteMessageToSut(MSG3.ConvertToOsString());
+            WriteMessageToSut(MSG4.ConvertToOsString());
+            WriteMessageToSut(MSG5.ConvertToOsString());
 
             // assert
-            capturedEvents.Should().HaveCount(2)
+            _capturedEvents.Should().HaveCount(2)
                            .And.Contain(x => x.Key == "0" && x.Data == "a b c\r\nd e f\r\n".ConvertToOsString())
                            .And.Contain(x => x.Key == "2133" && x.Data == "ghi jkl\r\n".ConvertToOsString());
         }
@@ -153,12 +152,12 @@
         private void WriteMessageToSut(string message)
         {
             var buffer = Encoding.UTF8.GetBytes(message.ConvertToOsString());
-            sut.Write(buffer, 0, buffer.Length);
+            _sut.Write(buffer, 0, buffer.Length);
         }
 
         private void SutOnUpdate(object sender, DataCapturedArgs dataCapturedArgs)
         {
-            capturedEvents.Add(dataCapturedArgs);
+            _capturedEvents.Add(dataCapturedArgs);
         }
 
         private class InvalidWriteInputWithoutException : TheoryData<byte[], int, int>

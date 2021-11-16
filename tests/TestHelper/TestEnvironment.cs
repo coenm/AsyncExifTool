@@ -1,4 +1,4 @@
-﻿namespace TestHelper
+namespace TestHelper
 {
     using System;
     using System.IO;
@@ -8,30 +8,30 @@
 
     public static class TestEnvironment
     {
-        private const string SolutionFileName = "AsyncExifTool.sln";
-        private static readonly Lazy<string> LazySolutionDirectoryFullPath = new Lazy<string>(GetSolutionDirectoryFullPathImpl);
-        private static readonly Lazy<bool> RunsOnContinuousIntegration = new Lazy<bool>(IsContinuousIntegrationImpl);
-        private static readonly Lazy<bool> RunsOnContinuousIntegrationTravis = new Lazy<bool>(IsRunningOnTravisImpl);
-        private static readonly Lazy<bool> RunsOnContinuousIntegrationAppVeyor = new Lazy<bool>(IsRunningOnAppVeyorImpl);
-        private static readonly Lazy<bool> RunsOnContinuousIntegrationDevOps = new Lazy<bool>(IsRunningOnDevOpsImpl);
+        private const string SOLUTION_FILE_NAME = "AsyncExifTool.sln";
+        private static readonly Lazy<string> _lazySolutionDirectoryFullPath = new Lazy<string>(GetSolutionDirectoryFullPathImpl);
+        private static readonly Lazy<bool> _runsOnContinuousIntegration = new Lazy<bool>(IsContinuousIntegrationImpl);
+        private static readonly Lazy<bool> _runsOnContinuousIntegrationTravis = new Lazy<bool>(IsRunningOnTravisImpl);
+        private static readonly Lazy<bool> _runsOnContinuousIntegrationAppVeyor = new Lazy<bool>(IsRunningOnAppVeyorImpl);
+        private static readonly Lazy<bool> _runsOnContinuousIntegrationDevOps = new Lazy<bool>(IsRunningOnDevOpsImpl);
 
         /// <summary>
         /// Gets a value indicating whether test execution runs on CI.
         /// </summary>
         // ReSharper disable once InconsistentNaming
-        public static bool RunsOnCI => RunsOnContinuousIntegration.Value;
+        public static bool RunsOnCI => _runsOnContinuousIntegration.Value;
 
-        public static bool RunsOnTravis => RunsOnContinuousIntegrationTravis.Value;
+        public static bool RunsOnTravis => _runsOnContinuousIntegrationTravis.Value;
 
-        public static bool RunsOnAppVeyor => RunsOnContinuousIntegrationAppVeyor.Value;
+        public static bool RunsOnAppVeyor => _runsOnContinuousIntegrationAppVeyor.Value;
 
-        public static bool RunsOnDevOps => RunsOnContinuousIntegrationDevOps.Value;
+        public static bool RunsOnDevOps => _runsOnContinuousIntegrationDevOps.Value;
 
         public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
         public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
-        private static string SolutionDirectoryFullPath => LazySolutionDirectoryFullPath.Value;
+        private static string SolutionDirectoryFullPath => _lazySolutionDirectoryFullPath.Value;
 
         /// <summary>
         /// Convert relative path to full path based on solution directory.
@@ -69,12 +69,14 @@
 
         private static string GetSolutionDirectoryFullPathImpl()
         {
-            string GetRecursive(DirectoryInfo directory)
+            static string GetRecursive(DirectoryInfo directory)
             {
                 if (directory == null)
+                {
                     throw new Exception($"directory cannot be null!");
+                }
 
-                while (!directory.EnumerateFiles(SolutionFileName).Any())
+                while (!directory.EnumerateFiles(SOLUTION_FILE_NAME).Any())
                 {
                     try
                     {
@@ -88,7 +90,9 @@
                     }
 
                     if (directory == null)
+                    {
                         throw new Exception($"Unable to find solution directory from '{directory?.Name}'!");
+                    }
                 }
 
                 return directory.FullName;
@@ -98,7 +102,7 @@
             {
                 var assemblyLocation = typeof(TestEnvironment).GetTypeInfo().Assembly.Location;
                 var assemblyFile = new FileInfo(assemblyLocation);
-                var directory = assemblyFile.Directory;
+                DirectoryInfo directory = assemblyFile.Directory;
                 return GetRecursive(directory);
             }
             catch

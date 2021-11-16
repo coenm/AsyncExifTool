@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
   <PropertyGroup>
-    <LangVersion>8</LangVersion>
+    <LangVersion>latest</LangVersion>
+
+    <!-- Set the CheckEolTargetFramework property to false. This will remove the following warning: The target framework 'netcoreapp2.1' is out of support and will not receive security updates in the future. -->
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
   </PropertyGroup>
 </Project>

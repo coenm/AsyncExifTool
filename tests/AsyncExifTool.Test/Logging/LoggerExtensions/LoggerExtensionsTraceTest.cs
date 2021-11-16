@@ -1,33 +1,34 @@
-﻿namespace CoenM.ExifToolLibTest.Logging.LoggerExtensions
+namespace CoenM.ExifToolLibTest.Logging.LoggerExtensions
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-
     using CoenM.ExifToolLib.Logging;
     using FakeItEasy;
     using FluentAssertions;
     using Xunit;
-
     using Sut = CoenM.ExifToolLib.Logging.LoggerExtensions;
 
     [SuppressMessage("ReSharper", "InvokeAsExtensionMethod", Justification = "Improve Sut visibility")]
     public class LoggerExtensionsTraceTest
     {
-        private readonly ILogger logger;
-        private readonly List<LogEntry> logEntries;
+        private readonly ILogger _logger;
+        private readonly List<LogEntry> _logEntries;
 
         public LoggerExtensionsTraceTest()
         {
-            logEntries = new List<LogEntry>();
+            _logEntries = new List<LogEntry>();
 
-            logger = A.Fake<ILogger>();
-            A.CallTo(() => logger.Log(A<LogEntry>._))
+            _logger = A.Fake<ILogger>();
+            A.CallTo(() => _logger.Log(A<LogEntry>._))
                 .Invokes(call =>
                 {
                     if (!(call.Arguments[0] is LogEntry logEntry))
+                    {
                         return;
-                    logEntries.Add(logEntry);
+                    }
+
+                    _logEntries.Add(logEntry);
                 });
         }
 
@@ -37,34 +38,34 @@
             // arrange
 
             // act
-            Sut.Trace(logger, "test message");
+            Sut.Trace(_logger, "test message");
 
             // assert
-            A.CallTo(() => logger.IsEnabled(A<LogLevel>._)).MustNotHaveHappened();
-            A.CallTo(() => logger.Log(A<LogEntry>._)).MustHaveHappenedOnceExactly();
-            logEntries.Should().BeEquivalentTo(new LogEntry(LogLevel.Trace, "test message"));
+            A.CallTo(() => _logger.IsEnabled(A<LogLevel>._)).MustNotHaveHappened();
+            A.CallTo(() => _logger.Log(A<LogEntry>._)).MustHaveHappenedOnceExactly();
+            _logEntries.Should().BeEquivalentTo(new LogEntry(LogLevel.Trace, "test message"));
         }
 
         [Fact]
         public void Trace_WithLambdaExpression_ShouldPassMessageToLogger_WhenLogLevelIsEnabled()
         {
             // arrange
-            bool called = false;
+            var called = false;
             string TestMessageGenerator()
             {
                 called = true;
                 return "Test message generated";
             }
 
-            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).Returns(true);
+            A.CallTo(() => _logger.IsEnabled(LogLevel.Trace)).Returns(true);
 
             // act
-            Sut.Trace(logger, TestMessageGenerator);
+            Sut.Trace(_logger, TestMessageGenerator);
 
             // assert
-            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly()
-             .Then(A.CallTo(() => logger.Log(A<LogEntry>._)).MustHaveHappenedOnceExactly());
-            logEntries.Should().BeEquivalentTo(new LogEntry(LogLevel.Trace, "Test message generated"));
+            A.CallTo(() => _logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly()
+             .Then(A.CallTo(() => _logger.Log(A<LogEntry>._)).MustHaveHappenedOnceExactly());
+            _logEntries.Should().BeEquivalentTo(new LogEntry(LogLevel.Trace, "Test message generated"));
             called.Should().BeTrue();
         }
 
@@ -72,22 +73,22 @@
         public void Trace_WithLambdaExpression_ShouldNotPassMessageToLogger_WhenLogLevelIsDisabled()
         {
             // arrange
-            bool called = false;
+            var called = false;
             string TestMessageGenerator()
             {
                 called = true;
                 return "Test message generated";
             }
 
-            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).Returns(false);
+            A.CallTo(() => _logger.IsEnabled(LogLevel.Trace)).Returns(false);
 
             // act
-            Sut.Trace(logger, TestMessageGenerator);
+            Sut.Trace(_logger, TestMessageGenerator);
 
             // assert
-            A.CallTo(() => logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => logger.Log(A<LogEntry>._)).MustNotHaveHappened();
-            logEntries.Should().BeEmpty();
+            A.CallTo(() => _logger.IsEnabled(LogLevel.Trace)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => _logger.Log(A<LogEntry>._)).MustNotHaveHappened();
+            _logEntries.Should().BeEmpty();
             called.Should().BeFalse();
         }
 
@@ -97,11 +98,11 @@
             // arrange
 
             // act
-            Sut.Trace(logger, (Func<string>)null);
+            Sut.Trace(_logger, (Func<string>)null);
 
             // assert
-            A.CallTo(logger).MustNotHaveHappened();
-            logEntries.Should().BeEmpty();
+            A.CallTo(_logger).MustNotHaveHappened();
+            _logEntries.Should().BeEmpty();
         }
     }
 }

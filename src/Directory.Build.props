@@ -45,16 +45,6 @@
     <None Include="$(MSBuildThisFileDirectory)..\icon\AsyncExifTool.512.png" Pack="true" PackagePath="$(PackageIcon)" Visible="false" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)..\AsyncExifTool.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\stylecop.json" />
-  </ItemGroup>
-
-
-
   <ItemGroup>
     <!-- Make internals visisble for test project (based on convention) -->
     <!-- https://blog.sanderaernouts.com/make-internals-visible-with-new-csproj-format -->
@@ -67,11 +57,6 @@
     <PackageReference Include="StyleCop.Analyzers">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-
-    <PackageReference Include="GitVersionTask">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 

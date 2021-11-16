@@ -1,18 +1,17 @@
-﻿namespace CoenM.ExifToolLib.Internals.Stream
+namespace CoenM.ExifToolLib.Internals.Stream
 {
     using System.IO;
-
     using CoenM.ExifToolLib.Internals.Guards;
     using JetBrains.Annotations;
 
     internal class WriteDelegatedDummyStream : Stream
     {
-        private readonly IBytesWriter @delegate;
+        private readonly IBytesWriter _delegate;
 
         public WriteDelegatedDummyStream([NotNull] IBytesWriter @delegate)
         {
             Guard.NotNull(@delegate, nameof(@delegate));
-            this.@delegate = @delegate;
+            this._delegate = @delegate;
         }
 
         public override bool CanRead => false;
@@ -25,10 +24,7 @@
 
         public override long Position
         {
-            get
-            {
-                return default;
-            }
+            get => default;
 
             set
             {
@@ -60,7 +56,7 @@
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            @delegate.Write(buffer, offset, count);
+            _delegate.Write(buffer, offset, count);
         }
     }
 }

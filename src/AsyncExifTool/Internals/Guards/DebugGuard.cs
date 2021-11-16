@@ -1,10 +1,9 @@
-﻿namespace CoenM.ExifToolLib.Internals.Guards
+namespace CoenM.ExifToolLib.Internals.Guards
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
-
     using JetBrains.Annotations;
 
     /// <summary>

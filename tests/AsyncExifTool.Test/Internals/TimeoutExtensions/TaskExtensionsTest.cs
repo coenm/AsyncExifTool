@@ -1,26 +1,25 @@
-﻿namespace CoenM.ExifToolLibTest.Internals.TimeoutExtensions
+namespace CoenM.ExifToolLibTest.Internals.TimeoutExtensions
 {
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-
     using CoenM.ExifToolLib.Internals.TimeoutExtensions;
     using FluentAssertions;
     using Xunit;
 
     public class TaskExtensionsTest
     {
-        private readonly ManualResetEvent mre1;
-        private readonly ManualResetEvent mre2;
-        private readonly CancellationTokenSource cts;
-        private Exception exception;
+        private readonly ManualResetEvent _mre1;
+        private readonly ManualResetEvent _mre2;
+        private readonly CancellationTokenSource _cts;
+        private Exception _exception;
 
         public TaskExtensionsTest()
         {
-            mre1 = new ManualResetEvent(false);
-            mre2 = new ManualResetEvent(false);
-            cts = new CancellationTokenSource();
-            exception = null;
+            _mre1 = new ManualResetEvent(false);
+            _mre2 = new ManualResetEvent(false);
+            _cts = new CancellationTokenSource();
+            _exception = null;
         }
 
         // Tests if the WithWaitCancellation method throws an OperationCanceledException when CancellationToken is cancelled
@@ -32,12 +31,12 @@
             var result = -1;
 
             // act
-            var resultTask = DummyMethodReturning42WithoutCancellationTokenSupportAsync()
-                .WithWaitCancellation(cts.Token);
+            Task<int> resultTask = DummyMethodReturning42WithoutCancellationTokenSupportAsync()
+                .WithWaitCancellation(_cts.Token);
 
-            mre1.WaitOne();
-            cts.Cancel();
-            mre2.Set();
+            _mre1.WaitOne();
+            _cts.Cancel();
+            _mre2.Set();
 
             try
             {
@@ -45,13 +44,13 @@
             }
             catch (Exception e)
             {
-                exception = e;
+                _exception = e;
             }
 
             // assert
-            exception.Should().NotBeNull();
-            exception.Should().BeOfType<OperationCanceledException>();
-            cts.IsCancellationRequested.Should().BeTrue();
+            _exception.Should().NotBeNull();
+            _exception.Should().BeOfType<OperationCanceledException>();
+            _cts.IsCancellationRequested.Should().BeTrue();
             result.Should().Be(-1, "Result should be unchanged");
         }
 
@@ -63,12 +62,12 @@
             // arrange
 
             // act
-            var resultTask = DummyMethodDoingNothingWithoutCancellationTokenSupportAsync()
-                .WithWaitCancellation(cts.Token);
+            Task resultTask = DummyMethodDoingNothingWithoutCancellationTokenSupportAsync()
+                .WithWaitCancellation(_cts.Token);
 
-            mre1.WaitOne();
-            cts.Cancel();
-            mre2.Set();
+            _mre1.WaitOne();
+            _cts.Cancel();
+            _mre2.Set();
 
             try
             {
@@ -76,13 +75,13 @@
             }
             catch (Exception e)
             {
-                exception = e;
+                _exception = e;
             }
 
             // assert
-            exception.Should().NotBeNull();
-            exception.Should().BeOfType<OperationCanceledException>();
-            cts.IsCancellationRequested.Should().BeTrue();
+            _exception.Should().NotBeNull();
+            _exception.Should().BeOfType<OperationCanceledException>();
+            _cts.IsCancellationRequested.Should().BeTrue();
         }
 
         // Tests if the WithWaitCancellation method doesn't throws an Exception
@@ -94,23 +93,23 @@
             var result = -1;
 
             // act
-            var resultTask = DummyMethodReturning42WithoutCancellationTokenSupportAsync()
-                .WithWaitCancellation(cts.Token);
-            mre2.Set();
+            Task<int> resultTask = DummyMethodReturning42WithoutCancellationTokenSupportAsync()
+                .WithWaitCancellation(_cts.Token);
+            _mre2.Set();
 
             try
             {
                 result = await resultTask;
-                cts.Cancel();
+                _cts.Cancel();
             }
             catch (Exception e)
             {
-                exception = e;
+                _exception = e;
             }
 
             // assert
-            exception.Should().BeNull();
-            cts.IsCancellationRequested.Should().BeTrue();
+            _exception.Should().BeNull();
+            _cts.IsCancellationRequested.Should().BeTrue();
             result.Should().Be(42);
         }
 
@@ -122,23 +121,23 @@
             // arrange
 
             // act
-            var resultTask = DummyMethodDoingNothingWithoutCancellationTokenSupportAsync()
-                .WithWaitCancellation(cts.Token);
-            mre2.Set();
+            Task resultTask = DummyMethodDoingNothingWithoutCancellationTokenSupportAsync()
+                .WithWaitCancellation(_cts.Token);
+            _mre2.Set();
 
             try
             {
                 await resultTask;
-                cts.Cancel();
+                _cts.Cancel();
             }
             catch (Exception e)
             {
-                exception = e;
+                _exception = e;
             }
 
             // assert
-            cts.IsCancellationRequested.Should().BeTrue();
-            exception.Should().BeNull();
+            _cts.IsCancellationRequested.Should().BeTrue();
+            _exception.Should().BeNull();
         }
 
         private async Task<int> DummyMethodReturning42WithoutCancellationTokenSupportAsync()
@@ -150,8 +149,8 @@
         private async Task DummyMethodDoingNothingWithoutCancellationTokenSupportAsync()
         {
             await Task.Yield();
-            mre1.Set();
-            mre2.WaitOne();
+            _mre1.Set();
+            _mre2.WaitOne();
         }
     }
 }

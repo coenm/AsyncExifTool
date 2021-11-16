@@ -1,7 +1,6 @@
-﻿namespace CoenM.ExifToolLibTest.Logging
+namespace CoenM.ExifToolLibTest.Logging
 {
     using System;
-
     using CoenM.ExifToolLib.Logging;
     using FluentAssertions;
     using Xunit;

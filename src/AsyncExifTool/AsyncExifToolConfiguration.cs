@@ -1,10 +1,9 @@
-﻿namespace CoenM.ExifToolLib
+namespace CoenM.ExifToolLib
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-
     using CoenM.ExifToolLib.Internals.Guards;
     using JetBrains.Annotations;
 
@@ -14,7 +13,7 @@
     public sealed class AsyncExifToolConfiguration
     {
         /// <summary>
-        /// Create configuration for <see cref="AsyncExifTool"/>.
+        /// Initializes a new instance of the <see cref="AsyncExifToolConfiguration"/> class.
         /// </summary>
         /// <param name="exifToolFullFilename">Full path to exiftool on the executing host. No checks are made in the configuration if the path is valid.</param>
         /// <param name="configurationFilename">Full path of external configuration filename. Can be null. see '-config' option in the exiftool Application documentation.</param>
@@ -41,7 +40,7 @@
         }
 
         /// <summary>
-        /// Create configuration for <see cref="AsyncExifTool"/> with no custom exiftool configuration.
+        /// Initializes a new instance of the <see cref="AsyncExifToolConfiguration"/> class.
         /// </summary>
         /// <param name="exifToolFullFilename">Full path to exiftool on the executing host. No checks are made in the configuration if the path is valid.</param>
         /// <param name="exifToolResultEncoding">Encoding how to decode the ExifTool output.</param>
@@ -56,24 +55,27 @@
         }
 
         /// <summary>
-        /// Full path to ExifTool executable.
+        /// Gets the full path to ExifTool executable.
         /// </summary>
         public string ExifToolFullFilename { get; }
 
         /// <summary>
+        /// Gets the configuration filename.
         /// Load specified configuration file instead of the default ".ExifTool_config".
         /// If used, this option must come before all other arguments on the command line and applies to all executed commands. The config file must exist relative to the current working directory or the exiftool application directory unless an absolute path is specified. Loading of the default config file may be disabled by setting CFGFILE to an empty string (ie. ""). See https://exiftool.org/config.html and config_files/example.config in the full ExifTool distribution for details about the configuration file syntax.
         /// </summary>
-        [CanBeNull] public string ConfigurationFilename { get; }
+        [CanBeNull]
+        public string ConfigurationFilename { get; }
 
         /// <summary>
-        /// Expected ExifTool encoding.
+        /// Gets the expected ExifTool encoding.
         /// </summary>
         public Encoding ExifToolEncoding { get; }
 
         /// <summary>
-        /// Common arguments.
+        /// Gets the common arguments.
         /// </summary>
-        [NotNull] public List<string> CommonArgs { get; }
+        [NotNull]
+        public List<string> CommonArgs { get; }
     }
 }
