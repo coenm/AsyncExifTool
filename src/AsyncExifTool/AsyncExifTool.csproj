@@ -14,19 +14,25 @@
   <ItemGroup>
     <PackageReference Include="MedallionShell" />
     <PackageReference Include="Nito.AsyncEx" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net462" Version="1.0.2">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <DefineConstants>$(DefineConstants);FEATURE_ASYNC_DISPOSABLE</DefineConstants>
   </PropertyGroup>
+  <!-- -->
+  <!-- ~1~  https://github.com/dotnet/sdk/issues/335#issuecomment-271186591 @1@ -->
+  <!-- <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' AND '$(TargetFramework)' == 'net461' "> -->
+  <!--   <FrameworkPathOverride>$(NuGetPackageRoot)microsoft.targetingpack.netframework.v4.6.1/1.0.1/lib/net461/</FrameworkPathOverride> -->
+  <!--   <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://dotnet.myget.org/F/dotnet-core/api/v3/index.json</RestoreAdditionalProjectSources> -->
+  <!-- </PropertyGroup> -->
+  <!-- -->
+  <!-- <ItemGroup Condition=" '$(OS)' != 'Windows_NT' AND '$(TargetFramework)' == 'net461' "> -->
+  <!--   <PackageReference Include="Microsoft.TargetingPack.NETFramework.v4.6.1" Version="1.0.1" ExcludeAssets="All" PrivateAssets="All" /> -->
+  <!-- </ItemGroup> -->
 
-  <!--  https://github.com/dotnet/sdk/issues/335#issuecomment-271186591 -->
-  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' AND '$(TargetFramework)' == 'net461' ">
-    <FrameworkPathOverride>$(NuGetPackageRoot)microsoft.targetingpack.netframework.v4.6.1/1.0.1/lib/net461/</FrameworkPathOverride>
-    <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://dotnet.myget.org/F/dotnet-core/api/v3/index.json</RestoreAdditionalProjectSources>
-  </PropertyGroup>
 
-  <ItemGroup Condition=" '$(OS)' != 'Windows_NT' AND '$(TargetFramework)' == 'net461' ">
-    <PackageReference Include="Microsoft.TargetingPack.NETFramework.v4.6.1" Version="1.0.1" ExcludeAssets="All" PrivateAssets="All" />
-  </ItemGroup>
 </Project>
