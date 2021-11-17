@@ -123,7 +123,7 @@ namespace CoenM.ExifToolLibTest
                                                               });
 
             // assert
-            _ = act.Should().ThrowExactly<Exception>().WithMessage("Warning: IPTCDigest is not current. XMP may be out of sync - *");
+            act.Should().ThrowExactly<Exception>().WithMessage("Warning: IPTCDigest is not current. XMP may be out of sync - *");
 
             await sut.DisposeAsync().ConfigureAwait(false);
         }

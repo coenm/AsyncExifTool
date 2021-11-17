@@ -77,7 +77,7 @@ AsyncExifToolConfiguration asyncExifToolConfiguration = string.IsNullOrWhiteSpac
     ? new AsyncExifToolConfiguration(exifToolExe, exifToolEncoding, commonArgs)
     : new AsyncExifToolConfiguration(exifToolExe, customExifToolConfigFile, exifToolEncoding, commonArgs);
 ```
-<sup><a href='/tests/Samples/Program.cs#L22-L48' title='File snippet `exiftoolconfiguration` was extracted from'>snippet source</a> | <a href='#snippet-exiftoolconfiguration' title='Navigate to start of snippet `exiftoolconfiguration`'>anchor</a></sup>
+<sup><a href='/tests/Samples/Program.cs#L22-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-exiftoolconfiguration' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Use the configuration to create an instance of AsyncExifTool.
@@ -116,7 +116,7 @@ var result3 = await asyncExifTool.ExecuteAsync(new[] { "-XMP-dc:Subject+=Summer"
 // ExifTool is closed and cannot be initialized anymore nor does it accept any requests.
 await asyncExifTool.DisposeAsync();
 ```
-<sup><a href='/tests/Samples/Program.cs#L153-L186' title='File snippet `exiftoolexampleusage` was extracted from'>snippet source</a> | <a href='#snippet-exiftoolexampleusage' title='Navigate to start of snippet `exiftoolexampleusage`'>anchor</a></sup>
+<sup><a href='/tests/Samples/Program.cs#L153-L186' title='Snippet source file'>snippet source</a> | <a href='#snippet-exiftoolexampleusage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Icon
