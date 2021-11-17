@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
+	<TargetFrameworks>netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
     <RootNamespace>CoenM.ExifToolLibTest</RootNamespace>
   </PropertyGroup>
 
@@ -25,14 +25,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\AsyncExifTool.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net462" Version="1.0.2">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -43,16 +39,4 @@
   <ItemGroup>
     <EmbeddedResource Include="..\..\EXIFTOOL_VERSION" Link="EXIFTOOL_VERSION" />
   </ItemGroup>
-
-  <!--  https://github.com/dotnet/sdk/issues/335#issuecomment-271186591 -->
-  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' AND '$(TargetFramework)' == 'net461' ">
-    <FrameworkPathOverride>$(NuGetPackageRoot)microsoft.targetingpack.netframework.v4.6.1/1.0.1/lib/net461/</FrameworkPathOverride>
-    <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://dotnet.myget.org/F/dotnet-core/api/v3/index.json</RestoreAdditionalProjectSources>
-  </PropertyGroup>
-
-  <ItemGroup Condition=" '$(OS)' != 'Windows_NT' AND '$(TargetFramework)' == 'net461' ">
-    <PackageReference Include="Microsoft.VisualStudio.TestPlatform.ObjectModel" Version="14.0.0" />
-    <PackageReference Include="Microsoft.TargetingPack.NETFramework.v4.6.1" Version="1.0.1" ExcludeAssets="All" PrivateAssets="All" />
-  </ItemGroup>
-
 </Project>

@@ -1,8 +1,7 @@
-﻿namespace CoenM.ExifToolLibTest.Internals.Stream
+namespace CoenM.ExifToolLibTest.Internals.Stream
 {
     using System;
     using System.IO;
-
     using CoenM.ExifToolLib.Internals.Stream;
     using FakeItEasy;
     using FluentAssertions;
@@ -10,18 +9,18 @@
 
     public class WriteDelegatedDummyStreamTest : IDisposable
     {
-        private readonly WriteDelegatedDummyStream sut;
-        private readonly IBytesWriter bytesWriter;
+        private readonly WriteDelegatedDummyStream _sut;
+        private readonly IBytesWriter _bytesWriter;
 
         public WriteDelegatedDummyStreamTest()
         {
-            bytesWriter = A.Fake<IBytesWriter>();
-            sut = new WriteDelegatedDummyStream(bytesWriter);
+            _bytesWriter = A.Fake<IBytesWriter>();
+            _sut = new WriteDelegatedDummyStream(_bytesWriter);
         }
 
         public void Dispose()
         {
-            sut.Dispose();
+            _sut.Dispose();
         }
 
         [Fact]
@@ -31,40 +30,40 @@
             var buffer = new byte[100];
 
             // act
-            sut.Write(buffer, 0, 100);
+            _sut.Write(buffer, 0, 100);
 
             // assert
-            A.CallTo(() => bytesWriter.Write(buffer, 0, 100)).MustHaveHappenedOnceExactly();
-            A.CallTo(bytesWriter).MustHaveHappenedOnceExactly();
+            A.CallTo(() => _bytesWriter.Write(buffer, 0, 100)).MustHaveHappenedOnceExactly();
+            A.CallTo(_bytesWriter).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
         public void Write_ShouldNotCatchException_WhenBytesWriterThrows()
         {
             // arrange
-            A.CallTo(() => bytesWriter.Write(A<byte[]>._, A<int>._, A<int>._))
+            A.CallTo(() => _bytesWriter.Write(A<byte[]>._, A<int>._, A<int>._))
                 .Throws(new Exception("thrown by test"));
 
             var buffer = new byte[100];
 
             // act
-            Action act = () => sut.Write(buffer, 0, 100);
+            Action act = () => _sut.Write(buffer, 0, 100);
 
             // assert
             act.Should().ThrowExactly<Exception>().WithMessage("thrown by test");
-            A.CallTo(() => bytesWriter.Write(buffer, 0, 100)).MustHaveHappenedOnceExactly();
-            A.CallTo(bytesWriter).MustHaveHappenedOnceExactly();
+            A.CallTo(() => _bytesWriter.Write(buffer, 0, 100)).MustHaveHappenedOnceExactly();
+            A.CallTo(_bytesWriter).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
         public void DefaultPropertiesShouldNoThrowAndDoNotDoAnythingTest()
         {
-            sut.CanWrite.Should().BeTrue();
-            sut.CanRead.Should().BeFalse();
-            sut.CanSeek.Should().BeFalse();
-            sut.Length.Should().Be(0);
-            sut.Position.Should().Be(0);
-            A.CallTo(bytesWriter).MustNotHaveHappened();
+            _sut.CanWrite.Should().BeTrue();
+            _sut.CanRead.Should().BeFalse();
+            _sut.CanSeek.Should().BeFalse();
+            _sut.Length.Should().Be(0);
+            _sut.Position.Should().Be(0);
+            A.CallTo(_bytesWriter).MustNotHaveHappened();
         }
 
         [Fact]
@@ -73,19 +72,19 @@
             // arrange
 
             // assume
-            sut.Position.Should().Be(0);
+            _sut.Position.Should().Be(0);
 
             // act
-            sut.Position = 100;
+            _sut.Position = 100;
 
             // assert
-            sut.Position.Should().Be(0);
+            _sut.Position.Should().Be(0);
         }
 
         [Fact]
         public void Flush_ShouldNotDoAnythingAndDefinitelyNotThrow()
         {
-            sut.Flush();
+            _sut.Flush();
         }
 
         [Fact]
@@ -94,7 +93,7 @@
             // arrange
 
             // act
-            var result = sut.Seek(0, SeekOrigin.Begin);
+            var result = _sut.Seek(0, SeekOrigin.Begin);
 
             // assert
             result.Should().Be(0);
@@ -106,13 +105,13 @@
             // arrange
 
             // assume
-            sut.Length.Should().Be(0);
+            _sut.Length.Should().Be(0);
 
             // act
-            sut.SetLength(100);
+            _sut.SetLength(100);
 
             // assert
-            sut.Length.Should().Be(0);
+            _sut.Length.Should().Be(0);
         }
 
         [Fact]
@@ -122,7 +121,7 @@
             var buffer = new byte[100];
 
             // act
-            var result = sut.Read(buffer, 0, 100);
+            var result = _sut.Read(buffer, 0, 100);
 
             // assert
             result.Should().Be(0);

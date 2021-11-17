@@ -1,4 +1,4 @@
-﻿namespace CoenM.ExifToolLibTest.Internals.MedallionShell
+namespace CoenM.ExifToolLibTest.Internals.MedallionShell
 {
     using System;
     using System.Collections.Generic;
@@ -32,8 +32,8 @@
             mreSutExited = new ManualResetEventSlim(false);
             var defaultArgs = new List<string>
                                     {
-                                        ExifToolArguments.StayOpen,
-                                        ExifToolArguments.BoolTrue,
+                                        ExifToolArguments.STAY_OPEN,
+                                        ExifToolArguments.BOOL_TRUE,
                                         "-@",
                                         "-",
                                     };
@@ -84,8 +84,8 @@
             sut.Finished.Should().BeFalse();
 
             // act
-            await sut.WriteLineAsync(ExifToolArguments.StayOpen).ConfigureAwait(false);
-            await sut.WriteLineAsync(ExifToolArguments.BoolFalse).ConfigureAwait(false);
+            await sut.WriteLineAsync(ExifToolArguments.STAY_OPEN).ConfigureAwait(false);
+            await sut.WriteLineAsync(ExifToolArguments.BOOL_FALSE).ConfigureAwait(false);
 
             output.WriteLine("Awaiting task to finish");
             await sut.Task.ConfigureAwait(false);

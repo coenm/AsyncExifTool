@@ -1,16 +1,15 @@
-﻿namespace CoenM.ExifToolLib.Internals
+namespace CoenM.ExifToolLib.Internals
 {
     using System.Collections.Generic;
-
     using JetBrains.Annotations;
 
     internal static class ExifToolArguments
     {
-        public const string Version = "-ver";
-        public const string StayOpen = "-stay_open";
-        public const string BoolTrue = "True";
-        public const string BoolFalse = "False";
-        public const string CommonArgs = "-common_args";
+        public const string VERSION = "-ver";
+        public const string STAY_OPEN = "-stay_open";
+        public const string BOOL_TRUE = "True";
+        public const string BOOL_FALSE = "False";
+        public const string COMMON_ARGS = "-common_args";
 
         /// <summary>
         /// Keep reading -@ argfile even after EOF.
@@ -19,8 +18,8 @@
         /// <returns>Exiftool arguments.</returns>
         public static IEnumerable<string> StayOpenMode(bool enabled)
         {
-            yield return StayOpen;
-            yield return enabled ? BoolTrue : BoolFalse;
+            yield return STAY_OPEN;
+            yield return enabled ? BOOL_TRUE : BOOL_FALSE;
         }
 
         /// <summary>
@@ -44,7 +43,9 @@
         public static IEnumerable<string> ExifToolArgumentsConfigFile([CanBeNull] string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
+            {
                 yield break;
+            }
 
             yield return "-config";
             yield return filename;

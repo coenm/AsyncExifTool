@@ -1,8 +1,7 @@
-﻿namespace Samples
+namespace Samples
 {
     using System;
     using CoenM.ExifToolLib.Logging;
-
     using ILogger = CoenM.ExifToolLib.Logging.ILogger;
     using LogLevel = CoenM.ExifToolLib.Logging.LogLevel;
 
@@ -11,24 +10,28 @@
     // You can use any other log framework you want, just write an adapter for it.
     public class AsyncExifToolToNLogAdapter : ILogger
     {
-        private readonly NLog.ILogger logger;
+        private readonly NLog.ILogger _logger;
 
         public AsyncExifToolToNLogAdapter(NLog.ILogger logger)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public void Log(LogEntry entry)
         {
             if (entry.Exception == null)
-                logger.Log(Convert(entry.Severity), entry.Message);
+            {
+                _logger.Log(Convert(entry.Severity), entry.Message);
+            }
             else
-                logger.Log(Convert(entry.Severity), entry.Exception, entry.Message);
+            {
+                _logger.Log(Convert(entry.Severity), entry.Exception, entry.Message);
+            }
         }
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            return logger.IsEnabled(Convert(logLevel));
+            return _logger.IsEnabled(Convert(logLevel));
         }
 
         private static NLog.LogLevel Convert(LogLevel logLevel)

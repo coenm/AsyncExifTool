@@ -1,9 +1,8 @@
-﻿namespace CoenM.ExifToolLibTest.Internals.Stream
+namespace CoenM.ExifToolLibTest.Internals.Stream
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
-
     using CoenM.ExifToolLib.Internals.Stream;
     using FluentAssertions;
     using TestHelper;
@@ -11,19 +10,19 @@
 
     public class ExifToolStdErrWriterTest : IDisposable
     {
-        private readonly ExifToolStdErrWriter sut;
-        private readonly List<ErrorCapturedArgs> capturedEvents;
+        private readonly ExifToolStdErrWriter _sut;
+        private readonly List<ErrorCapturedArgs> _capturedEvents;
 
         public ExifToolStdErrWriterTest()
         {
-            capturedEvents = new List<ErrorCapturedArgs>();
-            sut = new ExifToolStdErrWriter(Encoding.UTF8);
-            sut.Error += SutOnError;
+            _capturedEvents = new List<ErrorCapturedArgs>();
+            _sut = new ExifToolStdErrWriter(Encoding.UTF8);
+            _sut.Error += SutOnError;
         }
 
         public void Dispose()
         {
-            sut.Error -= SutOnError;
+            _sut.Error -= SutOnError;
         }
 
         [Theory]
@@ -33,34 +32,34 @@
             // arrange
 
             // act
-            sut.Write(buffer, offset, count);
+            _sut.Write(buffer, offset, count);
 
             // assert
-            capturedEvents.Should().BeEmpty();
+            _capturedEvents.Should().BeEmpty();
         }
 
         [Fact]
         public void SingleWriteShouldFireEvent()
         {
             // arrange
-            const string msg = "dummy data 2";
+            const string MSG = "dummy data 2";
 
             // act
-            WriteMessageToSut(msg);
+            WriteMessageToSut(MSG);
 
             // assert
-            capturedEvents.Should().BeEquivalentTo(new ErrorCapturedArgs(msg));
+            _capturedEvents.Should().BeEquivalentTo(new ErrorCapturedArgs(MSG));
         }
 
         private void WriteMessageToSut(string message)
         {
             var buffer = Encoding.UTF8.GetBytes(message);
-            sut.Write(buffer, 0, buffer.Length);
+            _sut.Write(buffer, 0, buffer.Length);
         }
 
         private void SutOnError(object sender, ErrorCapturedArgs dataCapturedArgs)
         {
-            capturedEvents.Add(dataCapturedArgs);
+            _capturedEvents.Add(dataCapturedArgs);
         }
 
         private class InvalidWriteInputWithoutException : TheoryData<byte[], int, int>

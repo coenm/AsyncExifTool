@@ -1,8 +1,7 @@
-﻿namespace CoenM.ExifToolLibTest.Logging
+namespace CoenM.ExifToolLibTest.Logging
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
-
     using CoenM.ExifToolLib.Logging;
     using FluentAssertions;
     using Xunit;
@@ -10,6 +9,7 @@
     public class LogEntryTest
     {
         [Fact]
+        [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1129:Do not use default value type constructor", Justification = "Testcase")]
         public void LogEntry_DefaultCtor_ShouldSetAllPropertiesToDefault()
         {
             // arrange

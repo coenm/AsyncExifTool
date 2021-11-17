@@ -3,50 +3,49 @@
 
   <!--Include in every project -->
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="all" />
+    <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" PrivateAssets="all" />
   </ItemGroup>
 
   <!--Need to be opted in -->
   <ItemGroup>
 
     <!--Dependencies production code (and maybe also in test code)-->
-    <PackageReference Update="MedallionShell" Version="1.6.1" />
-    <PackageReference Update="Nito.AsyncEx" Version="5.0.0" />
+    <PackageReference Update="MedallionShell" Version="1.6.2" />
+    <PackageReference Update="Nito.AsyncEx" Version="5.1.2" />
 
     <!-- Packages and tools for releasing (versioning, sourcelink, jetbrains annotations)-->
-    <PackageReference Update="GitVersionTask" Version="5.3.2" />
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.0.0" />
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageReference Update="Fody" Version="6.0.6" />
     <PackageReference Update="JetBrainsAnnotations.Fody" Version="2.14.0" />
-    <PackageReference Update="MarkdownSnippets.MsBuild" Version="21.0.1" />
+    <PackageReference Update="MarkdownSnippets.MsBuild" Version="24.2.0" />
 
     <!--Analyzers -->
     <PackageReference Update="StyleCop.Analyzers" Version="1.1.118" />
 
     <!--Required in test project -->
     <PackageReference Update="CoenM.Encoding.Z85e" Version="1.2.1" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.0.0" />
 
     <!-- xunit -->
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.analyzers" Version="0.10.0" />
-    <PackageReference Update="xunit.categories" Version="2.0.4" />
+    <PackageReference Update="xunit.categories" Version="2.0.5" />
     <PackageReference Update="xunit.runner.console" Version="2.4.1" />
     <PackageReference Update="xunit.runner.reporters" Version="2.4.1" />
-    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.3" />
 
     <!--Unittesting-->
-    <PackageReference Update="FakeItEasy" Version="6.0.1" />
-    <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="6.0.0" />
+    <PackageReference Update="FakeItEasy" Version="7.2.0" />
+    <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="6.1.0" />
     <PackageReference Update="FluentAssertions" Version="5.10.3" />
     <PackageReference Update="FluentAssertions.Analyzers" Version="0.11.4" />
 
     <!--Test coverage -->
-    <PackageReference Update="coverlet.msbuild" Version="2.8.1" />
-    <PackageReference Update="coverlet.collector" Version="1.2.1" />
+    <PackageReference Update="coverlet.msbuild" Version="3.1.0" />
+    <PackageReference Update="coverlet.collector" Version="3.1.0" />
 
     <!-- Samples project -->
-    <PackageReference Update="NLog" Version="4.7.0" />
+    <PackageReference Update="NLog" Version="4.7.12" />
 
   </ItemGroup>
 

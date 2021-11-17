@@ -1,9 +1,8 @@
-﻿namespace CoenM.ExifToolLib
+namespace CoenM.ExifToolLib
 {
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-
     using CoenM.ExifToolLib.Internals;
     using JetBrains.Annotations;
 
@@ -21,7 +20,7 @@
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="this"/> is <c>null</c>.</exception>
         public static Task<string> GetVersionAsync([NotNull] this AsyncExifTool @this, CancellationToken ct = default)
         {
-            return ExecuteAsync(@this, ExifToolArguments.Version, ct);
+            return ExecuteAsync(@this, ExifToolArguments.VERSION, ct);
         }
 
         /// <summary>
@@ -35,7 +34,10 @@
         public static Task<string> ExecuteAsync([NotNull] this AsyncExifTool @this, string singleArg, CancellationToken ct = default)
         {
             if (@this == null)
+            {
                 throw new ArgumentNullException(nameof(@this));
+            }
+
             return @this.ExecuteAsync(new[] { singleArg }, ct);
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace CoenM.ExifToolLibTest
+namespace CoenM.ExifToolLibTest
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters.Binary;
-
     using CoenM.ExifToolLib;
     using FluentAssertions;
     using Xunit;

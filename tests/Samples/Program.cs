@@ -1,11 +1,10 @@
-﻿namespace Samples
+namespace Samples
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-
     using CoenM.ExifToolLib;
     using NLog;
     using NLog.Config;
@@ -16,7 +15,7 @@
         public static async Task Main()
         {
             ConfigureNLog();
-            var nlogLogger = LogManager.GetCurrentClassLogger(typeof(AsyncExifTool));
+            Logger nlogLogger = LogManager.GetCurrentClassLogger(typeof(AsyncExifTool));
 
             Console.WriteLine("Sample application using AsyncExifTool in combination with NLog");
 
@@ -25,7 +24,7 @@
             var exifToolExe = @"D:\exiftool.exe";
 
             // The encoding AsyncExifTool should use to decode the resulting bytes
-            var exifToolEncoding = Encoding.UTF8;
+            Encoding exifToolEncoding = Encoding.UTF8;
 
             // common args for each exiftool command.
             // see https://exiftool.org/exiftool_pod.html#common_args for more information.
@@ -42,7 +41,7 @@
             var customExifToolConfigFile = @"C:\AsyncExifTool.ExifTool_config";
 
             // Create configuration to be used in AsyncExifTool.
-            var asyncExifToolConfiguration = string.IsNullOrWhiteSpace(customExifToolConfigFile)
+            AsyncExifToolConfiguration asyncExifToolConfiguration = string.IsNullOrWhiteSpace(customExifToolConfigFile)
                 ? new AsyncExifToolConfiguration(exifToolExe, exifToolEncoding, commonArgs)
                 : new AsyncExifToolConfiguration(exifToolExe, customExifToolConfigFile, exifToolEncoding, commonArgs);
 
@@ -71,7 +70,7 @@
             }
 
             // Just some calls to ExifTool (using an extension method)
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 Console.WriteLine(await exiftool.GetVersionAsync());
             }
@@ -161,7 +160,7 @@
 
             // Define cancellation token to make it possible to cancel an exiftool request if it is not already passed to exiftool.
             // Otherwise, cancelling is not possible at this moment.
-            var ct = CancellationToken.None;
+            CancellationToken ct = CancellationToken.None;
 
             // From this moment on, asyncExifTool accepts exiftool commands.
             // i.e. get exiftool version
@@ -173,9 +172,9 @@
 
             // Commands are queued and processed one at a time while keeping exiftool 'open'.
             var exifToolCommand = new[] { "-ver" };
-            var task1 = asyncExifTool.ExecuteAsync(exifToolCommand, CancellationToken.None);
-            var task2 = asyncExifTool.ExecuteAsync(exifToolCommand);
-            var task3 = asyncExifTool.ExecuteAsync(exifToolCommand, ct);
+            Task<string> task1 = asyncExifTool.ExecuteAsync(exifToolCommand, CancellationToken.None);
+            Task<string> task2 = asyncExifTool.ExecuteAsync(exifToolCommand);
+            Task<string> task3 = asyncExifTool.ExecuteAsync(exifToolCommand, ct);
 
             // Example writing metadata to image
             var result3 = await asyncExifTool.ExecuteAsync(new[] { "-XMP-dc:Subject+=Summer", @"D:\image1.jpg" }, ct);

@@ -1,11 +1,10 @@
-﻿namespace CoenM.ExifToolLibTest
+namespace CoenM.ExifToolLibTest
 {
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-
     using CoenM.ExifToolLib;
     using CoenM.ExifToolLibTest.TestInternals;
     using EagleEye.TestHelper.XUnit;
@@ -17,20 +16,19 @@
 
     public class AsyncExifToolSimpleIntegrationTest
     {
-        private const int Repeat = 100;
-        private readonly string image;
-
-        private readonly ITestOutputHelper output;
+        private const int REPEAT = 100;
+        private readonly string _image;
+        private readonly ITestOutputHelper _output;
 
         public AsyncExifToolSimpleIntegrationTest(ITestOutputHelper output)
         {
-            this.output = output;
+            this._output = output;
 
-            image = Directory
+            _image = Directory
                      .GetFiles(TestImages.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
                      .SingleOrDefault();
 
-            image.Should().NotBeNullOrEmpty("Image should exist on system.");
+            _image.Should().NotBeNullOrEmpty("Image should exist on system.");
         }
 
         [Fact]
@@ -44,7 +42,7 @@
 
             // act
             var version = await sut.GetVersionAsync().ConfigureAwait(false);
-            var result = await sut.ExecuteAsync(image).ConfigureAwait(false);
+            var result = await sut.ExecuteAsync(_image).ConfigureAwait(false);
 
             // assert
             version.Should().NotBeNullOrEmpty();
@@ -53,8 +51,8 @@
             await sut.DisposeAsync().ConfigureAwait(false);
 
             // just for fun
-            output.WriteLine(version);
-            output.WriteLine(result);
+            _output.WriteLine(version);
+            _output.WriteLine(result);
         }
 
         [Fact]
@@ -67,8 +65,7 @@
             sut.Initialize();
 
             // act
-            var getMetadataNonExistingImageTask = sut.ExecuteAsync(image + "does not exist");
-            Func<Task> act = async () => await getMetadataNonExistingImageTask;
+            Func<Task> act = async () => await sut.ExecuteAsync(_image + "does not exist");
             var version = await sut.GetVersionAsync().ConfigureAwait(false);
 
             // assert
@@ -94,7 +91,7 @@
                         "-s",
                         "-ImageSize",
                         "-ExposureTime",
-                        image,
+                        _image,
                     })
                 .ConfigureAwait(false);
 
@@ -104,8 +101,8 @@
             await sut.DisposeAsync().ConfigureAwait(false);
 
             // just for fun
-            output.WriteLine(image);
-            output.WriteLine(result);
+            _output.WriteLine(_image);
+            _output.WriteLine(result);
         }
 
         [Fact]
@@ -118,22 +115,17 @@
             sut.Initialize();
 
             // act
-            var result = await sut.ExecuteAsync(
-                                                new[]
-                                                {
-                                                    "-ExposureTime",
-                                                    image,
-                                                })
-                                  .ConfigureAwait(false);
+            Func<Task> act = async () => _ = await sut.ExecuteAsync(
+                                                          new[]
+                                                              {
+                                                                  "-ExposureTime",
+                                                                  _image,
+                                                              });
 
             // assert
-            result.Should().Be(string.Empty);
+            act.Should().ThrowExactly<Exception>().WithMessage("Warning: IPTCDigest is not current. XMP may be out of sync - *");
 
             await sut.DisposeAsync().ConfigureAwait(false);
-
-            // just for fun
-            output.WriteLine(image);
-            output.WriteLine(result);
         }
 
         [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows)]
@@ -147,20 +139,23 @@
             var sw = Stopwatch.StartNew();
             sut.Initialize();
             sw.Stop();
-            output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
+            _output.WriteLine($"It took {sw.Elapsed} to Initialize exiftool");
 
             // act
             sw.Reset();
             sw.Start();
             var version = string.Empty;
-            for (var i = 0; i < Repeat; i++)
+            for (var i = 0; i < REPEAT; i++)
+            {
                 version = await sut.GetVersionAsync().ConfigureAwait(false);
+            }
+
             sw.Stop();
             await sut.DisposeAsync().ConfigureAwait(false);
 
             // assert
-            output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {Repeat} times");
-            output.WriteLine($"Version: {version}");
+            _output.WriteLine($"It took {sw.Elapsed} to retrieve exiftool version {REPEAT} times");
+            _output.WriteLine($"Version: {version}");
             version.Should().NotBeNullOrEmpty();
         }
 
@@ -171,24 +166,27 @@
         public async Task DisposeAsyncShouldCancelAllPendingRequestsTest()
         {
             // arrange
-            var tasks = new Task<string>[Repeat];
+            var tasks = new Task<string>[REPEAT];
             var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
             var sw = Stopwatch.StartNew();
             sut.Initialize();
             sw.Stop();
-            output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
+            _output.WriteLine($"It took {sw.Elapsed} to Initialize exiftool");
 
             // act
             sw.Reset();
             sw.Start();
-            for (var i = 0; i < Repeat; i++)
+            for (var i = 0; i < REPEAT; i++)
+            {
                 tasks[i] = sut.GetVersionAsync();
+            }
+
             sw.Stop();
             await sut.DisposeAsync().ConfigureAwait(false);
 
             // assert
             var countCancelled = 0;
-            foreach (var t in tasks)
+            foreach (Task<string> t in tasks)
             {
                 try
                 {
@@ -200,8 +198,8 @@
                 }
             }
 
-            countCancelled.Should().BeGreaterOrEqualTo(Repeat / 2).And.NotBe(Repeat);
-            output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {Repeat - countCancelled} times");
+            countCancelled.Should().BeGreaterOrEqualTo(REPEAT / 2).And.NotBe(REPEAT);
+            _output.WriteLine($"It took {sw.Elapsed} to retrieve exiftool version {REPEAT - countCancelled} times");
         }
 
         [Fact]
@@ -228,9 +226,9 @@
             sut.Initialize();
 
             // act
-            var task1 = sut.ExecuteAsync(image);
-            var task2 = sut.ExecuteAsync(image);
-            var task3 = sut.ExecuteAsync(image);
+            Task<string> task1 = sut.ExecuteAsync(_image);
+            Task<string> task2 = sut.ExecuteAsync(_image);
+            Task<string> task3 = sut.ExecuteAsync(_image);
 
             // assert
             var result3 = await task3.ConfigureAwait(false);

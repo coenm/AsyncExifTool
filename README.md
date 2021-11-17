@@ -56,7 +56,7 @@ AsyncExifTool requires an configuration.
 var exifToolExe = @"D:\exiftool.exe";
 
 // The encoding AsyncExifTool should use to decode the resulting bytes
-var exifToolEncoding = Encoding.UTF8;
+Encoding exifToolEncoding = Encoding.UTF8;
 
 // common args for each exiftool command.
 // see https://exiftool.org/exiftool_pod.html#common_args for more information.
@@ -73,11 +73,11 @@ var commonArgs = new List<string>
 var customExifToolConfigFile = @"C:\AsyncExifTool.ExifTool_config";
 
 // Create configuration to be used in AsyncExifTool.
-var asyncExifToolConfiguration = string.IsNullOrWhiteSpace(customExifToolConfigFile)
+AsyncExifToolConfiguration asyncExifToolConfiguration = string.IsNullOrWhiteSpace(customExifToolConfigFile)
     ? new AsyncExifToolConfiguration(exifToolExe, exifToolEncoding, commonArgs)
     : new AsyncExifToolConfiguration(exifToolExe, customExifToolConfigFile, exifToolEncoding, commonArgs);
 ```
-<sup><a href='/tests/Samples/Program.cs#L23-L49' title='File snippet `exiftoolconfiguration` was extracted from'>snippet source</a> | <a href='#snippet-exiftoolconfiguration' title='Navigate to start of snippet `exiftoolconfiguration`'>anchor</a></sup>
+<sup><a href='/tests/Samples/Program.cs#L22-L48' title='Snippet source file'>snippet source</a> | <a href='#snippet-exiftoolconfiguration' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Use the configuration to create an instance of AsyncExifTool.
@@ -93,7 +93,7 @@ asyncExifTool.Initialize();
 
 // Define cancellation token to make it possible to cancel an exiftool request if it is not already passed to exiftool.
 // Otherwise, cancelling is not possible at this moment.
-var ct = CancellationToken.None;
+CancellationToken ct = CancellationToken.None;
 
 // From this moment on, asyncExifTool accepts exiftool commands.
 // i.e. get exiftool version
@@ -105,9 +105,9 @@ var result2 = await asyncExifTool.ExecuteAsync(new[] { "-s", "-ImageSize", "-Exp
 
 // Commands are queued and processed one at a time while keeping exiftool 'open'.
 var exifToolCommand = new[] { "-ver" };
-var task1 = asyncExifTool.ExecuteAsync(exifToolCommand, CancellationToken.None);
-var task2 = asyncExifTool.ExecuteAsync(exifToolCommand);
-var task3 = asyncExifTool.ExecuteAsync(exifToolCommand, ct);
+Task<string> task1 = asyncExifTool.ExecuteAsync(exifToolCommand, CancellationToken.None);
+Task<string> task2 = asyncExifTool.ExecuteAsync(exifToolCommand);
+Task<string> task3 = asyncExifTool.ExecuteAsync(exifToolCommand, ct);
 
 // Example writing metadata to image
 var result3 = await asyncExifTool.ExecuteAsync(new[] { "-XMP-dc:Subject+=Summer", @"D:\image1.jpg" }, ct);
@@ -116,7 +116,7 @@ var result3 = await asyncExifTool.ExecuteAsync(new[] { "-XMP-dc:Subject+=Summer"
 // ExifTool is closed and cannot be initialized anymore nor does it accept any requests.
 await asyncExifTool.DisposeAsync();
 ```
-<sup><a href='/tests/Samples/Program.cs#L154-L187' title='File snippet `exiftoolexampleusage` was extracted from'>snippet source</a> | <a href='#snippet-exiftoolexampleusage' title='Navigate to start of snippet `exiftoolexampleusage`'>anchor</a></sup>
+<sup><a href='/tests/Samples/Program.cs#L153-L186' title='Snippet source file'>snippet source</a> | <a href='#snippet-exiftoolexampleusage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Icon

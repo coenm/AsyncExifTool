@@ -1,4 +1,4 @@
-﻿namespace CoenM.ExifToolLib
+namespace CoenM.ExifToolLib
 {
     using System;
     using System.Runtime.Serialization;
@@ -10,11 +10,11 @@
     [Serializable]
     public sealed class AsyncExifToolException : Exception
     {
-        private const int CurrentSerializationVersion = 1;
-        private const string VersionKey = "v";
-        private const string ExitCodeKey = "exit";
-        private const string StandardOutputKey = "stdout";
-        private const string StandardErrorKey = "stderr";
+        private const int CURRENT_SERIALIZATION_VERSION = 1;
+        private const string VERSION_KEY = "v";
+        private const string EXIT_CODE_KEY = "exit";
+        private const string STANDARD_OUTPUT_KEY = "stdout";
+        private const string STANDARD_ERROR_KEY = "stderr";
 
         internal AsyncExifToolException(int exitCode, string standardOutput, string standardError)
             : base(standardError)
@@ -25,19 +25,18 @@
         }
 
         // Required because AsyncExiftoolException implements ISerializable interface.
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         private AsyncExifToolException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            var version = info.GetInt32(VersionKey);
+            var version = info.GetInt32(VERSION_KEY);
 
             switch (version)
             {
                 // make sure we are backward compatible.
                 case 1:
-                    ExitCode = info.GetInt32(ExitCodeKey);
-                    StandardOutput = info.GetString(StandardOutputKey);
-                    StandardError = info.GetString(StandardErrorKey);
+                    ExitCode = info.GetInt32(EXIT_CODE_KEY);
+                    StandardOutput = info.GetString(STANDARD_OUTPUT_KEY);
+                    StandardError = info.GetString(STANDARD_ERROR_KEY);
                     break;
 
                 default:
@@ -46,34 +45,35 @@
         }
 
         /// <summary>
-        /// ExitCode of the ExifTool process.
+        /// Gets the exit code of the ExifTool process.
         /// </summary>
         public int ExitCode { get; }
 
         /// <summary>
-        /// Standard output of the ExifTool process.
+        /// Gets the standard output of the ExifTool process.
         /// </summary>
         public string StandardOutput { get; }
 
         /// <summary>
-        /// Standard error of the ExifTool process.
+        /// Gets the standard error of the ExifTool process.
         /// </summary>
         public string StandardError { get; }
 
         /// <inheritdoc/>
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (info == null)
+            {
                 throw new ArgumentNullException(nameof(info));
+            }
 
             // if you need to change this implementation, you probably need to upgrade to the next version.
             // to be backwards compatible. Also you need to update the constructor.
-            info.AddValue(VersionKey, CurrentSerializationVersion);
+            info.AddValue(VERSION_KEY, CURRENT_SERIALIZATION_VERSION);
 
-            info.AddValue(ExitCodeKey, ExitCode);
-            info.AddValue(StandardOutputKey, StandardOutput);
-            info.AddValue(StandardErrorKey, StandardError);
+            info.AddValue(EXIT_CODE_KEY, ExitCode);
+            info.AddValue(STANDARD_OUTPUT_KEY, StandardOutput);
+            info.AddValue(STANDARD_ERROR_KEY, StandardError);
 
             base.GetObjectData(info, context);
         }

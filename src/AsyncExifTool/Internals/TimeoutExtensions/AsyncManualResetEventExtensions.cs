@@ -1,9 +1,8 @@
-﻿namespace CoenM.ExifToolLib.Internals.TimeoutExtensions
+namespace CoenM.ExifToolLib.Internals.TimeoutExtensions
 {
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-
     using CoenM.ExifToolLib.Internals.Guards;
     using JetBrains.Annotations;
     using Nito.AsyncEx;

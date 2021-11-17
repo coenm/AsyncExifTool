@@ -1,25 +1,24 @@
-﻿namespace CoenM.ExifToolLibTest.TestInternals
+namespace CoenM.ExifToolLibTest.TestInternals
 {
     using System;
     using System.IO;
     using System.Reflection;
-
     using TestHelper;
 
     internal static class ExifToolSystemConfiguration
     {
-        private const string ExiftoolVersion = "EXIFTOOL_VERSION";
-        private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
-        private static readonly string EmbeddedResourceNs = "ExifToolAsyncTest"; // typeof(ExifToolSystemConfiguration).Namespace;
-        private static readonly Lazy<string> GetConfigExiftoolVersionImpl = new Lazy<string>(GetConfiguredExiftoolVersion);
-        private static readonly Lazy<string> GetExifToolExecutableImpl = new Lazy<string>(GetExifToolExecutable);
-        private static readonly Lazy<string> GetExifCustomConfigFileImpl = new Lazy<string>(GetExifCustomConfigFile);
+        private const string EXIFTOOL_VERSION = "EXIFTOOL_VERSION";
+        private static readonly Assembly _assembly = Assembly.GetExecutingAssembly();
+        private static readonly string _embeddedResourceNs = "ExifToolAsyncTest"; // typeof(ExifToolSystemConfiguration).Namespace;
+        private static readonly Lazy<string> _getConfigExiftoolVersionImpl = new Lazy<string>(GetConfiguredExiftoolVersion);
+        private static readonly Lazy<string> _getExifToolExecutableImpl = new Lazy<string>(GetExifToolExecutable);
+        private static readonly Lazy<string> _getExifCustomConfigFileImpl = new Lazy<string>(GetExifCustomConfigFile);
 
-        public static string ConfiguredVersion => GetConfigExiftoolVersionImpl.Value;
+        public static string ConfiguredVersion => _getConfigExiftoolVersionImpl.Value;
 
-        public static string ExifToolExecutable => GetExifToolExecutableImpl.Value;
+        public static string ExifToolExecutable => _getExifToolExecutableImpl.Value;
 
-        public static string CustomExifToolConfigFile => GetExifCustomConfigFileImpl.Value;
+        public static string CustomExifToolConfigFile => _getExifCustomConfigFileImpl.Value;
 
         private static string GetExifToolExecutable()
         {
@@ -28,32 +27,36 @@
             // first try to grab local Exiftool, otherwise assume global exiftool
             var fullFilename = TestEnvironment.GetFullPath("tools", osFilename);
             if (File.Exists(fullFilename))
+            {
                 return fullFilename;
+            }
 
             return osFilename;
         }
 
         private static string GetExifCustomConfigFile()
         {
-            const string configFilename = "AsyncExifTool.ExifTool_config";
+            const string CONFIG_FILENAME = "AsyncExifTool.ExifTool_config";
 
-            var fullFilename = TestEnvironment.GetFullPath("tests", configFilename);
+            var fullFilename = TestEnvironment.GetFullPath("tests", CONFIG_FILENAME);
             if (File.Exists(fullFilename))
+            {
                 return fullFilename;
+            }
 
-            return configFilename;
+            return CONFIG_FILENAME;
         }
 
         private static string GetConfiguredExiftoolVersion()
         {
-            using var stream = OpenRead();
+            using Stream stream = OpenRead();
             using var streamReader = new StreamReader(stream);
             return streamReader.ReadToEnd().Trim();
         }
 
         private static Stream OpenRead()
         {
-            return Assembly.GetManifestResourceStream(EmbeddedResourceNs + "." + ExiftoolVersion);
+            return _assembly.GetManifestResourceStream(_embeddedResourceNs + "." + EXIFTOOL_VERSION);
         }
     }
 }

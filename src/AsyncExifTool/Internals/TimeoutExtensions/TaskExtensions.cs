@@ -1,4 +1,4 @@
-﻿namespace CoenM.ExifToolLib.Internals.TimeoutExtensions
+namespace CoenM.ExifToolLib.Internals.TimeoutExtensions
 {
     using System;
     using System.Threading;
@@ -16,7 +16,9 @@
             {
                 // If the task waited on is the cancellation token...
                 if (task != await Task.WhenAny(task, tcs.Task))
+                {
                     throw new OperationCanceledException(ct);
+                }
             }
 
             // Wait for one or the other to complete.
@@ -32,7 +34,9 @@
             {
                 // If the task waited on is the cancellation token...
                 if (task != await Task.WhenAny(task, tcs.Task))
+                {
                     throw new OperationCanceledException(ct);
+                }
             }
 
             // Wait for one or the other to complete.

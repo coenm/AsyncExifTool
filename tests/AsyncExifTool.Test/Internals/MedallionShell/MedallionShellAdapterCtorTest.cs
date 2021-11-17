@@ -1,11 +1,10 @@
-﻿namespace CoenM.ExifToolLibTest.Internals.MedallionShell
+namespace CoenM.ExifToolLibTest.Internals.MedallionShell
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Text;
-
     using CoenM.ExifToolLib.Internals.MedallionShell;
     using CoenM.ExifToolLib.Internals.Stream;
     using FluentAssertions;
@@ -13,20 +12,20 @@
 
     public class MedallionShellAdapterCtorTest
     {
-        private readonly Stream stream;
-        private readonly string executable;
-        private readonly List<string> defaultArgs;
+        private readonly Stream _stream;
+        private readonly string _executable;
+        private readonly List<string> _defaultArgs;
 
         public MedallionShellAdapterCtorTest()
         {
-            executable = "git";
+            _executable = "git";
 
-            defaultArgs = new List<string>
+            _defaultArgs = new List<string>
                                     {
                                         "-",
                                     };
 
-            stream = new WriteDelegatedDummyStream(new ExifToolStdOutWriter(Encoding.UTF8));
+            _stream = new WriteDelegatedDummyStream(new ExifToolStdOutWriter(Encoding.UTF8));
         }
 
         [Fact]
@@ -39,8 +38,8 @@
             // act
             Action act = () => _ = new MedallionShellAdapter(
                 invalidExecutable,
-                defaultArgs,
-                stream,
+                _defaultArgs,
+                _stream,
                 null);
 
             // assert
@@ -56,8 +55,8 @@
             // act
             Action act = () => _ = new MedallionShellAdapter(
                                                              invalidExecutable,
-                                                             defaultArgs,
-                                                             stream,
+                                                             _defaultArgs,
+                                                             _stream,
                                                              null);
 
             // assert
@@ -72,8 +71,8 @@
 
             // act
             Action act = () => _ = new MedallionShellAdapter(
-                executable,
-                defaultArgs,
+                _executable,
+                _defaultArgs,
                 invalidStream,
                 null);
 
@@ -90,9 +89,9 @@
 
             // act
             using var sut = new MedallionShellAdapter(
-                executable,
+                _executable,
                 nullArgs,
-                stream,
+                _stream,
                 null);
 
             // assert
@@ -108,13 +107,13 @@
 
             // act
             using var sut = new MedallionShellAdapter(
-                executable,
+                _executable,
                 new List<string>
                 {
                     "bla",
                     "RUBbi$h",
                 },
-                stream,
+                _stream,
                 errorStream);
 
             // assert
