@@ -36,7 +36,7 @@ namespace CoenM.ExifToolLibTest
         public async Task RunExiftoolForVersionAndImageTest()
         {
             // arrange
-#if NETCOREAPP3_1
+#if FEATURE_ASYNC_DISPOSABLE
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
 #else
             using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
@@ -63,7 +63,7 @@ namespace CoenM.ExifToolLibTest
         public async Task RunWithInputStreamTest()
         {
             // arrange
-#if NETCOREAPP3_1
+#if FEATURE_ASYNC_DISPOSABLE
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
 #else
             using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
@@ -71,7 +71,7 @@ namespace CoenM.ExifToolLibTest
             var sw = Stopwatch.StartNew();
             sut.Initialize();
             sw.Stop();
-            _output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
+            _output.WriteLine($"It took {sw.Elapsed} to Initialize exiftool");
 
             // act
             sw.Reset();
@@ -85,7 +85,7 @@ namespace CoenM.ExifToolLibTest
             sw.Stop();
 
             // assert
-            _output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {REPEAT} times");
+            _output.WriteLine($"It took {sw.Elapsed} to retrieve exiftool version {REPEAT} times");
             _output.WriteLine($"Version: {version}");
             version.Should().NotBeNullOrEmpty();
         }
@@ -99,7 +99,7 @@ namespace CoenM.ExifToolLibTest
             // arrange
             var tasks = new Task<string>[REPEAT];
             Stopwatch sw;
-#if NETCOREAPP3_1
+#if FEATURE_ASYNC_DISPOSABLE
             await using (var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create()))
 #else
             using (var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create()))
@@ -108,7 +108,7 @@ namespace CoenM.ExifToolLibTest
                 sw = Stopwatch.StartNew();
                 sut.Initialize();
                 sw.Stop();
-                _output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
+                _output.WriteLine($"It took {sw.Elapsed} to Initialize exiftool");
 
                 // act
                 sw.Reset();
@@ -136,7 +136,7 @@ namespace CoenM.ExifToolLibTest
             }
 
             countCancelled.Should().BeGreaterOrEqualTo(REPEAT / 2).And.NotBe(REPEAT);
-            _output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {REPEAT - countCancelled} times");
+            _output.WriteLine($"It took {sw.Elapsed} to retrieve exiftool version {REPEAT - countCancelled} times");
         }
 
         [Fact]
@@ -149,7 +149,7 @@ namespace CoenM.ExifToolLibTest
 
             // act
             sut.Initialize();
-#if NETCOREAPP3_1
+#if FEATURE_ASYNC_DISPOSABLE
             await sut.DisposeAsync().ConfigureAwait(false);
 #else
             await Task.Yield();
@@ -164,7 +164,7 @@ namespace CoenM.ExifToolLibTest
         public async Task RunExifToolWithThreeCommands()
         {
             // arrange
-#if NETCOREAPP3_1
+#if FEATURE_ASYNC_DISPOSABLE
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
 #else
             using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());

@@ -5,12 +5,11 @@
 [assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v5.0", FrameworkDisplayName="")]
 namespace CoenM.ExifToolLib
 {
-    public class AsyncExifTool : System.IDisposable
+    public class AsyncExifTool : System.IAsyncDisposable
     {
         public AsyncExifTool(CoenM.ExifToolLib.AsyncExifToolConfiguration configuration) { }
         public AsyncExifTool(CoenM.ExifToolLib.AsyncExifToolConfiguration configuration, CoenM.ExifToolLib.Logging.ILogger logger) { }
-        public void Dispose() { }
-        public System.Threading.Tasks.Task DisposeAsync() { }
+        public System.Threading.Tasks.ValueTask DisposeAsync() { }
         public System.Threading.Tasks.Task<string> ExecuteAsync(System.Collections.Generic.IEnumerable<string> args, System.Threading.CancellationToken ct = default) { }
         public void Initialize() { }
     }
