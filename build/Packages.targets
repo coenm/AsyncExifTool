@@ -25,6 +25,7 @@
     <!--Required in test project -->
     <PackageReference Update="CoenM.Encoding.Z85e" Version="1.2.1" />
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Update="PublicApiGenerator" Version="10.2.0" />
 
     <!-- xunit -->
     <PackageReference Update="xunit" Version="2.4.1" />
@@ -39,6 +40,7 @@
     <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="6.1.0" />
     <PackageReference Update="FluentAssertions" Version="5.10.3" />
     <PackageReference Update="FluentAssertions.Analyzers" Version="0.11.4" />
+    <PackageReference Update="Verify.Xunit" Version="14.3.0" />
 
     <!--Test coverage -->
     <PackageReference Update="coverlet.msbuild" Version="3.1.0" />
