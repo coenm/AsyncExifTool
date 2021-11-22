@@ -26,12 +26,12 @@ namespace CoenM.ExifToolLib.Internals.Stream
             var prefix = "{ready";
             var suffix = "}" + Environment.NewLine;
 
-            this._bufferSize = bufferSize;
-            this._encoding = encoding;
-            _cache = new byte[this._bufferSize];
+            _bufferSize = bufferSize;
+            _encoding = encoding;
+            _cache = new byte[_bufferSize];
             _index = 0;
-            _endOfMessageSequenceStart = this._encoding.GetBytes(prefix);
-            _endOfMessageSequenceEnd = this._encoding.GetBytes(suffix);
+            _endOfMessageSequenceStart = _encoding.GetBytes(prefix);
+            _endOfMessageSequenceEnd = _encoding.GetBytes(suffix);
         }
 
         public event EventHandler<DataCapturedArgs> Update;

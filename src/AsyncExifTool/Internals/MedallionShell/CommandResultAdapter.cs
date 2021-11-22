@@ -12,7 +12,7 @@ namespace CoenM.ExifToolLib.Internals.MedallionShell
         public CommandResultAdapter([NotNull] CommandResult commandResult)
         {
             Guard.NotNull(commandResult, nameof(commandResult));
-            this._commandResult = commandResult;
+            _commandResult = commandResult;
         }
 
         public int ExitCode => _commandResult.ExitCode;

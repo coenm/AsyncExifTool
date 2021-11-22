@@ -67,7 +67,7 @@ namespace CoenM.ExifToolLib
             Guard.NotNull(configuration, nameof(configuration));
             Guard.NotNull(logger, nameof(logger));
 
-            this._logger = logger;
+            _logger = logger;
             _stream = new ExifToolStdOutWriter(configuration.ExifToolEncoding);
             _errorStream = new ExifToolStdErrWriter(configuration.ExifToolEncoding);
             _stopQueueCts = new CancellationTokenSource();

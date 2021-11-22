@@ -22,7 +22,7 @@ namespace CoenM.ExifToolLibTest
 
         public AsyncExifToolSimpleIntegrationTest(ITestOutputHelper output)
         {
-            this._output = output;
+            _output = output;
 
             _image = Directory
                      .GetFiles(TestImages.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)

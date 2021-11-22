@@ -20,16 +20,16 @@ namespace CoenM.ExifToolLibTest.Internals.MedallionShell
     [Xunit.Categories.IntegrationTest]
     public class MedallionShellAdapterTest : IAsyncLifetime
     {
-        private const int FallbackTestTimeout = 5000;
-        private readonly ITestOutputHelper output;
-        private readonly Stream stream;
-        private readonly ManualResetEventSlim mreSutExited;
-        private readonly MedallionShellAdapter sut;
+        private const int FALLBACK_TEST_TIMEOUT = 5000;
+        private readonly ITestOutputHelper _output;
+        private readonly Stream _stream;
+        private readonly ManualResetEventSlim _mreSutExited;
+        private readonly MedallionShellAdapter _sut;
 
         public MedallionShellAdapterTest(ITestOutputHelper output)
         {
-            this.output = output;
-            mreSutExited = new ManualResetEventSlim(false);
+            _output = output;
+            _mreSutExited = new ManualResetEventSlim(false);
             var defaultArgs = new List<string>
                                     {
                                         ExifToolArguments.STAY_OPEN,
@@ -38,23 +38,26 @@ namespace CoenM.ExifToolLibTest.Internals.MedallionShell
                                         "-",
                                     };
 
-            stream = new WriteDelegatedDummyStream(new ExifToolStdOutWriter(Encoding.UTF8));
+            _stream = new WriteDelegatedDummyStream(new ExifToolStdOutWriter(Encoding.UTF8));
             var errorStream = new WriteDelegatedDummyStream(new ExifToolStdErrWriter(Encoding.UTF8));
 
-            sut = new MedallionShellAdapter(ExifToolSystemConfiguration.ExifToolExecutable, defaultArgs, stream, errorStream);
-            sut.ProcessExited += SutOnProcessExited;
-            sut.Initialize();
+            _sut = new MedallionShellAdapter(ExifToolSystemConfiguration.ExifToolExecutable, defaultArgs, _stream, errorStream);
+            _sut.ProcessExited += SutOnProcessExited;
+            _sut.Initialize();
         }
 
-        public Task InitializeAsync() => Task.CompletedTask;
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
 
         public async Task DisposeAsync()
         {
-            sut.ProcessExited -= SutOnProcessExited;
-            await sut.TryCancelAsync();
-            sut.Kill();
-            sut.Dispose();
-            stream.Dispose();
+            _sut.ProcessExited -= SutOnProcessExited;
+            await _sut.TryCancelAsync();
+            _sut.Kill();
+            _sut.Dispose();
+            _stream.Dispose();
         }
 
         [ExifTool]
@@ -64,14 +67,14 @@ namespace CoenM.ExifToolLibTest.Internals.MedallionShell
             // arrange
 
             // assume
-            sut.Finished.Should().BeFalse();
+            _sut.Finished.Should().BeFalse();
 
             // act
-            sut.Kill();
-            await sut.Task.ConfigureAwait(false);
+            _sut.Kill();
+            await _sut.Task.ConfigureAwait(false);
 
             // assert
-            AssertSutFinished(FallbackTestTimeout);
+            AssertSutFinished(FALLBACK_TEST_TIMEOUT);
         }
 
         [Fact]
@@ -81,31 +84,31 @@ namespace CoenM.ExifToolLibTest.Internals.MedallionShell
             // arrange
 
             // assume
-            sut.Finished.Should().BeFalse();
+            _sut.Finished.Should().BeFalse();
 
             // act
-            await sut.WriteLineAsync(ExifToolArguments.STAY_OPEN).ConfigureAwait(false);
-            await sut.WriteLineAsync(ExifToolArguments.BOOL_FALSE).ConfigureAwait(false);
+            await _sut.WriteLineAsync(ExifToolArguments.STAY_OPEN).ConfigureAwait(false);
+            await _sut.WriteLineAsync(ExifToolArguments.BOOL_FALSE).ConfigureAwait(false);
 
-            output.WriteLine("Awaiting task to finish");
-            await sut.Task.ConfigureAwait(false);
-            output.WriteLine("Task finished");
+            _output.WriteLine("Awaiting task to finish");
+            await _sut.Task.ConfigureAwait(false);
+            _output.WriteLine("Task finished");
 
             // assert
-            AssertSutFinished(FallbackTestTimeout);
+            AssertSutFinished(FALLBACK_TEST_TIMEOUT);
         }
 
         private void AssertSutFinished(int timeout = 0)
         {
-            mreSutExited.Wait(timeout);
-            mreSutExited.IsSet.Should().BeTrue($"{nameof(sut.ProcessExited)} event should have been fired.");
-            sut.Task.IsCompleted.Should().BeTrue("Task should have been completed.");
-            sut.Finished.Should().BeTrue($"{nameof(sut.Finished)} property should be true.");
+            _mreSutExited.Wait(timeout);
+            _mreSutExited.IsSet.Should().BeTrue($"{nameof(_sut.ProcessExited)} event should have been fired.");
+            _sut.Task.IsCompleted.Should().BeTrue("Task should have been completed.");
+            _sut.Finished.Should().BeTrue($"{nameof(_sut.Finished)} property should be true.");
         }
 
         private void SutOnProcessExited(object sender, EventArgs eventArgs)
         {
-            mreSutExited.Set();
+            _mreSutExited.Set();
         }
     }
 }
