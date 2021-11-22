@@ -71,7 +71,7 @@ namespace CoenM.ExifToolLibTest
             var sw = Stopwatch.StartNew();
             sut.Initialize();
             sw.Stop();
-            _output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
+            _output.WriteLine($"It took {sw.Elapsed} to Initialize exiftool");
 
             // act
             sw.Reset();
@@ -85,7 +85,7 @@ namespace CoenM.ExifToolLibTest
             sw.Stop();
 
             // assert
-            _output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {REPEAT} times");
+            _output.WriteLine($"It took {sw.Elapsed} to retrieve exiftool version {REPEAT} times");
             _output.WriteLine($"Version: {version}");
             version.Should().NotBeNullOrEmpty();
         }
@@ -108,7 +108,7 @@ namespace CoenM.ExifToolLibTest
                 sw = Stopwatch.StartNew();
                 sut.Initialize();
                 sw.Stop();
-                _output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
+                _output.WriteLine($"It took {sw.Elapsed} to Initialize exiftool");
 
                 // act
                 sw.Reset();
@@ -136,7 +136,7 @@ namespace CoenM.ExifToolLibTest
             }
 
             countCancelled.Should().BeGreaterOrEqualTo(REPEAT / 2).And.NotBe(REPEAT);
-            _output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {REPEAT - countCancelled} times");
+            _output.WriteLine($"It took {sw.Elapsed} to retrieve exiftool version {REPEAT - countCancelled} times");
         }
 
         [Fact]
