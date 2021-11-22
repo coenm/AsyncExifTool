@@ -1,0 +1,67 @@
+﻿[assembly: System.Reflection.AssemblyMetadata("RepositoryUrl", "https://github.com/coenm/AsyncExifTool")]
+[assembly: System.Resources.NeutralResourcesLanguage("en")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AsyncExifTool.Test")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("DynamicProxyGenAssembly2")]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETFramework,Version=v4.6.1", FrameworkDisplayName=".NET Framework 4.6.1")]
+namespace CoenM.ExifToolLib
+{
+    public class AsyncExifTool : System.IDisposable
+    {
+        public AsyncExifTool(CoenM.ExifToolLib.AsyncExifToolConfiguration configuration) { }
+        public AsyncExifTool(CoenM.ExifToolLib.AsyncExifToolConfiguration configuration, CoenM.ExifToolLib.Logging.ILogger logger) { }
+        public void Dispose() { }
+        public System.Threading.Tasks.Task DisposeAsync() { }
+        public System.Threading.Tasks.Task<string> ExecuteAsync(System.Collections.Generic.IEnumerable<string> args, System.Threading.CancellationToken ct = default) { }
+        public void Initialize() { }
+    }
+    public sealed class AsyncExifToolConfiguration
+    {
+        public AsyncExifToolConfiguration(string exifToolFullFilename, System.Text.Encoding exifToolResultEncoding, System.Collections.Generic.IReadOnlyCollection<string> commonArgs) { }
+        public AsyncExifToolConfiguration(string exifToolFullFilename, string configurationFilename, System.Text.Encoding exifToolResultEncoding, System.Collections.Generic.IReadOnlyCollection<string> commonArgs) { }
+        public System.Collections.Generic.List<string> CommonArgs { get; }
+        public string ConfigurationFilename { get; }
+        public System.Text.Encoding ExifToolEncoding { get; }
+        public string ExifToolFullFilename { get; }
+    }
+    [System.Serializable]
+    public sealed class AsyncExifToolException : System.Exception
+    {
+        public int ExitCode { get; }
+        public string StandardError { get; }
+        public string StandardOutput { get; }
+        public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+    }
+    public static class AsyncExifToolExtensions
+    {
+        public static System.Threading.Tasks.Task<string> ExecuteAsync(this CoenM.ExifToolLib.AsyncExifTool @this, string singleArg, System.Threading.CancellationToken ct = default) { }
+        public static System.Threading.Tasks.Task<string> GetVersionAsync(this CoenM.ExifToolLib.AsyncExifTool @this, System.Threading.CancellationToken ct = default) { }
+    }
+    [System.Serializable]
+    public sealed class AsyncExifToolInitialisationException : System.Exception
+    {
+        public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+    }
+}
+namespace CoenM.ExifToolLib.Logging
+{
+    public interface ILogger
+    {
+        bool IsEnabled(CoenM.ExifToolLib.Logging.LogLevel logLevel);
+        void Log(CoenM.ExifToolLib.Logging.LogEntry entry);
+    }
+    public readonly struct LogEntry
+    {
+        public System.Exception Exception { get; }
+        public string Message { get; }
+        public CoenM.ExifToolLib.Logging.LogLevel Severity { get; }
+    }
+    public enum LogLevel
+    {
+        Trace = 0,
+        Debug = 1,
+        Info = 2,
+        Warn = 3,
+        Error = 4,
+        Fatal = 5,
+    }
+}
