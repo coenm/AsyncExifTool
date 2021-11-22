@@ -6,10 +6,9 @@ namespace CoenM.ExifToolLib.Internals.MedallionShell
 
     internal class CommandResultAdapter : IShellResult
     {
-        [NotNull]
         private readonly CommandResult _commandResult;
 
-        public CommandResultAdapter([NotNull] CommandResult commandResult)
+        public CommandResultAdapter(CommandResult commandResult)
         {
             Guard.NotNull(commandResult, nameof(commandResult));
             _commandResult = commandResult;

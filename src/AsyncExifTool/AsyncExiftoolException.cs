@@ -30,13 +30,15 @@ namespace CoenM.ExifToolLib
         {
             var version = info.GetInt32(VERSION_KEY);
 
+            ExitCode = default;
+
             switch (version)
             {
                 // make sure we are backward compatible.
                 case 1:
                     ExitCode = info.GetInt32(EXIT_CODE_KEY);
-                    StandardOutput = info.GetString(STANDARD_OUTPUT_KEY);
-                    StandardError = info.GetString(STANDARD_ERROR_KEY);
+                    StandardOutput = info.GetString(STANDARD_OUTPUT_KEY) ?? string.Empty;
+                    StandardError = info.GetString(STANDARD_ERROR_KEY) ?? string.Empty;
                     break;
 
                 default:

@@ -12,7 +12,7 @@ namespace CoenM.ExifToolLib.Internals.TimeoutExtensions
             var tcs = new TaskCompletionSource<bool>();
 
             // Register with the cancellation token.
-            using (ct.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
+            using (ct.Register(callback => (callback as TaskCompletionSource<bool>)?.TrySetResult(true), tcs))
             {
                 // If the task waited on is the cancellation token...
                 if (task != await Task.WhenAny(task, tcs.Task))
@@ -30,7 +30,7 @@ namespace CoenM.ExifToolLib.Internals.TimeoutExtensions
             var tcs = new TaskCompletionSource<bool>();
 
             // Register with the cancellation token.
-            using (ct.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
+            using (ct.Register(callback => (callback as TaskCompletionSource<bool>)?.TrySetResult(true), tcs))
             {
                 // If the task waited on is the cancellation token...
                 if (task != await Task.WhenAny(task, tcs.Task))

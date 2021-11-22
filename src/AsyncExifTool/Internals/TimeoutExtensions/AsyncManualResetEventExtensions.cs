@@ -18,7 +18,7 @@ namespace CoenM.ExifToolLib.Internals.TimeoutExtensions
         /// <param name="cancellationToken">The cancellation token used to cancel the wait. If this token is already canceled, this method will first check whether the event is set.</param>
         /// <returns><c>true</c> if the current instance receives a signal before the <paramref name="cancellationToken"/> is set, <c>false</c> otherwise.</returns>
 #endif
-        public static async Task<bool> WaitOneAsync([NotNull] this AsyncManualResetEvent @this, CancellationToken cancellationToken)
+        public static async Task<bool> WaitOneAsync(this AsyncManualResetEvent @this, CancellationToken cancellationToken)
         {
             Guard.NotNull(@this, nameof(@this));
             return await WaitOneAsyncImpl(@this, cancellationToken).ConfigureAwait(false);
@@ -33,14 +33,14 @@ namespace CoenM.ExifToolLib.Internals.TimeoutExtensions
         /// <returns><c>true</c> if the current instance receives a signal within the <paramref name="timeout"/> Timespan, <c>false</c> otherwise.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when timeout is invalid for creating a <see cref="CancellationTokenSource"/>.</exception>
 #endif
-        public static async Task<bool> WaitOneAsync([NotNull] this AsyncManualResetEvent @this, TimeSpan timeout)
+        public static async Task<bool> WaitOneAsync(this AsyncManualResetEvent @this, TimeSpan timeout)
         {
             Guard.NotNull(@this, nameof(@this));
             using var cts = new CancellationTokenSource(timeout);
             return await WaitOneAsyncImpl(@this, cts.Token).ConfigureAwait(false);
         }
 
-        private static async Task<bool> WaitOneAsyncImpl([NotNull] AsyncManualResetEvent asyncManualResetEvent, CancellationToken cancellationToken)
+        private static async Task<bool> WaitOneAsyncImpl(AsyncManualResetEvent asyncManualResetEvent, CancellationToken cancellationToken)
         {
             DebugGuard.NotNull(asyncManualResetEvent, nameof(asyncManualResetEvent));
 

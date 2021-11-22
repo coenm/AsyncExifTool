@@ -18,7 +18,7 @@ namespace CoenM.ExifToolLib
         /// <param name="ct">Cancellation token. Optional. Defaults to <see cref="CancellationToken.None"/>.</param>
         /// <returns>ExifTool result containing the version information.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="this"/> is <c>null</c>.</exception>
-        public static Task<string> GetVersionAsync([NotNull] this AsyncExifTool @this, CancellationToken ct = default)
+        public static Task<string> GetVersionAsync(this AsyncExifTool @this, CancellationToken ct = default)
         {
             return ExecuteAsync(@this, ExifToolArguments.VERSION, ct);
         }
@@ -31,7 +31,7 @@ namespace CoenM.ExifToolLib
         /// <param name="ct">Cancellation token. Optional. Defaults to <see cref="CancellationToken.None"/>.</param>
         /// <returns>ExifTool result containing the version information.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="this"/> is <c>null</c>.</exception>
-        public static Task<string> ExecuteAsync([NotNull] this AsyncExifTool @this, string singleArg, CancellationToken ct = default)
+        public static Task<string> ExecuteAsync(this AsyncExifTool @this, string singleArg, CancellationToken ct = default)
         {
             if (@this == null)
             {

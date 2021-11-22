@@ -1,11 +1,11 @@
-﻿namespace CoenM.ExifToolLib.Internals
+namespace CoenM.ExifToolLib.Internals
 {
     using System;
     using System.Threading.Tasks;
 
     internal interface IShell
     {
-        event EventHandler ProcessExited;
+        event EventHandler? ProcessExited;
 
         Task<IShellResult> Task { get; }
 

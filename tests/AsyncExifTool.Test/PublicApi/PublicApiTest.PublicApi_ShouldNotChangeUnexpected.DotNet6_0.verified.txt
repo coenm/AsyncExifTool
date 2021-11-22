@@ -15,10 +15,10 @@ namespace CoenM.ExifToolLib
     }
     public sealed class AsyncExifToolConfiguration
     {
-        public AsyncExifToolConfiguration(string exifToolFullFilename, System.Text.Encoding exifToolResultEncoding, System.Collections.Generic.IReadOnlyCollection<string> commonArgs) { }
-        public AsyncExifToolConfiguration(string exifToolFullFilename, string configurationFilename, System.Text.Encoding exifToolResultEncoding, System.Collections.Generic.IReadOnlyCollection<string> commonArgs) { }
+        public AsyncExifToolConfiguration(string exifToolFullFilename, System.Text.Encoding exifToolResultEncoding, System.Collections.Generic.IReadOnlyCollection<string>? commonArgs) { }
+        public AsyncExifToolConfiguration(string exifToolFullFilename, string? configurationFilename, System.Text.Encoding exifToolResultEncoding, System.Collections.Generic.IReadOnlyCollection<string>? commonArgs) { }
         public System.Collections.Generic.List<string> CommonArgs { get; }
-        public string ConfigurationFilename { get; }
+        public string? ConfigurationFilename { get; }
         public System.Text.Encoding ExifToolEncoding { get; }
         public string ExifToolFullFilename { get; }
     }
@@ -50,7 +50,7 @@ namespace CoenM.ExifToolLib.Logging
     }
     public readonly struct LogEntry
     {
-        public System.Exception Exception { get; }
+        public System.Exception? Exception { get; }
         public string Message { get; }
         public CoenM.ExifToolLib.Logging.LogLevel Severity { get; }
     }

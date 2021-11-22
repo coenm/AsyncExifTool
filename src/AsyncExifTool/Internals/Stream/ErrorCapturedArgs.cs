@@ -6,7 +6,7 @@ namespace CoenM.ExifToolLib.Internals.Stream
 
     internal class ErrorCapturedArgs : EventArgs
     {
-        public ErrorCapturedArgs([NotNull] string data)
+        public ErrorCapturedArgs(string data)
         {
             DebugGuard.NotNull(data, nameof(data)); // can be empty
             Data = data;

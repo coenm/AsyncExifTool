@@ -17,7 +17,7 @@ namespace CoenM.ExifToolLib.Internals.Stream
         private int _index;
 
         public ExifToolStdOutWriter(
-            [NotNull] Encoding encoding,
+            Encoding encoding,
             int bufferSize = ONE_MB)
         {
             Guard.NotNull(encoding, nameof(encoding));
@@ -34,7 +34,7 @@ namespace CoenM.ExifToolLib.Internals.Stream
             _endOfMessageSequenceEnd = _encoding.GetBytes(suffix);
         }
 
-        public event EventHandler<DataCapturedArgs> Update;
+        public event EventHandler<DataCapturedArgs>? Update;
 
         public void Reset()
         {

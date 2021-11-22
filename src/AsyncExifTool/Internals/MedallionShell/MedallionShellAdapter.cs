@@ -11,24 +11,18 @@ namespace CoenM.ExifToolLib.Internals.MedallionShell
 
     internal class MedallionShellAdapter : IShell, IDisposable
     {
-        [NotNull]
         private readonly string _executable;
-        [CanBeNull]
-        private readonly List<string> _args;
-        [NotNull]
+        private readonly List<string>? _args;
         private readonly Stream _outputStream;
-        [NotNull]
         private readonly Stream _errorStream;
-        [CanBeNull]
-        private Command _cmd;
-
+        private Command? _cmd;
         private bool _initialized;
 
         public MedallionShellAdapter(
-            [NotNull] string executable,
-            [CanBeNull] IEnumerable<string> args,
-            [NotNull] Stream outputStream,
-            [NotNull] Stream errorStream)
+            string executable,
+            IEnumerable<string>? args,
+            Stream outputStream,
+            Stream errorStream)
         {
             Guard.NotNullOrWhiteSpace(executable, nameof(executable));
             Guard.NotNull(outputStream, nameof(outputStream));
@@ -40,12 +34,10 @@ namespace CoenM.ExifToolLib.Internals.MedallionShell
             Task = System.Threading.Tasks.Task.FromResult(new DummyShellResult() as IShellResult);
         }
 
-        [CanBeNull]
-        public event EventHandler ProcessExited;
+        public event EventHandler? ProcessExited;
 
         public bool Finished => Task.IsCompleted;
 
-        [NotNull]
         public Task<IShellResult> Task { get; private set; }
 
         public void Initialize()
@@ -98,12 +90,12 @@ namespace CoenM.ExifToolLib.Internals.MedallionShell
             _cmd?.Kill();
         }
 
-        public async Task WriteLineAsync([NotNull] string text)
+        public async Task WriteLineAsync(string text)
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (text != null)
             {
-                Command cmd = _cmd;
+                Command? cmd = _cmd;
                 if (cmd != null)
                 {
                     await cmd.StandardInput.WriteLineAsync(text).ConfigureAwait(false);
@@ -114,7 +106,7 @@ namespace CoenM.ExifToolLib.Internals.MedallionShell
         public void Dispose()
         {
             Ignore(() => Task.Dispose());
-            Ignore(() => ((IDisposable)_cmd)?.Dispose());
+            Ignore(() => ((IDisposable?)_cmd)?.Dispose());
         }
 
         private static void Ignore(Action action)
@@ -135,9 +127,9 @@ namespace CoenM.ExifToolLib.Internals.MedallionShell
 
             public bool Success { get; }
 
-            public string StandardOutput { get; }
+            public string StandardOutput { get; } = string.Empty;
 
-            public string StandardError { get; }
+            public string StandardError { get; } = string.Empty;
         }
     }
 }
