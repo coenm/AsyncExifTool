@@ -33,10 +33,10 @@ namespace CoenM.ExifToolLib.Internals.MedallionShell
             Guard.NotNullOrWhiteSpace(executable, nameof(executable));
             Guard.NotNull(outputStream, nameof(outputStream));
 
-            this._executable = executable;
-            this._args = args?.ToList();
-            this._outputStream = outputStream;
-            this._errorStream = errorStream;
+            _executable = executable;
+            _args = args?.ToList();
+            _outputStream = outputStream;
+            _errorStream = errorStream;
             Task = System.Threading.Tasks.Task.FromResult(new DummyShellResult() as IShellResult);
         }
 

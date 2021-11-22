@@ -14,7 +14,7 @@ namespace Samples
 
         public AsyncExifToolToNLogAdapter(NLog.ILogger logger)
         {
-            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public void Log(LogEntry entry)

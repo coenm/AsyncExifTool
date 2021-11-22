@@ -11,7 +11,7 @@ namespace CoenM.ExifToolLib.Internals.Stream
         public WriteDelegatedDummyStream([NotNull] IBytesWriter @delegate)
         {
             Guard.NotNull(@delegate, nameof(@delegate));
-            this._delegate = @delegate;
+            _delegate = @delegate;
         }
 
         public override bool CanRead => false;

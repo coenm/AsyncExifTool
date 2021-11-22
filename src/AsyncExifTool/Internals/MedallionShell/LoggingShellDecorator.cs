@@ -14,8 +14,8 @@ namespace CoenM.ExifToolLib.Internals.MedallionShell
         {
             Guard.NotNull(decoratee, nameof(decoratee));
             Guard.NotNull(logger, nameof(logger));
-            this._decoratee = decoratee;
-            this._logger = logger;
+            _decoratee = decoratee;
+            _logger = logger;
         }
 
         public event EventHandler ProcessExited
