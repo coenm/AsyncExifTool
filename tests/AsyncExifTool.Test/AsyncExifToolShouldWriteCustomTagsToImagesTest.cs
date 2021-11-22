@@ -82,7 +82,7 @@ namespace CoenM.ExifToolLibTest
         public async Task WriteCustomXmpTagsToImageTest()
         {
             // arrange
-#if NETCOREAPP3_1
+#if FEATURE_ASYNC_DISPOSABLE
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.CreateWithCustomConfig());
 #else
             using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.CreateWithCustomConfig());

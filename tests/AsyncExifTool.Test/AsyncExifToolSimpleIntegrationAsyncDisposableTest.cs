@@ -36,7 +36,7 @@ namespace CoenM.ExifToolLibTest
         public async Task RunExiftoolForVersionAndImageTest()
         {
             // arrange
-#if NETCOREAPP3_1
+#if FEATURE_ASYNC_DISPOSABLE
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
 #else
             using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
@@ -63,7 +63,7 @@ namespace CoenM.ExifToolLibTest
         public async Task RunWithInputStreamTest()
         {
             // arrange
-#if NETCOREAPP3_1
+#if FEATURE_ASYNC_DISPOSABLE
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
 #else
             using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
@@ -99,7 +99,7 @@ namespace CoenM.ExifToolLibTest
             // arrange
             var tasks = new Task<string>[REPEAT];
             Stopwatch sw;
-#if NETCOREAPP3_1
+#if FEATURE_ASYNC_DISPOSABLE
             await using (var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create()))
 #else
             using (var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create()))
@@ -149,7 +149,7 @@ namespace CoenM.ExifToolLibTest
 
             // act
             sut.Initialize();
-#if NETCOREAPP3_1
+#if FEATURE_ASYNC_DISPOSABLE
             await sut.DisposeAsync().ConfigureAwait(false);
 #else
             await Task.Yield();
@@ -164,7 +164,7 @@ namespace CoenM.ExifToolLibTest
         public async Task RunExifToolWithThreeCommands()
         {
             // arrange
-#if NETCOREAPP3_1
+#if FEATURE_ASYNC_DISPOSABLE
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
 #else
             using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
