@@ -21,11 +21,11 @@ namespace CoenM.ExifToolLibTest.TestInternals
                     var localTcs = (TaskCompletionSource<object>)state;
                     if (timedOut)
                     {
-                        localTcs.TrySetCanceled();
+                        localTcs!.TrySetCanceled();
                     }
                     else
                     {
-                        localTcs.TrySetResult(null);
+                        localTcs!.TrySetResult(null);
                     }
                 },
                 tcs,
