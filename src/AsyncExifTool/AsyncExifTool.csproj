@@ -13,11 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MedallionShell" />
-    <PackageReference Include="Nito.AsyncEx" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net462" Version="1.0.2">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+	  <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0"  Condition="'$(TargetFramework)' == 'netstandard2.0'  OR '$(TargetFramework)' == 'net461' "/>
+	  <PackageReference Include="MedallionShell" />
+	  <PackageReference Include="Nito.AsyncEx" />
+	  <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net462" Version="1.0.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+	  </PackageReference>
   </ItemGroup>
 </Project>

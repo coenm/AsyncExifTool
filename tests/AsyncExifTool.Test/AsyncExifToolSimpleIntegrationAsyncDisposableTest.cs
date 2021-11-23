@@ -36,11 +36,7 @@ namespace CoenM.ExifToolLibTest
         public async Task RunExiftoolForVersionAndImageTest()
         {
             // arrange
-#if FEATURE_ASYNC_DISPOSABLE
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
-#else
-            using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
-#endif
             sut.Initialize();
 
             // act
@@ -63,11 +59,7 @@ namespace CoenM.ExifToolLibTest
         public async Task RunWithInputStreamTest()
         {
             // arrange
-#if FEATURE_ASYNC_DISPOSABLE
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
-#else
-            using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
-#endif
             var sw = Stopwatch.StartNew();
             sut.Initialize();
             sw.Stop();
@@ -99,11 +91,7 @@ namespace CoenM.ExifToolLibTest
             // arrange
             var tasks = new Task<string>[REPEAT];
             Stopwatch sw;
-#if FEATURE_ASYNC_DISPOSABLE
             await using (var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create()))
-#else
-            using (var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create()))
-#endif
             {
                 sw = Stopwatch.StartNew();
                 sut.Initialize();
@@ -149,12 +137,7 @@ namespace CoenM.ExifToolLibTest
 
             // act
             sut.Initialize();
-#if FEATURE_ASYNC_DISPOSABLE
             await sut.DisposeAsync().ConfigureAwait(false);
-#else
-            await Task.Yield();
-            sut.Dispose();
-#endif
 
             // assert
             // sut.IsClosed.Should().Be(true);
@@ -164,11 +147,7 @@ namespace CoenM.ExifToolLibTest
         public async Task RunExifToolWithThreeCommands()
         {
             // arrange
-#if FEATURE_ASYNC_DISPOSABLE
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
-#else
-            using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
-#endif
             sut.Initialize();
 
             // act
