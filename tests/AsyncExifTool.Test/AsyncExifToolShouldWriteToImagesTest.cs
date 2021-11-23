@@ -84,11 +84,7 @@ namespace CoenM.ExifToolLibTest
         public async Task WriteXmpSubjectsToImageTest()
         {
             // arrange
-#if FEATURE_ASYNC_DISPOSABLE
             await using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
-#else
-            using var sut = new AsyncExifTool(AsyncExifToolConfigurationFactory.Create());
-#endif
             sut.Initialize();
 
             // act

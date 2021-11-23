@@ -13,18 +13,12 @@ namespace CoenM.ExifToolLib
     using CoenM.ExifToolLib.Internals.Stream;
     using CoenM.ExifToolLib.Internals.TimeoutExtensions;
     using CoenM.ExifToolLib.Logging;
-    using JetBrains.Annotations;
     using Nito.AsyncEx;
 
     /// <summary>
     /// AsyncExifTool is a wrapper around an ExifTool process for executing commands using the `stay-open` flag.
     /// </summary>
-    public class AsyncExifTool
-#if FEATURE_ASYNC_DISPOSABLE
-        : IAsyncDisposable
-#else
-        : IDisposable
-#endif
+    public class AsyncExifTool : IAsyncDisposable
     {
         private readonly string _exifToolPath;
         private readonly AsyncLock _executeAsyncSyncLock = new AsyncLock();
@@ -169,67 +163,8 @@ namespace CoenM.ExifToolLib
             }
         }
 
-#if FEATURE_ASYNC_DISPOSABLE
         /// <inheritdoc/>
         public async ValueTask DisposeAsync()
-        {
-            await DisposeAsyncImplementation().ConfigureAwait(false);
-        }
-#else
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources asynchronously.
-        /// </summary>
-        /// <returns>A task that represents the asynchronous dispose operation.</returns>
-        ///
-        public Task DisposeAsync()
-        {
-            return DisposeAsyncImplementation();
-        }
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            DisposeAsyncImplementation().GetAwaiter().GetResult();
-        }
-#endif
-
-        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, ExifToolStdOutWriter exiftoolStdOutWriter, ExifToolStdErrWriter exiftoolStdErrWriter)
-        {
-            IBytesWriter stdOutWriter = _logger is NullLogger ? (IBytesWriter)new BytesWriterLogDecorator(exiftoolStdOutWriter, _logger, "ExifTool stdout") : exiftoolStdOutWriter;
-            IBytesWriter stdErrWriter = _logger is NullLogger ? (IBytesWriter)new BytesWriterLogDecorator(exiftoolStdErrWriter, _logger, "ExifTool stderr") : exiftoolStdErrWriter;
-
-            return CreateShell(
-                               exifToolFullPath,
-                               args,
-                               new WriteDelegatedDummyStream(stdOutWriter),
-                               new WriteDelegatedDummyStream(stdErrWriter));
-        }
-
-        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errStream)
-        {
-            var medallionShellAdapter = new MedallionShellAdapter(exifToolFullPath, args, outputStream, errStream);
-
-            if (_logger is NullLogger)
-            {
-                return medallionShellAdapter;
-            }
-
-            return new LoggingShellDecorator(medallionShellAdapter, _logger);
-        }
-
-        private static void Ignore(Action action)
-        {
-            try
-            {
-                action?.Invoke();
-            }
-            catch (Exception)
-            {
-                // ignore
-            }
-        }
-
-        private async Task DisposeAsyncImplementation()
         {
             if (!_initialized)
             {
@@ -311,6 +246,42 @@ namespace CoenM.ExifToolLib
                 _shell = null;
                 _disposed = true;
                 _disposing = false;
+            }
+        }
+
+        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, ExifToolStdOutWriter exiftoolStdOutWriter, ExifToolStdErrWriter exiftoolStdErrWriter)
+        {
+            IBytesWriter stdOutWriter = _logger is NullLogger ? (IBytesWriter)new BytesWriterLogDecorator(exiftoolStdOutWriter, _logger, "ExifTool stdout") : exiftoolStdOutWriter;
+            IBytesWriter stdErrWriter = _logger is NullLogger ? (IBytesWriter)new BytesWriterLogDecorator(exiftoolStdErrWriter, _logger, "ExifTool stderr") : exiftoolStdErrWriter;
+
+            return CreateShell(
+                               exifToolFullPath,
+                               args,
+                               new WriteDelegatedDummyStream(stdOutWriter),
+                               new WriteDelegatedDummyStream(stdErrWriter));
+        }
+
+        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, Stream outputStream, Stream errStream)
+        {
+            var medallionShellAdapter = new MedallionShellAdapter(exifToolFullPath, args, outputStream, errStream);
+
+            if (_logger is NullLogger)
+            {
+                return medallionShellAdapter;
+            }
+
+            return new LoggingShellDecorator(medallionShellAdapter, _logger);
+        }
+
+        private static void Ignore(Action action)
+        {
+            try
+            {
+                action?.Invoke();
+            }
+            catch (Exception)
+            {
+                // ignore
             }
         }
 
