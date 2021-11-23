@@ -40,7 +40,7 @@ namespace CoenM.ExifToolLib.Internals
         /// </summary>
         /// <param name="filename">filename to configuration file.</param>
         /// <returns>Exiftool arguments.</returns>
-        public static IEnumerable<string> ExifToolArgumentsConfigFile([CanBeNull] string filename)
+        public static IEnumerable<string> ExifToolArgumentsConfigFile(string? filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
             {
@@ -48,7 +48,7 @@ namespace CoenM.ExifToolLib.Internals
             }
 
             yield return "-config";
-            yield return filename;
+            yield return filename!;
         }
     }
 }

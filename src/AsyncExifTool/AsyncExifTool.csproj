@@ -9,6 +9,7 @@
     <RootNamespace>CoenM.ExifToolLib</RootNamespace>
     <IsPackable>true</IsPackable>
     <NeutralLanguage>en</NeutralLanguage>
+	<Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

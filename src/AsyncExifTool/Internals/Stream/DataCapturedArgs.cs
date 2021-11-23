@@ -6,7 +6,7 @@ namespace CoenM.ExifToolLib.Internals.Stream
 
     internal class DataCapturedArgs : EventArgs
     {
-        public DataCapturedArgs([NotNull] string key, [NotNull] string data)
+        public DataCapturedArgs(string key, string data)
         {
             DebugGuard.NotNullOrWhiteSpace(key, nameof(key));
             DebugGuard.NotNull(data, nameof(data)); // can be empty

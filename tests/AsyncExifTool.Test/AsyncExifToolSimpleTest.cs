@@ -229,10 +229,10 @@ namespace CoenM.ExifToolLibTest
             _sut.Initialize();
 
             // act
-            Task<string> resultTask1 = _sut.ExecuteAsync(new[] { "a" }, CancellationToken.None);
+            Task<string> resultTask1 = _sut.ExecuteAsync(new[] { "a", }, CancellationToken.None);
             controlExecute1.Entered.WaitOne(); // make sure resultTask1 is executing and has 'entered' ExifTool
-            Task<string> resultTask2 = _sut.ExecuteAsync(new[] { "b" }, cts.Token);
-            Task<string> resultTask3 = _sut.ExecuteAsync(new[] { "c" }, CancellationToken.None);
+            Task<string> resultTask2 = _sut.ExecuteAsync(new[] { "b", }, cts.Token);
+            Task<string> resultTask3 = _sut.ExecuteAsync(new[] { "c", }, CancellationToken.None);
             cts.Cancel(); // cancel second task
             controlExecute1.Release.Set(); // signal 'exiftool' to finish the request of task1.
 
@@ -301,7 +301,7 @@ namespace CoenM.ExifToolLibTest
                     {
                         if (!(call.Arguments[0] is string text))
                         {
-                            throw new ArgumentNullException("text");
+                            throw new ArgumentNullException(nameof(text));
                         }
 
                         if (_exiftoolControl.TryGetValue(text, out ExifToolCommandControlToken control))

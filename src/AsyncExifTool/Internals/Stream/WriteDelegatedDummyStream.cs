@@ -8,7 +8,7 @@ namespace CoenM.ExifToolLib.Internals.Stream
     {
         private readonly IBytesWriter _delegate;
 
-        public WriteDelegatedDummyStream([NotNull] IBytesWriter @delegate)
+        public WriteDelegatedDummyStream(IBytesWriter @delegate)
         {
             Guard.NotNull(@delegate, nameof(@delegate));
             _delegate = @delegate;

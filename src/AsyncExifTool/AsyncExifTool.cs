@@ -40,7 +40,7 @@ namespace CoenM.ExifToolLib
         private readonly ExifToolStdErrWriter _errorStream;
         private readonly AsyncManualResetEvent _cmdExitedMre;
         private readonly ILogger _logger;
-        private IShell _shell;
+        private IShell? _shell;
         private int _key;
         private bool _disposed;
         private bool _disposing;
@@ -52,7 +52,7 @@ namespace CoenM.ExifToolLib
         /// Initializes a new instance of the <see cref="AsyncExifTool"/> class.
         /// </summary>
         /// <param name="configuration">Configuration for Exiftool.</param>
-        public AsyncExifTool([NotNull] AsyncExifToolConfiguration configuration)
+        public AsyncExifTool(AsyncExifToolConfiguration configuration)
             : this(configuration, new NullLogger())
         {
         }
@@ -62,7 +62,7 @@ namespace CoenM.ExifToolLib
         /// </summary>
         /// <param name="configuration">Configuration for Exiftool.</param>
         /// <param name="logger">The logger.</param>
-        public AsyncExifTool([NotNull] AsyncExifToolConfiguration configuration, [NotNull] ILogger logger)
+        public AsyncExifTool(AsyncExifToolConfiguration configuration, ILogger logger)
         {
             Guard.NotNull(configuration, nameof(configuration));
             Guard.NotNull(logger, nameof(logger));
@@ -193,7 +193,7 @@ namespace CoenM.ExifToolLib
         }
 #endif
 
-        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, [NotNull] ExifToolStdOutWriter exiftoolStdOutWriter, [NotNull] ExifToolStdErrWriter exiftoolStdErrWriter)
+        internal virtual IShell CreateShell(string exifToolFullPath, IEnumerable<string> args, ExifToolStdOutWriter exiftoolStdOutWriter, ExifToolStdErrWriter exiftoolStdErrWriter)
         {
             IBytesWriter stdOutWriter = _logger is NullLogger ? (IBytesWriter)new BytesWriterLogDecorator(exiftoolStdOutWriter, _logger, "ExifTool stdout") : exiftoolStdOutWriter;
             IBytesWriter stdErrWriter = _logger is NullLogger ? (IBytesWriter)new BytesWriterLogDecorator(exiftoolStdErrWriter, _logger, "ExifTool stderr") : exiftoolStdErrWriter;
@@ -284,7 +284,7 @@ namespace CoenM.ExifToolLib
                 {
                     // Try quit ExifTool process by sending Ctrl-C to the process.
                     // This does not always work (depending on the OS, and if the process runs in a console or not).
-                    await _shell.TryCancelAsync().ConfigureAwait(false);
+                    await _shell!.TryCancelAsync().ConfigureAwait(false);
                     await _cmdExitedMre.WaitOneAsync(timeout).ConfigureAwait(false);
                 }
 
@@ -293,7 +293,7 @@ namespace CoenM.ExifToolLib
                     // Try kill the process.
                     try
                     {
-                        _shell.Kill();
+                        _shell!.Kill();
                         await _cmdExitedMre.WaitOneAsync(timeout).ConfigureAwait(false);
                     }
                     catch (Exception e)
@@ -348,22 +348,22 @@ namespace CoenM.ExifToolLib
             }
         }
 
-        private async Task AddToExifToolAsync(string executeKey, [NotNull] IEnumerable<string> args)
+        private async Task AddToExifToolAsync(string? executeKey, IEnumerable<string> args)
         {
             foreach (var arg in args)
             {
-                await _shell.WriteLineAsync(arg).ConfigureAwait(false);
+                await _shell!.WriteLineAsync(arg).ConfigureAwait(false);
             }
 
             if (!string.IsNullOrWhiteSpace(executeKey))
             {
-                await _shell.WriteLineAsync($"-execute{executeKey}").ConfigureAwait(false);
+                await _shell!.WriteLineAsync($"-execute{executeKey}").ConfigureAwait(false);
             }
         }
 
-        private void StreamOnUpdate(object sender, DataCapturedArgs dataCapturedArgs)
+        private void StreamOnUpdate(object? sender, DataCapturedArgs dataCapturedArgs)
         {
-            if (!_waitingTasks.TryRemove(dataCapturedArgs.Key, out TaskCompletionSource<string> tcs))
+            if (!_waitingTasks.TryRemove(dataCapturedArgs.Key, out TaskCompletionSource<string>? tcs))
             {
                 return;
             }
@@ -371,18 +371,18 @@ namespace CoenM.ExifToolLib
             tcs.TrySetResult(dataCapturedArgs.Data);
         }
 
-        private void StreamOnError(object sender, ErrorCapturedArgs e)
+        private void StreamOnError(object? sender, ErrorCapturedArgs e)
         {
             foreach (KeyValuePair<string, TaskCompletionSource<string>> item in _waitingTasks.ToArray())
             {
-                if (_waitingTasks.TryRemove(item.Key, out TaskCompletionSource<string> tcs))
+                if (_waitingTasks.TryRemove(item.Key, out TaskCompletionSource<string>? tcs))
                 {
                     tcs.TrySetException(new Exception(e.Data));
                 }
             }
         }
 
-        private void ShellOnProcessExited(object sender, EventArgs eventArgs)
+        private void ShellOnProcessExited(object? sender, EventArgs eventArgs)
         {
             _cmdExited = true;
             _cmdExitedMre.Set();
@@ -404,7 +404,7 @@ namespace CoenM.ExifToolLib
                 }
 
                 _cmdExitedSubscribed = false;
-                _shell.ProcessExited -= ShellOnProcessExited;
+                _shell!.ProcessExited -= ShellOnProcessExited;
             }
         }
     }

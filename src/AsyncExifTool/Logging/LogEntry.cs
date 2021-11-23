@@ -18,7 +18,7 @@ namespace CoenM.ExifToolLib.Logging
         /// <param name="exception">Exception to log. Optional. Can be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="message"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="message"/> is empty or whitespace.</exception>
-        internal LogEntry(LogLevel severity, [NotNull] string message, Exception exception = null)
+        internal LogEntry(LogLevel severity, string message, Exception? exception = null)
         {
             Guard.NotNullOrWhiteSpace(message, nameof(message));
             Severity = severity;
@@ -39,6 +39,6 @@ namespace CoenM.ExifToolLib.Logging
         /// <summary>
         /// Gets the exception. Can be null.
         /// </summary>
-        public Exception Exception { get; }
+        public Exception? Exception { get; }
     }
 }

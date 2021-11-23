@@ -9,13 +9,13 @@ namespace CoenM.ExifToolLib.Internals.Stream
     {
         private readonly Encoding _encoding;
 
-        public ExifToolStdErrWriter([NotNull] Encoding encoding)
+        public ExifToolStdErrWriter(Encoding encoding)
         {
             Guard.NotNull(encoding, nameof(encoding));
             _encoding = encoding;
         }
 
-        public event EventHandler<ErrorCapturedArgs> Error;
+        public event EventHandler<ErrorCapturedArgs>? Error;
 
         public void Reset()
         {

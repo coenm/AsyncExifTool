@@ -10,14 +10,11 @@ namespace CoenM.ExifToolLib.Internals.Stream
     /// </summary>
     internal class BytesWriterLogDecorator : IBytesWriter
     {
-        [NotNull]
         private readonly IBytesWriter _decoratee;
-        [NotNull]
         private readonly ILogger _logger;
-        [NotNull]
         private readonly string _logPrefix;
 
-        public BytesWriterLogDecorator([NotNull] IBytesWriter decoratee, [NotNull] ILogger logger, [NotNull]string logPrefix)
+        public BytesWriterLogDecorator(IBytesWriter decoratee, ILogger logger, string logPrefix)
         {
             Guard.NotNull(decoratee, nameof(decoratee));
             Guard.NotNull(logger, nameof(logger));

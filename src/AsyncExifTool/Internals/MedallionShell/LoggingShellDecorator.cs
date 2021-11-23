@@ -18,7 +18,7 @@ namespace CoenM.ExifToolLib.Internals.MedallionShell
             _logger = logger;
         }
 
-        public event EventHandler ProcessExited
+        public event EventHandler? ProcessExited
         {
             add
             {

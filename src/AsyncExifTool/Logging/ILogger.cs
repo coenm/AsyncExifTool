@@ -1,7 +1,5 @@
-﻿namespace CoenM.ExifToolLib.Logging
+namespace CoenM.ExifToolLib.Logging
 {
-    using JetBrains.Annotations;
-
     /// <summary>
     /// Logger Interface.
     /// </summary>
@@ -11,7 +9,7 @@
         /// Writes the given LogEntry to log.
         /// </summary>
         /// <param name="entry">log entry to write to log.</param>
-        void Log([NotNull] LogEntry entry);
+        void Log(LogEntry entry);
 
         /// <summary>
         /// Verifies if logging for given <see cref="LogLevel"/> is enabled.

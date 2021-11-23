@@ -28,7 +28,7 @@ namespace CoenM.ExifToolLib.Internals.Guards
         {
             if (value is null)
             {
-                ThrowArgumentNullException(parameterName);
+                throw new ArgumentNullException(parameterName);
             }
         }
 
@@ -45,12 +45,12 @@ namespace CoenM.ExifToolLib.Internals.Guards
         {
             if (value is null)
             {
-                ThrowArgumentNullException(parameterName);
+                throw new ArgumentNullException(parameterName);
             }
 
             if (string.IsNullOrWhiteSpace(value))
             {
-                ThrowArgumentException("Must not be empty or whitespace.", parameterName);
+                throw new ArgumentException("Must not be empty or whitespace.", parameterName);
             }
         }
 
@@ -67,13 +67,12 @@ namespace CoenM.ExifToolLib.Internals.Guards
         {
             if (value is null)
             {
-                ThrowArgumentNullException(parameterName);
+                throw new ArgumentNullException(parameterName);
             }
 
-            // ReSharper disable once PossibleNullReferenceException
             if (string.IsNullOrEmpty(value))
             {
-                ThrowArgumentException("Must not be empty .", parameterName);
+                throw new ArgumentException("Must not be empty .", parameterName);
             }
         }
 
@@ -91,13 +90,12 @@ namespace CoenM.ExifToolLib.Internals.Guards
         {
             if (value is null)
             {
-                ThrowArgumentNullException(parameterName);
+                throw new ArgumentNullException(parameterName);
             }
 
-            // ReSharper disable once PossibleNullReferenceException
             if (value.Count == 0)
             {
-                ThrowArgumentException("Must not be empty.", parameterName);
+                throw new ArgumentException("Must not be empty.", parameterName);
             }
         }
 
@@ -114,7 +112,7 @@ namespace CoenM.ExifToolLib.Internals.Guards
         {
             if (!value.HasValue)
             {
-                ThrowArgumentNullException(parameterName);
+                throw new ArgumentNullException(parameterName);
             }
         }
 
@@ -132,7 +130,7 @@ namespace CoenM.ExifToolLib.Internals.Guards
         {
             if (value.CompareTo(max) >= 0)
             {
-                ThrowArgumentOutOfRangeException(parameterName, $"Value {value} must be less than {max}.");
+                throw new ArgumentOutOfRangeException(parameterName, $"Value {value} must be less than {max}.");
             }
         }
 
@@ -151,7 +149,7 @@ namespace CoenM.ExifToolLib.Internals.Guards
         {
             if (value.CompareTo(max) > 0)
             {
-                ThrowArgumentOutOfRangeException(parameterName, $"Value {value} must be less than or equal to {max}.");
+                throw new ArgumentOutOfRangeException(parameterName, $"Value {value} must be less than or equal to {max}.");
             }
         }
 
@@ -170,9 +168,7 @@ namespace CoenM.ExifToolLib.Internals.Guards
         {
             if (value.CompareTo(min) <= 0)
             {
-                ThrowArgumentOutOfRangeException(
-                                                 parameterName,
-                                                 $"Value {value} must be greater than {min}.");
+                throw new ArgumentOutOfRangeException(parameterName, $"Value {value} must be greater than {min}.");
             }
         }
 
@@ -191,9 +187,7 @@ namespace CoenM.ExifToolLib.Internals.Guards
         {
             if (value.CompareTo(min) < 0)
             {
-                ThrowArgumentOutOfRangeException(
-                                                 parameterName,
-                                                 $"Value {value} must be greater than or equal to {min}.");
+                throw new ArgumentOutOfRangeException(parameterName, $"Value {value} must be greater than or equal to {min}.");
             }
         }
 
@@ -213,9 +207,7 @@ namespace CoenM.ExifToolLib.Internals.Guards
         {
             if (value.CompareTo(min) < 0 || value.CompareTo(max) > 0)
             {
-                ThrowArgumentOutOfRangeException(
-                                                 parameterName,
-                                                 $"Value {value} must be greater than or equal to {min} and less than or equal to {max}.");
+                throw new ArgumentOutOfRangeException(parameterName, $"Value {value} must be greater than or equal to {min} and less than or equal to {max}.");
             }
         }
 
@@ -233,7 +225,7 @@ namespace CoenM.ExifToolLib.Internals.Guards
         {
             if (value1.CompareTo(value2) != 0)
             {
-                ThrowArgumentOutOfRangeException(parameterName, $"Value {value1} must be equal to {value2}.");
+                throw new ArgumentOutOfRangeException(parameterName, $"Value {value1} must be equal to {value2}.");
             }
         }
 
@@ -250,7 +242,7 @@ namespace CoenM.ExifToolLib.Internals.Guards
         {
             if (!target)
             {
-                ThrowArgumentException(message, parameterName);
+                throw new ArgumentException(message, parameterName);
             }
         }
 
@@ -267,26 +259,8 @@ namespace CoenM.ExifToolLib.Internals.Guards
         {
             if (target)
             {
-                ThrowArgumentException(message, parameterName);
+                throw new ArgumentException(message, parameterName);
             }
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ThrowArgumentException(string message, string parameterName)
-        {
-            throw new ArgumentException(message, parameterName);
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ThrowArgumentOutOfRangeException(string parameterName, string message)
-        {
-            throw new ArgumentOutOfRangeException(parameterName, message);
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ThrowArgumentNullException(string parameterName)
-        {
-            throw new ArgumentNullException(parameterName);
         }
     }
 }
